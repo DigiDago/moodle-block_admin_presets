@@ -1,0 +1,29 @@
+.admin_presets_tree_name {
+    padding: 0 0 4px 2px;
+}
+
+.admin_presets_tree_value {
+    border-style: solid;
+    border-color: #CCCCCC;
+    border-width: 1px;
+    padding: 0 0 4px 2px;
+}
+
+.admin_presets_error {
+    color: red;
+    text-align: center;
+}
+
+.admin_presets_success {
+    color: green;
+    text-align: center;
+}
+
+.admin_presets_table {
+    font-size: 70%;
+}
+
+.ygtv-checkbox .ygtv-highlight0 .ygtvcontent{padding-left:1em;background:url(../lib/yui/2.8.1/build/treeview/assets/skins/sam/check0.gif) no-repeat;}
+.ygtv-checkbox .ygtv-highlight0 .ygtvfocus.ygtvcontent,.ygtv-checkbox .ygtv-highlight1 .ygtvfocus.ygtvcontent,.ygtv-checkbox .ygtv-highlight2 .ygtvfocus.ygtvcontent{background-color:#c0e0e0;}
+.ygtv-checkbox .ygtv-highlight1 .ygtvcontent{padding-left:1em;background:url(../lib/yui/2.8.1/build/treeview/assets/skins/sam/check1.gif) no-repeat;}
+.ygtv-checkbox .ygtv-highlight2 .ygtvcontent{padding-left:1em;background:url(../lib/yui/2.8.1/build/treeview/assets/skins/sam/check2.gif) no-repeat;}

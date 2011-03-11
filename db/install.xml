@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<XMLDB PATH="blocks/admin_presets/db" VERSION="20101116" COMMENT="Admin presets block tables, to store exported/imported presets"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:noNamespaceSchemaLocation="../../../lib/xmldb/xmldb.xsd"
+>
+  <TABLES>
+    <TABLE NAME="admin_preset" COMMENT="Table to store presets data" NEXT="admin_preset_item">
+      <FIELDS>
+        <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" SEQUENCE="true" NEXT="userid"/>
+        <FIELD NAME="userid" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="false" SEQUENCE="false" PREVIOUS="id" NEXT="name"/>
+        <FIELD NAME="name" TYPE="char" LENGTH="255" NOTNULL="true" SEQUENCE="false" PREVIOUS="userid" NEXT="comments"/>
+        <FIELD NAME="comments" TYPE="text" LENGTH="medium" NOTNULL="false" SEQUENCE="false" PREVIOUS="name" NEXT="site"/>
+        <FIELD NAME="site" TYPE="char" LENGTH="255" NOTNULL="true" SEQUENCE="false" PREVIOUS="comments" NEXT="author"/>
+        <FIELD NAME="author" TYPE="char" LENGTH="255" NOTNULL="false" SEQUENCE="false" PREVIOUS="site" NEXT="moodleversion"/>
+        <FIELD NAME="moodleversion" TYPE="int" LENGTH="16" NOTNULL="true" UNSIGNED="false" SEQUENCE="false" PREVIOUS="author" NEXT="moodlerelease"/>
+        <FIELD NAME="moodlerelease" TYPE="char" LENGTH="255" NOTNULL="true" SEQUENCE="false" PREVIOUS="moodleversion" NEXT="timecreated"/>
+        <FIELD NAME="timecreated" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="false" DEFAULT="0" SEQUENCE="false" PREVIOUS="moodlerelease" NEXT="timeimported"/>
+        <FIELD NAME="timeimported" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="false" DEFAULT="0" SEQUENCE="false" PREVIOUS="timecreated"/>
+      </FIELDS>
+      <KEYS>
+        <KEY NAME="primary" TYPE="primary" FIELDS="id"/>
+      </KEYS>
+    </TABLE>
+    <TABLE NAME="admin_preset_item" COMMENT="Table to store settings" PREVIOUS="admin_preset" NEXT="admin_preset_item_attr">
+      <FIELDS>
+        <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" SEQUENCE="true" NEXT="adminpresetid"/>
+        <FIELD NAME="adminpresetid" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="false" SEQUENCE="false" PREVIOUS="id" NEXT="plugin"/>
+        <FIELD NAME="plugin" TYPE="char" LENGTH="100" NOTNULL="false" SEQUENCE="false" PREVIOUS="adminpresetid" NEXT="name"/>
+        <FIELD NAME="name" TYPE="char" LENGTH="100" NOTNULL="true" SEQUENCE="false" PREVIOUS="plugin" NEXT="value"/>
+        <FIELD NAME="value" TYPE="text" LENGTH="medium" NOTNULL="false" SEQUENCE="false" PREVIOUS="name"/>
+      </FIELDS>
+      <KEYS>
+        <KEY NAME="primary" TYPE="primary" FIELDS="id"/>
+      </KEYS>
+      <INDEXES>
+        <INDEX NAME="adminpresetid" UNIQUE="false" FIELDS="adminpresetid"/>
+      </INDEXES>
+    </TABLE>
+    <TABLE NAME="admin_preset_item_attr" COMMENT="For settings with attributes (extra values like 'advanced')" PREVIOUS="admin_preset_item" NEXT="admin_preset_apply">
+      <FIELDS>
+        <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" SEQUENCE="true" NEXT="itemid"/>
+        <FIELD NAME="itemid" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="false" SEQUENCE="false" PREVIOUS="id" NEXT="name"/>
+        <FIELD NAME="name" TYPE="char" LENGTH="100" NOTNULL="true" SEQUENCE="false" PREVIOUS="itemid" NEXT="value"/>
+        <FIELD NAME="value" TYPE="text" LENGTH="medium" NOTNULL="false" SEQUENCE="false" PREVIOUS="name"/>
+      </FIELDS>
+      <KEYS>
+        <KEY NAME="primary" TYPE="primary" FIELDS="id"/>
+      </KEYS>
+      <INDEXES>
+        <INDEX NAME="itemid" UNIQUE="false" FIELDS="itemid"/>
+      </INDEXES>
+    </TABLE>
+    <TABLE NAME="admin_preset_apply" COMMENT="Applied presets" PREVIOUS="admin_preset_item_attr" NEXT="admin_preset_apply_item">
+      <FIELDS>
+        <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" SEQUENCE="true" NEXT="adminpresetid"/>
+        <FIELD NAME="adminpresetid" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="false" SEQUENCE="false" PREVIOUS="id" NEXT="userid"/>
+        <FIELD NAME="userid" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="false" SEQUENCE="false" PREVIOUS="adminpresetid" NEXT="time"/>
+        <FIELD NAME="time" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="false" SEQUENCE="false" PREVIOUS="userid"/>
+      </FIELDS>
+      <KEYS>
+        <KEY NAME="primary" TYPE="primary" FIELDS="id"/>
+      </KEYS>
+      <INDEXES>
+        <INDEX NAME="adminpresetid" UNIQUE="false" FIELDS="adminpresetid"/>
+      </INDEXES>
+    </TABLE>
+    <TABLE NAME="admin_preset_apply_item" COMMENT="config_log relation" PREVIOUS="admin_preset_apply" NEXT="admin_preset_apply_item_attr">
+      <FIELDS>
+        <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" SEQUENCE="true" NEXT="adminpresetapplyid"/>
+        <FIELD NAME="adminpresetapplyid" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="false" SEQUENCE="false" PREVIOUS="id" NEXT="configlogid"/>
+        <FIELD NAME="configlogid" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="false" SEQUENCE="false" PREVIOUS="adminpresetapplyid"/>
+      </FIELDS>
+      <KEYS>
+        <KEY NAME="primary" TYPE="primary" FIELDS="id"/>
+      </KEYS>
+      <INDEXES>
+        <INDEX NAME="configlogid" UNIQUE="false" FIELDS="configlogid" NEXT="adminpresetapplyid"/>
+        <INDEX NAME="adminpresetapplyid" UNIQUE="false" FIELDS="adminpresetapplyid" PREVIOUS="configlogid"/>
+      </INDEXES>
+    </TABLE>
+    <TABLE NAME="admin_preset_apply_item_attr" COMMENT="Setting attributes applications" PREVIOUS="admin_preset_apply_item">
+      <FIELDS>
+        <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" SEQUENCE="true" NEXT="adminpresetapplyid"/>
+        <FIELD NAME="adminpresetapplyid" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="false" SEQUENCE="false" PREVIOUS="id" NEXT="configlogid"/>
+        <FIELD NAME="configlogid" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="false" SEQUENCE="false" PREVIOUS="adminpresetapplyid" NEXT="itemname"/>
+        <FIELD NAME="itemname" TYPE="char" LENGTH="100" NOTNULL="false" SEQUENCE="false" COMMENT="Necessary to rollback" PREVIOUS="configlogid"/>
+      </FIELDS>
+      <KEYS>
+        <KEY NAME="primary" TYPE="primary" FIELDS="id"/>
+      </KEYS>
+      <INDEXES>
+        <INDEX NAME="configlogid" UNIQUE="false" FIELDS="configlogid" NEXT="adminpresetapplyid"/>
+        <INDEX NAME="adminpresetapplyid" UNIQUE="false" FIELDS="adminpresetapplyid" PREVIOUS="configlogid"/>
+      </INDEXES>
+    </TABLE>
+  </TABLES>
+</XMLDB>
