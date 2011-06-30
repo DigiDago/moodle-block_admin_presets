@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<XMLDB PATH="blocks/admin_presets/db" VERSION="20101116" COMMENT="Admin presets block tables, to store exported/imported presets"
+<XMLDB PATH="blocks/admin_presets/db" VERSION="20110630" COMMENT="Admin presets block tables, to store exported/imported presets"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:noNamespaceSchemaLocation="../../../lib/xmldb/xmldb.xsd"
 >
@@ -12,7 +12,7 @@
         <FIELD NAME="comments" TYPE="text" LENGTH="medium" NOTNULL="false" SEQUENCE="false" PREVIOUS="name" NEXT="site"/>
         <FIELD NAME="site" TYPE="char" LENGTH="255" NOTNULL="true" SEQUENCE="false" PREVIOUS="comments" NEXT="author"/>
         <FIELD NAME="author" TYPE="char" LENGTH="255" NOTNULL="false" SEQUENCE="false" PREVIOUS="site" NEXT="moodleversion"/>
-        <FIELD NAME="moodleversion" TYPE="int" LENGTH="16" NOTNULL="true" UNSIGNED="false" SEQUENCE="false" PREVIOUS="author" NEXT="moodlerelease"/>
+        <FIELD NAME="moodleversion" TYPE="char" LENGTH="20" NOTNULL="true" SEQUENCE="false" PREVIOUS="author" NEXT="moodlerelease"/>
         <FIELD NAME="moodlerelease" TYPE="char" LENGTH="255" NOTNULL="true" SEQUENCE="false" PREVIOUS="moodleversion" NEXT="timecreated"/>
         <FIELD NAME="timecreated" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="false" DEFAULT="0" SEQUENCE="false" PREVIOUS="moodlerelease" NEXT="timeimported"/>
         <FIELD NAME="timeimported" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="false" DEFAULT="0" SEQUENCE="false" PREVIOUS="timecreated"/>
