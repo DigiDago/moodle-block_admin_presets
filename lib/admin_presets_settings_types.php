@@ -103,7 +103,7 @@ abstract class admin_preset_setting {
     }
 
     public function get_description() {
-        
+
         // PARAM_TEXT clean because the alt attribute does not support html
         $description = clean_param($this->settingdata->description, PARAM_TEXT);
         return $this->encode_string($description);
@@ -124,7 +124,7 @@ abstract class admin_preset_setting {
     public function get_settingdata() {
         return $this->settingdata;
     }
-    
+
     /**
      * Sets the text to display on the settings tree
      *
@@ -143,15 +143,15 @@ abstract class admin_preset_setting {
 
     /**
      * Encodes a string to send it to js
-     * 
+     *
      * @param string $string
      */
     protected function encode_string($string) {
-        
+
         $encoded = rawurlencode($string);
         return $encoded;
     }
-    
+
     /**
      * Sets the setting value cleaning it
      *
@@ -408,6 +408,24 @@ class admin_preset_setting_configiplist extends admin_preset_setting_configtext 
 
 
 /**
+ * Reimplementation to allow human friendly view of the selected regexps
+ */
+class admin_preset_setting_devicedetectregex extends admin_preset_setting_configtext {
+
+    public function set_visiblevalue() {
+
+        $values = json_decode($this->get_value());
+
+        $this->visiblevalue = '';
+        foreach ($values as $key => $value) {
+            $this->visiblevalue .= $key . ' = ' . $value . ', ';
+        }
+        $this->visiblevalue = rtrim($this->visiblevalue, ', ');
+    }
+}
+
+
+/**
  * Reimplemented to store values in course table, not in config or config_plugins
  */
 class admin_preset_setting_sitesettext extends admin_preset_setting_configtext {
@@ -521,7 +539,6 @@ class admin_preset_setting_bloglevel extends admin_preset_setting_configselect{
 class admin_preset_setting_special_selectsetup extends admin_preset_setting_configselect{}
 
 class admin_preset_setting_sitesetselect extends admin_preset_setting_configselect {}
-
 
 /**
  * Adds support for the "advanced" attribute
@@ -688,6 +705,7 @@ abstract class admin_preset_setting_configmultiselect_with_loader extends admin_
 
 class admin_preset_setting_courselist_frontpage extends admin_preset_setting_configmultiselect_with_loader {}
 
+class admin_preset_setting_configmultiselect_modules extends admin_preset_setting_configmultiselect_with_loader {}
 
 /**
  * A standard config select with a previous load_choices()
@@ -709,6 +727,10 @@ class admin_preset_setting_special_debug extends admin_presets_setting_configsel
 class admin_preset_settings_coursecat_select extends admin_presets_setting_configselect_with_loader {}
 
 class admin_preset_setting_grade_profilereport extends admin_presets_setting_configselect_with_loader {}
+
+class admin_preset_settings_num_course_sections extends admin_presets_setting_configselect_with_loader {}
+
+class admin_preset_setting_question_behaviour extends admin_presets_setting_configselect_with_loader {}
 
 class admin_preset_setting_configtime extends admin_preset_setting {
 
