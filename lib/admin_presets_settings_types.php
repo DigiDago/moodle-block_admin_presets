@@ -82,6 +82,10 @@ abstract class admin_preset_setting {
             $this->settingdata->plugin = 'none';
         }
 
+        // Applies specific children behaviors
+        $this->set_behaviors();
+        $this->apply_behaviors();
+
         // Cleaning value
         $this->set_value($dbsettingvalue);
     }
@@ -124,6 +128,31 @@ abstract class admin_preset_setting {
     public function get_settingdata() {
         return $this->settingdata;
     }
+
+    /**
+     * Each class can overwrite this method to specify extra processes
+     */
+    protected function set_behaviors() {}
+
+
+    /**
+     * Applies the children class specific behaviors
+     *
+     * See admin_presets_delegation() for the available extra behaviors
+     */
+    protected function apply_behaviors() {
+
+        if (!empty($this->behaviors)) {
+
+            foreach ($this->behaviors as $behavior => $arguments) {
+
+                // The arguments of the behavior depends on the caller
+                $methodname = 'extra_' . $behavior;
+                $this->delegation->{$methodname}($arguments);
+            }
+        }
+    }
+
 
     /**
      * Sets the text to display on the settings tree
@@ -277,10 +306,7 @@ abstract class admin_preset_setting {
 
 
 /**
- * Simulates multiple herence
- *
- * Methods used by classes C which extends from A but also needs methods from B.
- * Classes C and also B delegates to that methods.
+ * Cross-class methods
  */
 class admin_presets_delegation {
 
@@ -304,6 +330,10 @@ class admin_presets_delegation {
         return ', '.$string;
     }
 
+    public function extra_loadchoices(admin_setting &$adminsetting) {
+        $adminsetting->load_choices();
+    }
+
 }
 
 ///////////////////////// TEXT /////////////////////////
@@ -312,7 +342,7 @@ class admin_presets_delegation {
 /**
  * Basic text setting, cleans the param using the admin_setting paramtext attribute
  */
-class admin_preset_setting_configtext extends admin_preset_setting {
+class admin_preset_admin_setting_configtext extends admin_preset_setting {
 
     /**
      * Validates the value using paramtype attribute
@@ -346,28 +376,28 @@ class admin_preset_setting_configtext extends admin_preset_setting {
     }
 }
 
-class admin_preset_setting_configtextarea extends admin_preset_setting_configtext {}
+class admin_preset_admin_setting_configtextarea extends admin_preset_admin_setting_configtext {}
 
-class admin_preset_setting_configfile extends admin_preset_setting_configtext {}
+class admin_preset_admin_setting_configfile extends admin_preset_admin_setting_configtext {}
 
-class admin_preset_setting_configexecutable extends admin_preset_setting_configfile {}
+class admin_preset_admin_setting_configexecutable extends admin_preset_admin_setting_configfile {}
 
-class admin_preset_setting_configdirectory extends admin_preset_setting_configfile {}
+class admin_preset_admin_setting_configdirectory extends admin_preset_admin_setting_configfile {}
 
-class admin_preset_setting_configpasswordunmask extends admin_preset_setting_configtext {}
+class admin_preset_admin_setting_configpasswordunmask extends admin_preset_admin_setting_configtext {}
 
-class admin_preset_setting_langlist extends admin_preset_setting_configtext {}
+class admin_preset_admin_setting_langlist extends admin_preset_admin_setting_configtext {}
 
-class admin_preset_setting_configcolourpicker extends admin_preset_setting_configtext {}
+class admin_preset_admin_setting_configcolourpicker extends admin_preset_admin_setting_configtext {}
 
-class admin_preset_setting_emoticons extends admin_preset_setting {}
+class admin_preset_admin_setting_emoticons extends admin_preset_setting {}
 
-class admin_preset_setting_confightmleditor extends admin_preset_setting_configtext {}
+class admin_preset_admin_setting_confightmleditor extends admin_preset_admin_setting_configtext {}
 
 /**
  * Adds the advanced attribute
  */
-class admin_preset_setting_configtext_with_advanced extends admin_preset_setting_configtext {
+class admin_preset_admin_setting_configtext_with_advanced extends admin_preset_admin_setting_configtext {
 
 
     public function __construct(admin_setting $settingdata, $dbsettingvalue) {
@@ -388,7 +418,7 @@ class admin_preset_setting_configtext_with_advanced extends admin_preset_setting
 }
 
 
-class admin_preset_setting_configiplist extends admin_preset_setting_configtext {
+class admin_preset_admin_setting_configiplist extends admin_preset_admin_setting_configtext {
 
     protected function set_value($value) {
 
@@ -410,7 +440,7 @@ class admin_preset_setting_configiplist extends admin_preset_setting_configtext 
 /**
  * Reimplementation to allow human friendly view of the selected regexps
  */
-class admin_preset_setting_devicedetectregex extends admin_preset_setting_configtext {
+class admin_preset_admin_setting_devicedetectregex extends admin_preset_admin_setting_configtext {
 
     public function set_visiblevalue() {
 
@@ -428,7 +458,7 @@ class admin_preset_setting_devicedetectregex extends admin_preset_setting_config
 /**
  * Reimplemented to store values in course table, not in config or config_plugins
  */
-class admin_preset_setting_sitesettext extends admin_preset_setting_configtext {
+class admin_preset_admin_setting_sitesettext extends admin_preset_admin_setting_configtext {
 
     public function save_value() {
 
@@ -473,13 +503,13 @@ class admin_preset_setting_sitesettext extends admin_preset_setting_configtext {
     }
 }
 
-class admin_preset_setting_special_frontpagedesc extends admin_preset_setting_sitesettext {}
+class admin_preset_admin_setting_special_frontpagedesc extends admin_preset_admin_setting_sitesettext {}
 
 
 ///////////////////////// SELECTS /////////////////////////
 
 
-class admin_preset_setting_configselect extends admin_preset_setting {
+class admin_preset_admin_setting_configselect extends admin_preset_setting {
 
 
     /**
@@ -514,7 +544,7 @@ class admin_preset_setting_configselect extends admin_preset_setting {
     }
 }
 
-class admin_preset_setting_bloglevel extends admin_preset_setting_configselect{
+class admin_preset_admin_setting_bloglevel extends admin_preset_admin_setting_configselect{
 
     /**
      * Extended to change the block visibility
@@ -536,14 +566,14 @@ class admin_preset_setting_bloglevel extends admin_preset_setting_configselect{
     }
 }
 
-class admin_preset_setting_special_selectsetup extends admin_preset_setting_configselect{}
+class admin_preset_admin_setting_special_selectsetup extends admin_preset_admin_setting_configselect{}
 
-class admin_preset_setting_sitesetselect extends admin_preset_setting_configselect {}
+class admin_preset_admin_setting_sitesetselect extends admin_preset_admin_setting_configselect {}
 
 /**
  * Adds support for the "advanced" attribute
  */
-class admin_preset_setting_configselect_with_advanced extends admin_preset_setting_configselect {
+class admin_preset_admin_setting_configselect_with_advanced extends admin_preset_admin_setting_configselect {
 
     protected $advancedkey;
 
@@ -572,11 +602,25 @@ class admin_preset_setting_configselect_with_advanced extends admin_preset_setti
     }
 }
 
+class admin_preset_mod_quiz_admin_setting_browsersecurity extends admin_preset_admin_setting_configselect_with_advanced {
+
+    public function set_behaviors() {
+        $this->behaviors['loadchoices'] = & $this->settingdata;
+    }
+}
+
+class admin_preset_mod_quiz_admin_setting_grademethod extends admin_preset_admin_setting_configselect_with_advanced {
+
+    public function set_behaviors() {
+        $this->behaviors['loadchoices'] = & $this->settingdata;
+    }
+}
+
 
 /**
  * A select with force and advanced options
  */
-class admin_preset_setting_gradecat_combo extends admin_preset_setting_configselect {
+class admin_preset_admin_setting_gradecat_combo extends admin_preset_admin_setting_configselect {
 
     /**
      * One db value for two setting attributes
@@ -624,7 +668,7 @@ class admin_preset_setting_gradecat_combo extends admin_preset_setting_configsel
 /**
  * Extends the base class and lists the selected values separated by comma
  */
-class admin_preset_setting_configmultiselect extends admin_preset_setting {
+class admin_preset_admin_setting_configmultiselect extends admin_preset_setting {
 
     /**
      * Ensure that the $value values are setting choices
@@ -676,11 +720,13 @@ class admin_preset_setting_configmultiselect extends admin_preset_setting {
 /**
  * Extends configselect to reuse set_valuevisible
  */
-class admin_preset_setting_users_with_capability extends admin_preset_setting_configmultiselect {
+class admin_preset_admin_setting_users_with_capability extends admin_preset_admin_setting_configmultiselect {
+
+    protected function set_behaviors() {
+        $this->behaviors['loadchoices'] = & $this->settingdata;
+    }
 
     protected function set_value($value) {
-
-        $this->settingdata->load_choices();
 
         // Dirty hack (the value stored in the DB is '')
         $this->settingdata->choices[''] = $this->settingdata->choices['$@NONE@$'];
@@ -692,47 +738,35 @@ class admin_preset_setting_users_with_capability extends admin_preset_setting_co
 
 
 /**
- * A standard config multiselect with previous load_choices()
+ * Generalizes a configmultipleselect with load_choices()
+ * @abstract
  */
-abstract class admin_preset_setting_configmultiselect_with_loader extends admin_preset_setting_configmultiselect {
+abstract class admin_preset_admin_setting_configmultiselect_with_loader extends admin_preset_admin_setting_configmultiselect {
 
-    protected function set_value($value) {
-
-        $this->settingdata->load_choices();
-        return parent::set_value($value);
+    public function set_behaviors() {
+        $this->behaviors['loadchoices'] = & $this->settingdata;
     }
 }
 
-class admin_preset_setting_courselist_frontpage extends admin_preset_setting_configmultiselect_with_loader {}
+class admin_preset_admin_setting_courselist_frontpage extends admin_preset_admin_setting_configmultiselect_with_loader {}
 
-class admin_preset_setting_configmultiselect_modules extends admin_preset_setting_configmultiselect_with_loader {}
+class admin_preset_admin_setting_configmultiselect_modules extends admin_preset_admin_setting_configmultiselect_with_loader {}
 
-/**
- * A standard config select with a previous load_choices()
- */
-abstract class admin_presets_setting_configselect_with_loader extends admin_preset_setting_configselect {
+class admin_preset_admin_settings_country_select extends admin_preset_admin_setting_configmultiselect_with_loader {}
 
-    protected function set_value($value) {
-        $this->settingdata->load_choices();
-        return parent::set_value($value);
-    }
-}
+class admin_preset_admin_setting_special_registerauth extends admin_preset_admin_setting_configmultiselect_with_loader {}
 
-class admin_preset_settings_country_select extends admin_presets_setting_configselect_with_loader {}
+class admin_preset_admin_setting_special_debug extends admin_preset_admin_setting_configmultiselect_with_loader {}
 
-class admin_preset_setting_special_registerauth extends admin_presets_setting_configselect_with_loader {}
+class admin_preset_admin_settings_coursecat_select extends admin_preset_admin_setting_configmultiselect_with_loader {}
 
-class admin_preset_setting_special_debug extends admin_presets_setting_configselect_with_loader {}
+class admin_preset_admin_setting_grade_profilereport extends admin_preset_admin_setting_configmultiselect_with_loader {}
 
-class admin_preset_settings_coursecat_select extends admin_presets_setting_configselect_with_loader {}
+class admin_preset_admin_settings_num_course_sections extends admin_preset_admin_setting_configmultiselect_with_loader {}
 
-class admin_preset_setting_grade_profilereport extends admin_presets_setting_configselect_with_loader {}
+class admin_preset_admin_setting_question_behaviour extends admin_preset_admin_setting_configmultiselect_with_loader {}
 
-class admin_preset_settings_num_course_sections extends admin_presets_setting_configselect_with_loader {}
-
-class admin_preset_setting_question_behaviour extends admin_presets_setting_configselect_with_loader {}
-
-class admin_preset_setting_configtime extends admin_preset_setting {
+class admin_preset_admin_setting_configtime extends admin_preset_setting {
 
     protected function set_value($value) {
 
@@ -777,7 +811,7 @@ class admin_preset_setting_configtime extends admin_preset_setting {
 /////////////////////////// CHECKBOXES /////////////////////////
 
 
-class admin_preset_setting_configcheckbox extends admin_preset_setting {
+class admin_preset_admin_setting_configcheckbox extends admin_preset_setting {
 
 
     protected function set_value($value) {
@@ -799,7 +833,7 @@ class admin_preset_setting_configcheckbox extends admin_preset_setting {
 }
 
 
-class admin_preset_setting_configcheckbox_with_advanced extends admin_preset_setting_configcheckbox {
+class admin_preset_admin_setting_configcheckbox_with_advanced extends admin_preset_admin_setting_configcheckbox {
 
 
     public function __construct(admin_setting $settingdata, $dbsettingvalue) {
@@ -821,7 +855,7 @@ class admin_preset_setting_configcheckbox_with_advanced extends admin_preset_set
 }
 
 
-class admin_preset_setting_configcheckbox_with_lock extends admin_preset_setting_configcheckbox {
+class admin_preset_admin_setting_configcheckbox_with_lock extends admin_preset_admin_setting_configcheckbox {
 
     public function __construct(admin_setting $settingdata, $dbsettingvalue) {
 
@@ -842,35 +876,43 @@ class admin_preset_setting_configcheckbox_with_lock extends admin_preset_setting
 }
 
 
-class admin_preset_setting_sitesetcheckbox extends admin_preset_setting_configcheckbox {}
+class admin_preset_admin_setting_sitesetcheckbox extends admin_preset_admin_setting_configcheckbox {}
 
-class admin_preset_setting_special_adminseesall extends admin_preset_setting_configcheckbox {}
+class admin_preset_admin_setting_special_adminseesall extends admin_preset_admin_setting_configcheckbox {}
 
-class admin_preset_setting_regradingcheckbox extends admin_preset_setting_configcheckbox {}
+class admin_preset_admin_setting_regradingcheckbox extends admin_preset_admin_setting_configcheckbox {}
 
-class admin_preset_setting_special_gradelimiting extends admin_preset_setting_configcheckbox {}
+class admin_preset_admin_setting_special_gradelimiting extends admin_preset_admin_setting_configcheckbox {}
 
 
 /**
  * Abstract class to be extended by multicheckbox settings
  *
- * Now it's a useless class, child classes could extend admin_preset_setting_configmultiselect_with_loader
+ * Now it's a useless class, child classes could extend admin_preset_admin_setting_configmultiselect
  *
  * @abstract
  */
-class admin_preset_setting_configmulticheckbox extends admin_preset_setting_configmultiselect_with_loader {}
+class admin_preset_admin_setting_configmulticheckbox extends admin_preset_admin_setting_configmultiselect {
 
-class admin_preset_setting_pickroles extends admin_preset_setting_configmulticheckbox {}
+    public function set_behaviors() {
+        $this->behaviors['loadchoices'] = & $this->settingdata;
+    }
+}
 
-class admin_preset_setting_special_coursemanager extends admin_preset_setting_configmulticheckbox {}
+class admin_preset_admin_setting_pickroles extends admin_preset_admin_setting_configmulticheckbox {}
 
-class admin_preset_setting_special_coursecontact extends admin_preset_setting_configmulticheckbox {}
+class admin_preset_admin_setting_special_coursemanager extends admin_preset_admin_setting_configmulticheckbox {}
 
-class admin_preset_setting_special_gradebookroles extends admin_preset_setting_configmulticheckbox {}
+class admin_preset_admin_setting_special_coursecontact extends admin_preset_admin_setting_configmulticheckbox {}
 
-class admin_preset_setting_special_gradeexport extends admin_preset_setting_configmulticheckbox {}
+class admin_preset_admin_setting_special_gradebookroles extends admin_preset_admin_setting_configmulticheckbox {}
 
-class admin_preset_setting_special_backupdays extends admin_preset_setting {
+class admin_preset_admin_setting_special_gradeexport extends admin_preset_admin_setting_configmulticheckbox {}
+
+/**
+ * It doesn't specify loadchoices behavior because is set_visiblevalue who needs it
+ */
+class admin_preset_admin_setting_special_backupdays extends admin_preset_setting {
 
 
     protected function set_value($value) {
@@ -879,8 +921,10 @@ class admin_preset_setting_special_backupdays extends admin_preset_setting {
 
     protected function set_visiblevalue() {
 
-        $days = array('sunday', 'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday');
+        // TODO Try to use $this->behaviors
         $this->settingdata->load_choices();
+
+        $days = array('sunday', 'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday');
 
         $selecteddays = array();
 
@@ -900,7 +944,7 @@ class admin_preset_setting_special_backupdays extends admin_preset_setting {
 /////////////////////////////// OTHERS /////////////////////////////
 
 
-class admin_preset_setting_special_calendar_weekend extends admin_preset_setting {
+class admin_preset_admin_setting_special_calendar_weekend extends admin_preset_setting {
 
     protected function set_visiblevalue() {
 
@@ -916,7 +960,7 @@ class admin_preset_setting_special_calendar_weekend extends admin_preset_setting
 }
 
 
-class admin_preset_setting_quiz_reviewoptions extends admin_preset_setting {
+class admin_preset_admin_setting_quiz_reviewoptions extends admin_preset_setting {
 
     // admin_setting_quiz_reviewoptions vars can't be accessed
     private static $times = array(
@@ -951,8 +995,8 @@ class admin_preset_setting_quiz_reviewoptions extends admin_preset_setting {
 
         $marked = array();
 
-        foreach (admin_preset_setting_quiz_reviewoptions::$times as $timemask => $time) {
-            foreach (admin_preset_setting_quiz_reviewoptions::$things as $typemask => $type) {
+        foreach (admin_preset_admin_setting_quiz_reviewoptions::$times as $timemask => $time) {
+            foreach (admin_preset_admin_setting_quiz_reviewoptions::$things as $typemask => $type) {
                 if ($this->value & $timemask & $typemask) {
                     $marked[$time][] = get_string($type, "quiz");
                 }
@@ -975,14 +1019,14 @@ class admin_preset_setting_quiz_reviewoptions extends admin_preset_setting {
 
 }
 
-//class admin_preset_setting_manageauths extends admin_preset_setting {}
-//class admin_preset_setting_manageenrols extends admin_preset_setting {}
-//class admin_preset_setting_manageeditors extends admin_preset_setting {}
-//class admin_preset_setting_managelicenses extends admin_preset_setting {}
-//class admin_preset_setting_manageportfolio extends admin_preset_setting {}
-//class admin_preset_setting_managerepository extends admin_preset_setting {}
-//class admin_preset_setting_webservicesoverview extends admin_preset_setting {}
-//class admin_preset_setting_manageexternalservices extends admin_preset_setting {}
-//class admin_preset_setting_managewebserviceprotocols extends admin_preset_setting {}
-//class admin_preset_setting_managewebservicetokens extends admin_preset_setting {}
-//class admin_preset_setting_manageplagiarism extends admin_preset_setting {}
+//class admin_preset_admin_setting_manageauths extends admin_preset_setting {}
+//class admin_preset_admin_setting_manageenrols extends admin_preset_setting {}
+//class admin_preset_admin_setting_manageeditors extends admin_preset_setting {}
+//class admin_preset_admin_setting_managelicenses extends admin_preset_setting {}
+//class admin_preset_admin_setting_manageportfolio extends admin_preset_setting {}
+//class admin_preset_admin_setting_managerepository extends admin_preset_setting {}
+//class admin_preset_admin_setting_webservicesoverview extends admin_preset_setting {}
+//class admin_preset_admin_setting_manageexternalservices extends admin_preset_setting {}
+//class admin_preset_admin_setting_managewebserviceprotocols extends admin_preset_setting {}
+//class admin_preset_admin_setting_managewebservicetokens extends admin_preset_setting {}
+//class admin_preset_admin_setting_manageplagiarism extends admin_preset_setting {}

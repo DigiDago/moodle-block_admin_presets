@@ -40,7 +40,7 @@ class admin_presets_base {
 
         // DB - XML relations
         $this->rel = array('name' => 'NAME', 'comments' => 'COMMENTS',
-                           'timecreated' => 'PRESET_DATE', 'site' => 'SITE_URL', 'author' => 'AUTHOR', 
+                           'timecreated' => 'PRESET_DATE', 'site' => 'SITE_URL', 'author' => 'AUTHOR',
                            'moodleversion' => 'MOODLE_VERSION', 'moodlerelease' => 'MOODLE_RELEASE');
 
         // Sensible settings
@@ -67,7 +67,7 @@ class admin_presets_base {
 
             // Initialize table
             $table = $this->_create_preset_data_table();
-            
+
             foreach ($presets as $preset) {
 
                 // Preset actions
@@ -324,7 +324,7 @@ class admin_presets_base {
                         if (!$setting = $this->_get_setting($values, $settingvalue)) {
 
                             if (get_class($values) != 'admin_setting_heading') {
-                                //debugging('admin_presets_'.get_class($values).' class must be implemented');
+                                debugging(get_class($values).' class must be implemented');
                             }
                             continue;
                         }
@@ -387,14 +387,14 @@ class admin_presets_base {
     protected function _get_settings_branches($settings) {
 
     	global $PAGE;
-    	
+
         // Nodes should be added in hierarchical order
         $nodes = array('categories' => array(), 'pages' => array(), 'settings' => array());
         $nodes = $this->_get_settings_elements($settings, false, false, $nodes);
 
         $PAGE->requires->js_init_call('M.block_admin_presets.init', null, true);
-        
-        $levels = array('categories', 'pages', 'settings'); 
+
+        $levels = array('categories', 'pages', 'settings');
         foreach ($levels as $level) {
 	        foreach ($nodes[$level] as $data) {
 	        	$ids[] = $data[0];
@@ -405,7 +405,7 @@ class admin_presets_base {
 	        }
         }
         $PAGE->requires->js_init_call('M.block_admin_presets.addNodes', array($ids, $nodes, $labels, $descriptions, $parents), true);
-        
+
         $PAGE->requires->js_init_call('M.block_admin_presets.render', null, true);
     }
 
@@ -514,7 +514,7 @@ class admin_presets_base {
         $settingtype = get_class($settingdata);
 
         // Skipping admin_*
-        $classname = 'admin_preset_'.substr($settingtype, 6);
+        $classname = 'admin_preset_' . $settingtype;
 
         // TODO: Implement all the settings types
         if (!class_exists($classname)) {
@@ -572,21 +572,21 @@ class admin_presets_base {
 
         $this->outputs .= html_writer::table($appliedtable);
     }
-    
-    
+
+
     /**
      * Table to display preset/s data
-     * 
+     *
      * @param boolean $actionstable If is set to true adds a column to display actions
      * @return html_table
      */
     protected function _create_preset_data_table($actionstable = true) {
-     
+
         $table = new html_table();
         $table->attributes['class'] = 'generaltable boxaligncenter admin_presets_table';
         $table->align = array('left', 'left', 'center', 'left', 'left', 'center', 'center');
         $table->head  = array(get_string('name'), get_string('description'), get_string('presetmoodlerelease', 'block_admin_presets'),
-            get_string('author', 'block_admin_presets'), get_string('site', 'block_admin_presets'), 
+            get_string('author', 'block_admin_presets'), get_string('site', 'block_admin_presets'),
             get_string('created', 'block_admin_presets'), get_string('imported', 'block_admin_presets'));
 
 
@@ -597,14 +597,14 @@ class admin_presets_base {
         } else {
         	$table->size = array('17%', '20%', '13%', '12%', '18%', '10%', '10%');
         }
-        
+
         return $table;
     }
-    
-    
+
+
     /**
      * Returns a table with the preset data
-     * 
+     *
      * @param object $preset
      * @return string|string
      */
@@ -613,7 +613,7 @@ class admin_presets_base {
     	if (!$preset) {
     		return '';
     	}
-    	
+
         if ($preset->timeimported) {
             $timeimportedstring = userdate($preset->timeimported);
         } else {
