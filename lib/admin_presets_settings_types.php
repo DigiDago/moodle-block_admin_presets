@@ -960,9 +960,12 @@ class admin_preset_admin_setting_special_calendar_weekend extends admin_preset_s
 }
 
 
+/**
+ * Backward compatibility for Moodle 2.0
+ */
 class admin_preset_admin_setting_quiz_reviewoptions extends admin_preset_setting {
 
-    // admin_setting_quiz_reviewoptions vars can't be accessed
+    // Caution VENOM! admin_setting_quiz_reviewoptions vars can't be accessed
     private static $times = array(
             QUIZ_REVIEW_IMMEDIATELY => 'reviewimmediately',
             QUIZ_REVIEW_OPEN => 'reviewopen',
@@ -1018,6 +1021,52 @@ class admin_preset_admin_setting_quiz_reviewoptions extends admin_preset_setting
     }
 
 }
+
+
+/**
+ * Compatible with moodle 2.1 onwards (20120314)
+ */
+class admin_preset_mod_quiz_admin_review_setting extends admin_preset_setting {
+
+    /**
+     * The setting value is a sum of 'mod_quiz_admin_review_setting::times'
+     */
+    protected function set_visiblevalue() {
+
+        // Getting the masks descriptions (mod_quiz_admin_review_setting protected method)
+        $reflectiontimes = new ReflectionMethod('mod_quiz_admin_review_setting', 'times');
+        $reflectiontimes->setAccessible(true);
+        $times = $reflectiontimes->invoke(null);
+
+        $visiblevalue = '';
+        foreach ($times as $timemask => $namestring) {
+
+            // If the value is checked
+            if ($this->value & $timemask) {
+                $visiblevalue .= $namestring.', ';
+            }
+        }
+        $visiblevalue = rtrim($visiblevalue, ', ');
+
+        $this->visiblevalue = $visiblevalue;
+    }
+
+
+    /**
+     * Overwrite to add the reviewoptions text
+     */
+    public function set_text() {
+
+        $this->set_visiblevalue();
+
+        $name = get_string('reviewoptionsheading', 'quiz') . ': ' . $this->settingdata->visiblename;
+        $namediv = '<div class="admin_presets_tree_name">'.$name.'</div>';
+        $valuediv = '<div class="admin_presets_tree_value">'.$this->visiblevalue.'</div>';
+
+        $this->text = $namediv.$valuediv.'<br/>';
+    }
+}
+
 
 //class admin_preset_admin_setting_manageauths extends admin_preset_setting {}
 //class admin_preset_admin_setting_manageenrols extends admin_preset_setting {}
