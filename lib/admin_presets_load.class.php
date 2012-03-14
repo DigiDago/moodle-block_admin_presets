@@ -33,11 +33,11 @@ class admin_presets_load extends admin_presets_base {
         $data->id = $this->id;
 
         // Preset data
-        if (!$preset = $DB->get_record('admin_preset', array('id' => $data->id))) {
+        if (!$preset = $DB->get_record('block_admin_presets', array('id' => $data->id))) {
             print_error('errornopreset', 'block_admin_presets');
         }
 
-        if (!$items = $DB->get_records('admin_preset_item', array('adminpresetid' => $data->id))) {
+        if (!$items = $DB->get_records('block_admin_presets_it', array('adminpresetid' => $data->id))) {
             print_error('errornopreset', 'block_admin_presets');
         }
 
@@ -117,7 +117,7 @@ class admin_presets_load extends admin_presets_base {
 
 
             // Get preset settings
-            if (!$items = $DB->get_records('admin_preset_item', array('adminpresetid' => $this->id))) {
+            if (!$items = $DB->get_records('block_admin_presets_it', array('adminpresetid' => $this->id))) {
                 print_error('errornopreset', 'block_admin_presets');
             }
             $presetdbsettings = $this->_get_settings_from_db($items);
@@ -183,7 +183,7 @@ class admin_presets_load extends admin_presets_base {
                             $presetapplied->adminpresetid = $this->id;
                             $presetapplied->userid = $USER->id;
                             $presetapplied->time = time();
-                            if (!$applieditem->adminpresetapplyid = $DB->insert_record('admin_preset_apply', $presetapplied)) {
+                            if (!$applieditem->adminpresetapplyid = $DB->insert_record('block_admin_presets_app', $presetapplied)) {
                                 print_error('errorinserting', 'block_admin_presets');
                             }
                         }
@@ -192,7 +192,7 @@ class admin_presets_load extends admin_presets_base {
                         // method of admin_setting class does not
                         // return the config_log inserted id
                         if ($applieditem->configlogid = $presetsetting->save_value()) {
-                            $DB->insert_record('admin_preset_apply_item', $applieditem);
+                            $DB->insert_record('block_admin_presets_app_it', $applieditem);
                         }
 
                         // For settings with multiple values
@@ -201,7 +201,7 @@ class admin_presets_load extends admin_presets_base {
                                 $applieditemattr->adminpresetapplyid = $applieditem->adminpresetapplyid;
                                 $applieditemattr->configlogid = $attributelogid;
                                 $applieditemattr->itemname = $presetsetting->get_settingdata()->name;
-                                $DB->insert_record('admin_preset_apply_item_attr', $applieditemattr);
+                                $DB->insert_record('block_admin_presets_app_it_a', $applieditemattr);
                             }
                         }
 

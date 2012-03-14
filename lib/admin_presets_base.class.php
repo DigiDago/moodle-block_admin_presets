@@ -59,7 +59,7 @@ class admin_presets_base {
 
         global $CFG, $DB, $OUTPUT;
 
-        $presets = $DB->get_records('admin_preset');
+        $presets = $DB->get_records('block_admin_presets');
 
         $this->outputs = '';
 
@@ -84,7 +84,7 @@ class admin_presets_base {
                 $actions[] = html_writer::link($deletelink, strtolower(get_string("delete")));
 
                 // Look for preset applications
-                if ($DB->get_records('admin_preset_apply', array('adminpresetid' => $preset->id))) {
+                if ($DB->get_records('block_admin_presets_app', array('adminpresetid' => $preset->id))) {
                     $actions[] = html_writer::link($rollbacklink, get_string("rollback", "block_admin_presets"));
                 }
 
@@ -336,7 +336,7 @@ class admin_presets_base {
                             // Look for settings attributes if it is a presets
                             if (!$sitedbvalues) {
                                 $itemid = $dbsettings[$values->plugin][$settingname]->itemid;
-                                $attrs = $DB->get_records('admin_preset_item_attr', array('itemid' => $itemid), '', 'name, value');
+                                $attrs = $DB->get_records('block_admin_presets_it_a', array('itemid' => $itemid), '', 'name, value');
                             }
                             foreach ($attributes as $defaultvarname => $varname) {
 

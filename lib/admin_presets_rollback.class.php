@@ -26,10 +26,10 @@ class admin_presets_rollback extends admin_presets_base {
         $table->align = array('left', 'center', 'left');
 
         // Preset data
-        $preset = $DB->get_record('admin_preset', array('id' => $this->id));
+        $preset = $DB->get_record('block_admin_presets', array('id' => $this->id));
 
         // Applications data
-        $applications = $DB->get_records('admin_preset_apply', array('adminpresetid' => $this->id));
+        $applications = $DB->get_records('block_admin_presets_app', array('adminpresetid' => $this->id));
         if (!$applications) {
             print_error('notpreviouslyapplied', 'block_admin_presets');
         }
@@ -73,14 +73,14 @@ class admin_presets_rollback extends admin_presets_base {
         $rollback = array();
         $failures = array();
 
-        if (!$DB->get_record('admin_preset_apply', array('id' => $this->id))) {
+        if (!$DB->get_record('block_admin_presets_app', array('id' => $this->id))) {
             print_error('wrongid', 'block_admin_presets');
         }
 
         // Items
         $itemsql = "SELECT cl.id, cl.plugin, cl.name, cl.value, cl.oldvalue, ap.adminpresetapplyid
-                    FROM {$CFG->prefix}admin_preset_apply_item ap
-                    JOIN {$CFG->prefix}config_log cl ON cl.id = ap.configlogid
+                    FROM {block_admin_presets_app_it} ap
+                    JOIN {config_log} cl ON cl.id = ap.configlogid
                     WHERE ap.adminpresetapplyid = {$this->id}";
         $itemchanges = $DB->get_records_sql($itemsql);
         if ($itemchanges) {
@@ -113,7 +113,7 @@ class admin_presets_rollback extends admin_presets_base {
                         // Deleting the admin_preset_apply_item instance
                         $deletewhere = array('adminpresetapplyid' => $change->adminpresetapplyid,
                             'configlogid' => $change->id);
-                        $DB->delete_records('admin_preset_apply_item', $deletewhere);
+                        $DB->delete_records('block_admin_presets_app_it', $deletewhere);
 
                     } else {
 
@@ -130,8 +130,8 @@ class admin_presets_rollback extends admin_presets_base {
 
         // Attributes
         $attrsql = "SELECT cl.id, cl.plugin, cl.name, cl.value, cl.oldvalue, ap.itemname, ap.adminpresetapplyid
-                    FROM {$CFG->prefix}admin_preset_apply_item_attr ap
-                    JOIN {$CFG->prefix}config_log cl ON cl.id = ap.configlogid
+                    FROM {block_admin_presets_app_it_a} ap
+                    JOIN {config_log} cl ON cl.id = ap.configlogid
                     WHERE ap.adminpresetapplyid = {$this->id}";
         $attrchanges = $DB->get_records_sql($attrsql);
         if ($attrchanges) {
@@ -169,7 +169,7 @@ class admin_presets_rollback extends admin_presets_base {
                         // Deleting the admin_preset_apply_item_attr instance
                         $deletewhere = array('adminpresetapplyid' => $change->adminpresetapplyid,
                             'configlogid' => $change->id);
-                        $DB->delete_records('admin_preset_apply_item_attr', $deletewhere);
+                        $DB->delete_records('block_admin_presets_app_it_a', $deletewhere);
 
                     } else {
 
@@ -184,10 +184,10 @@ class admin_presets_rollback extends admin_presets_base {
         }
 
         // Delete application if no items nor attributes of the application remains
-        if (!$DB->get_record('admin_preset_apply_item', array('adminpresetapplyid' => $this->id)) &&
-            !$DB->get_records('admin_preset_apply_item_attr', array('adminpresetapplyid' => $this->id))) {
+        if (!$DB->get_record('block_admin_presets_app_it', array('adminpresetapplyid' => $this->id)) &&
+            !$DB->get_records('block_admin_presets_app_it_a', array('adminpresetapplyid' => $this->id))) {
 
-            $DB->delete_records('admin_preset_apply', array('id' => $this->id));
+            $DB->delete_records('block_admin_presets_app', array('id' => $this->id));
         }
 
         // Display the rollback changes

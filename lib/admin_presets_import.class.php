@@ -64,7 +64,7 @@ class admin_presets_import extends admin_presets_base {
             }
 
             // Inserting preset
-            if (!$preset->id = $DB->insert_record('admin_preset', $preset)) {
+            if (!$preset->id = $DB->insert_record('block_admin_presets', $preset)) {
                 print_error('errorinserting', 'block_admin_presets');
             }
 
@@ -114,7 +114,7 @@ class admin_presets_import extends admin_presets_base {
                         $item->value = $presetsetting->get_value();
 
                         // Inserting items
-                        if (!$item->id = $DB->insert_record('admin_preset_item', $item)) {
+                        if (!$item->id = $DB->insert_record('block_admin_presets_it', $item)) {
                             print_error('errorinserting', 'block_admin_presets');
                         }
 
@@ -136,7 +136,7 @@ class admin_presets_import extends admin_presets_base {
                                 $attr->itemid = $item->id;
                                 $attr->name = $attrname;
                                 $attr->value = intval($attrvalue);
-                                $DB->insert_record('admin_preset_item_attr', $attr);
+                                $DB->insert_record('block_admin_presets_it_a', $attr);
                             }
                         }
 
@@ -146,7 +146,7 @@ class admin_presets_import extends admin_presets_base {
 
             // If there are no valid or selected settings we should delete the admin preset record
             if (empty($settingsfound)) {
-                $DB->delete_records('admin_preset', array('id' => $preset->id));
+                $DB->delete_records('block_admin_presets', array('id' => $preset->id));
                 redirect($CFG->wwwroot.'/blocks/admin_presets/index.php?action=import', get_string('novalidsettings', 'block_admin_presets'), 4);
             }
 
