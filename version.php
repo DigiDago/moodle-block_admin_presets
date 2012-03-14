@@ -1,8 +1,8 @@
 <?php
 
-$module->version = 2012031400;
-$module->release = '1.0(Build: 2012031400)';
+$plugin->version = 2012031401;
+$plugin->release = '1.0(Build: 2012031401)';
 
-$module->requires = 2010091500;
-$module->cron     = 0;
-$module->maturity = MATURITY_STABLE;
+$plugin->requires = 2010091500;
+$plugin->cron     = 0;
+$plugin->maturity = MATURITY_STABLE;
