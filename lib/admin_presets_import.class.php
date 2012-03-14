@@ -62,7 +62,7 @@ class admin_presets_import extends admin_presets_base {
             if ($data->name != '') {
                 $preset->name = $data->name;
             }
-        
+
             // Inserting preset
             if (!$preset->id = $DB->insert_record('admin_preset', $preset)) {
                 print_error('errorinserting', 'block_admin_presets');
@@ -84,7 +84,7 @@ class admin_presets_import extends admin_presets_base {
                     foreach ($pluginsettings as $name => $setting) {
 
                         unset($item);
-                        
+
                         $name = strtolower($name);
                         $xmlsetting = (Array)$setting;
 
@@ -107,24 +107,24 @@ class admin_presets_import extends admin_presets_base {
                         }
 
                         $settingsfound = true;
-                        
+
                         $item->adminpresetid = $preset->id;
                         $item->plugin = $plugin;
                         $item->name = $name;
                         $item->value = $presetsetting->get_value();
-                        
+
                         // Inserting items
                         if (!$item->id = $DB->insert_record('admin_preset_item', $item)) {
                             print_error('errorinserting', 'block_admin_presets');
                         }
-                        
+
                         // Adding settings attributes
                         if (isset($xmlsetting['@attributes']) && ($itemattributes = $presetsetting->get_attributes())) {
 
                             foreach ($xmlsetting['@attributes'] as $attrname => $attrvalue) {
 
                                 unset($attr);
-                                
+
                                 $itemattributenames = array_flip($itemattributes);
 
                                 // Check the attribute existence

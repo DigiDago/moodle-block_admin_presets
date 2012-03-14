@@ -71,7 +71,7 @@ class admin_presets_load extends admin_presets_base {
 
         // Print preset basic data
         $this->outputs .= $this->_html_writer_preset_info_table($preset);
-        
+
         // Display not applicable settings
         if (!empty($notapplicable)) {
 

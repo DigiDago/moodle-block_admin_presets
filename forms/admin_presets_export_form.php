@@ -24,7 +24,7 @@ class admin_presets_export_form extends moodleform {
         $mform->addElement('text', 'author', get_string('author', 'block_admin_presets'), 'maxlength="254" size="60"');
         $mform->setType('author', PARAM_TEXT);
         $mform->setDefault('author', $USER->firstname.' '.$USER->lastname);
-        
+
         $mform->addElement('checkbox', 'excludesensiblesettings', get_string('autohidesensiblesettings', 'block_admin_presets'));
 
         // Moodle settings table

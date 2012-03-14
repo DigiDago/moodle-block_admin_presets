@@ -73,7 +73,7 @@ class admin_presets_export extends admin_presets_base {
             if (!$preset->id = $DB->insert_record('admin_preset', $preset)) {
                 print_error('errorinserting', 'block_admin_presets');
             }
-            
+
             // We must ensure that there are settings selected
             $presetsettings = array();
             foreach ($_POST as $varname => $value) {
@@ -83,7 +83,7 @@ class admin_presets_export extends admin_presets_base {
                 if (strstr($varname, '@@') != false) {
 
                     $settingsfound = true;
-                    
+
                     // Avoid sensible data
                     if (!empty($data->excludesensiblesettings) && !empty($this->sensiblesettings[$varname])) {
                         continue;
@@ -94,17 +94,17 @@ class admin_presets_export extends admin_presets_base {
                     $setting->plugin = $name[1];
                     $setting->name = $name[0];
                     $setting->value = $sitesettings[$setting->plugin][$setting->name]->get_value();
-                    
+
                     if (!$setting->id = $DB->insert_record('admin_preset_item', $setting)) {
                         print_error('errorinserting', 'block_admin_presets');
                     }
-                    
+
                     // Setting attributes must also be exported
                     if ($attributes = $sitesettings[$setting->plugin][$setting->name]->get_attributes_values()) {
                         foreach ($attributes as $attributename => $value) {
 
                             unset($attr);
-                            
+
                             $attr->itemid = $setting->id;
                             $attr->name = $attributename;
                             $attr->value = $value;
@@ -207,9 +207,9 @@ class admin_presets_export extends admin_presets_base {
 
         // End
         $xmlwriter->end_tag('PRESET');
-        
+
         $xmlwriter->stop();
-        
+
         $xmlstr = $xmloutput->get_allcontents();
 
         $filename = addcslashes($preset->name, '"').'.xml';

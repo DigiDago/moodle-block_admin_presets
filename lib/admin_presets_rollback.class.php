@@ -49,7 +49,7 @@ class admin_presets_rollback extends admin_presets_base {
                                   );
         }
 
-        
+
         $this->outputs .= '<br/>'.$OUTPUT->heading(get_string("presetname", "block_admin_presets").': '.$preset->name, 3);
         $this->outputs .= html_writer::table($table);
     }
