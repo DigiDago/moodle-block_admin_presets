@@ -34,14 +34,14 @@ M.block_admin_presets = {
 
             var settingId = ids[i];
             var nodeId = nodeids[i];
-            var label = labels[i];
-            var description = descriptions[i];
+            var label = '&nbsp;' + decodeURIComponent(labels[i]);
+            var description = decodeURIComponent(descriptions[i]);
             var parent = parents[i];
     
-            var newNode = new YAHOO.widget.TextNode(decodeURIComponent(label), context.nodes[parent]);
+            var newNode = new YAHOO.widget.HTMLNode(label, context.nodes[parent]);
             
             newNode.settingId = settingId;
-            newNode.setNodesProperty('title', decodeURIComponent(description));
+            newNode.setNodesProperty('title', description);
             newNode.highlightState = 1;
     
             context.nodes[nodeId] = newNode;
