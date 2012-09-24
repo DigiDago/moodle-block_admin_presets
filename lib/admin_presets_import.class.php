@@ -42,7 +42,7 @@ class admin_presets_import extends admin_presets_base {
 
         if ($data = $this->moodleform->get_data()) {
 
-            $usercontext = get_context_instance(CONTEXT_USER, $USER->id);
+            $usercontext = context_user::instance($USER->id);
 
             // Getting the file
             $xmlcontent = $this->moodleform->get_file_content('xmlfile');
@@ -52,6 +52,7 @@ class admin_presets_import extends admin_presets_base {
             }
 
             // Preset info
+            $preset = new StdClass();
             foreach ($this->rel as $dbname => $xmlname) {
                 $preset->$dbname = (String)$xml->$xmlname;
             }
@@ -108,6 +109,7 @@ class admin_presets_import extends admin_presets_base {
 
                         $settingsfound = true;
 
+                        $item = new StdClass();
                         $item->adminpresetid = $preset->id;
                         $item->plugin = $plugin;
                         $item->name = $name;
@@ -133,6 +135,7 @@ class admin_presets_import extends admin_presets_base {
                                     continue;
                                 }
 
+                                $attr = new StdClass();
                                 $attr->itemid = $item->id;
                                 $attr->name = $attrname;
                                 $attr->value = intval($attrvalue);

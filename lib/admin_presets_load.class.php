@@ -30,6 +30,7 @@ class admin_presets_load extends admin_presets_base {
 
         global $CFG, $DB, $PAGE, $OUTPUT;
 
+        $data = new StdClass();
         $data->id = $this->id;
 
         // Preset data
@@ -180,6 +181,7 @@ class admin_presets_load extends admin_presets_base {
                         // The preset application it's only saved when values differences are found
                         if (empty($applieditem)) {
                             // Save the preset application and store the preset applied id
+                            $presetapplied = new StdClass();
                             $presetapplied->adminpresetid = $this->id;
                             $presetapplied->userid = $USER->id;
                             $presetapplied->time = time();
@@ -198,6 +200,7 @@ class admin_presets_load extends admin_presets_base {
                         // For settings with multiple values
                         if ($attributeslogids = $presetsetting->save_attributes_values()) {
                             foreach ($attributeslogids as $attributelogid) {
+                                $applieditemattr = new StdClass();
                                 $applieditemattr->adminpresetapplyid = $applieditem->adminpresetapplyid;
                                 $applieditemattr->configlogid = $attributelogid;
                                 $applieditemattr->itemname = $presetsetting->get_settingdata()->name;
@@ -206,6 +209,7 @@ class admin_presets_load extends admin_presets_base {
                         }
 
                         // Added to changed values
+                        $appliedchanges[$varname] = new StdClass();
                         $appliedchanges[$varname]->plugin = $presetsetting->get_settingdata()->plugin;
                         $appliedchanges[$varname]->visiblename = $presetsetting->get_settingdata()->visiblename;
                         $appliedchanges[$varname]->oldvisiblevalue = $sitesetting->get_visiblevalue();

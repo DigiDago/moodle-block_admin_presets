@@ -218,6 +218,7 @@ class admin_presets_base {
         // adding site settings in course table
         $frontpagevalues = $DB->get_record_select('course', 'id = 1', array(), 'fullname, shortname, summary');
         foreach ($frontpagevalues as $field => $value) {
+            $dbconfig[$field] = new StdClass();
             $dbconfig[$field]->name = $field;
             $dbconfig[$field]->value = $value;
         }
@@ -226,6 +227,7 @@ class admin_presets_base {
         // Config plugins
         $configplugins = $DB->get_records('config_plugins');
         foreach ($configplugins as $configplugin) {
+            $sitedbsettings[$configplugin->plugin][$configplugin->name] = new StdClass();
             $sitedbsettings[$configplugin->plugin][$configplugin->name]->name = $configplugin->name;
             $sitedbsettings[$configplugin->plugin][$configplugin->name]->value = $configplugin->value;
         }
@@ -261,7 +263,7 @@ class admin_presets_base {
 
         // If there are no children, load admin tree and iterate through
         if (!$children) {
-            $this->adminroot = & admin_get_root(false, true);
+            $this->adminroot = admin_get_root(false, true);
             $children = $this->adminroot->children;
         }
 
@@ -424,12 +426,12 @@ class admin_presets_base {
         global $CFG;
 
         if (empty($this->adminroot)) {
-            $this->adminroot = & admin_get_root(false, true);
+            $this->adminroot = admin_get_root(false, true);
         }
 
         // If there are no children, load admin tree and iterate through
         if (!$admintree) {
-            $this->adminroot = & admin_get_root(false, true);
+            $this->adminroot = admin_get_root(false, true);
             $admintree = $this->adminroot->children;
         }
 
@@ -543,6 +545,7 @@ class admin_presets_base {
 
         $settings = array();
         foreach ($dbsettings as $dbsetting) {
+            $settings[$dbsetting->plugin][$dbsetting->name] = new StdClass();
             $settings[$dbsetting->plugin][$dbsetting->name]->itemid = $dbsetting->id;
             $settings[$dbsetting->plugin][$dbsetting->name]->name = $dbsetting->name;
             $settings[$dbsetting->plugin][$dbsetting->name]->value = $dbsetting->value;

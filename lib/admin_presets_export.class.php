@@ -39,7 +39,7 @@ class admin_presets_export extends admin_presets_base {
         $this->_get_settings_branches($settings);
 
         $url = $CFG->wwwroot.'/blocks/admin_presets/index.php?action=export&mode=execute';
-        $this->moodleform = & new admin_presets_export_form($url);
+        $this->moodleform = new admin_presets_export_form($url);
     }
 
 
@@ -53,7 +53,7 @@ class admin_presets_export extends admin_presets_base {
         confirm_sesskey();
 
         $url = $CFG->wwwroot.'/blocks/admin_presets/index.php?action=export&mode=execute';
-        $this->moodleform = & new admin_presets_export_form($url);
+        $this->moodleform = new admin_presets_export_form($url);
 
         // Reload site settings
         $sitesettings = $this->_get_site_settings();
@@ -61,6 +61,7 @@ class admin_presets_export extends admin_presets_base {
         if ($data = $this->moodleform->get_data()) {
 
             // admin_preset record
+            $preset = new StdClass();
             $preset->userid = $USER->id;
             $preset->name = $data->name;
             $preset->comments = $data->comments;
@@ -90,6 +91,7 @@ class admin_presets_export extends admin_presets_base {
                     }
 
                     $name = explode('@@', $varname);
+                    $setting = new StdClass();
                     $setting->adminpresetid = $preset->id;
                     $setting->plugin = $name[1];
                     $setting->name = $name[0];
@@ -103,8 +105,7 @@ class admin_presets_export extends admin_presets_base {
                     if ($attributes = $sitesettings[$setting->plugin][$setting->name]->get_attributes_values()) {
                         foreach ($attributes as $attributename => $value) {
 
-                            unset($attr);
-
+                            $attr = new StdClass();
                             $attr->itemid = $setting->id;
                             $attr->name = $attributename;
                             $attr->value = $value;

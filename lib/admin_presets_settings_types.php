@@ -212,15 +212,13 @@ abstract class admin_preset_setting {
     /**
      * Stores the setting into database, logs the change and returns the config_log inserted id
      *
-     * Copy of config_write method of the admin_setting class
-     *
      * @param      string      $name
      * @param      mixed       $value
      * @return     integer                     config_log inserted id
      */
     public function save_value($name = false, $value = NULL) {
 
-        global $USER, $DB;
+        global $DB;
 
         // Object values if no arguments
         if ($value === NULL) {
@@ -239,13 +237,28 @@ abstract class admin_preset_setting {
         // Getting the actual value
         $actualvalue = get_config($plugin, $name);
 
-
         // If it's the same it's not necessary
         if ($actualvalue == $value) {
             return false;
         }
 
         set_config($name, $value, $plugin);
+
+        return $this->to_log($plugin, $name, $value, $actualvalue);
+    }
+
+    /**
+     * Copy of config_write method of the admin_setting class
+     *
+     * @param   string  $plugin
+     * @param   string  $name
+     * @param   mixed   $value
+     * @param   mixed   $actualvalue
+     * @return  integer The stored config_log id
+     */
+    protected function to_log($plugin, $name, $value, $actualvalue) {
+
+        global $USER;
 
         // Log the change (pasted from admin_setting class)
         $log = new object();
@@ -260,10 +273,9 @@ abstract class admin_preset_setting {
         if (!$id = $DB->insert_record('config_log', $log)) {
             print_error('errorinserting', 'block_admin_presets');
         }
-
+        
         return $id;
     }
-
 
     /**
      * Saves the setting attributes values
@@ -460,13 +472,27 @@ class admin_preset_admin_setting_devicedetectregex extends admin_preset_admin_se
  */
 class admin_preset_admin_setting_sitesettext extends admin_preset_admin_setting_configtext {
 
-    public function save_value() {
+    /**
+     * Overwritten to store the value in the course table
+     * 
+     * @param   string $name
+     * @param   mixed  $value
+     * @return  integer
+     */
+    public function save_value($name = false, $value = false) {
 
-        global $USER, $DB;
+        global $DB;
 
+        // Object values if no arguments
+        if ($value === NULL) {
+            $value = $this->value;
+        }
+        if (!$name) {
+            $name = $this->settingdata->name;
+        }
 
         $sitecourse = $DB->get_record('course', array('id' => 1));
-        $actualvalue = $sitecourse->{$this->settingdata->name};
+        $actualvalue = $sitecourse->{$name};
 
         // If it's the same value skip
         if ($actualvalue == $this->value) {
@@ -480,26 +506,10 @@ class admin_preset_admin_setting_sitesettext extends admin_preset_admin_setting_
         }
 
         // Updating mdl_course
-        $sitecourse->{$this->settingdata->name} = $this->value;
+        $sitecourse->{$name} = $this->value;
         $DB->update_record('course', $sitecourse);
 
-
-        // Pasted from admin_setting class
-        $log = new object();
-        $log->userid       = during_initial_install() ? 0 :$USER->id; // 0 as user id during install
-        $log->timemodified = time();
-        $log->plugin       = $plugin;
-        $log->name         = $this->settingdata->name;
-        $log->value        = $this->value;
-        $log->oldvalue     = $actualvalue;
-
-        // Getting the inserted config_log id
-        if (!$id = $DB->insert_record('config_log', $log)) {
-            print_error('errorinserting', 'block_admin_presets');
-        }
-
-        return $id;
-
+        return $this->to_log($plugin, $name, $this->value, $actualvalue);
     }
 }
 
