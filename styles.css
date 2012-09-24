@@ -23,7 +23,7 @@
     font-size: 70%;
 }
 
-.ygtv-checkbox .ygtv-highlight0 .ygtvcontent{padding-left:1em;background:url(../blocks/admin_presets/pix/check0.gif) no-repeat;}
-.ygtv-checkbox .ygtv-highlight0 .ygtvfocus.ygtvcontent,.ygtv-checkbox .ygtv-highlight1 .ygtvfocus.ygtvcontent,.ygtv-checkbox .ygtv-highlight2 .ygtvfocus.ygtvcontent{background-color:#c0e0e0;}
-.ygtv-checkbox .ygtv-highlight1 .ygtvcontent{padding-left:1em;background:url(../blocks/admin_presets/pix/check1.gif) no-repeat;}
-.ygtv-checkbox .ygtv-highlight2 .ygtvcontent{padding-left:1em;background:url(../blocks/admin_presets/pix/check2.gif) no-repeat;}
+#settings_tree_div .ygtv-checkbox .ygtv-highlight0 .ygtvcontent{padding-left:1em;background:url([[pix:block_admin_presets|check0]]) no-repeat;}
+#settings_tree_div .ygtv-checkbox .ygtv-highlight0 .ygtvfocus.ygtvcontent,.ygtv-checkbox .ygtv-highlight1 .ygtvfocus.ygtvcontent,.ygtv-checkbox .ygtv-highlight2 .ygtvfocus.ygtvcontent{background-color:#c0e0e0;}
+#settings_tree_div .ygtv-checkbox .ygtv-highlight1 .ygtvcontent{padding-left:1em;background:url([[pix:block_admin_presets|check1]]) no-repeat;}
+#settings_tree_div .ygtv-checkbox .ygtv-highlight2 .ygtvcontent{padding-left:1em;background:url([[pix:block_admin_presets|check2]]) no-repeat;}
