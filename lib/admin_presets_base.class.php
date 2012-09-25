@@ -451,7 +451,8 @@ class admin_presets_base {
                 if ($child->children) {
 
                     $categorynode = $child->name.'Node';
-                    $nodes['categories'][$categorynode] = array("category", $categorynode, (String)$child->visiblename, "", $jsparentnode);
+                    $nodehtml = '<div class="catnode">' . $child->visiblename . '</div>';
+                    $nodes['categories'][$categorynode] = array("category", $categorynode, (String)$nodehtml, "", $jsparentnode);
 
                     // Not all admin_categories have admin_settingpages
                     $this->_get_settings_elements($allsettings, $child->children, $categorynode, $nodes);
@@ -488,7 +489,8 @@ class admin_presets_base {
 
                     // The page node only should be added if it have children
                     if ($pagesettings) {
-                        $nodes['pages'][$pagenode] = array("page", $pagenode, (String)$child->visiblename, "", $jsparentnode);
+                        $nodehtml = '<div class="catnode">' . $child->visiblename . '</div>';
+                        $nodes['pages'][$pagenode] = array("page", $pagenode, (String)$nodehtml, "", $jsparentnode);
                         $nodes['settings'] = array_merge($nodes['settings'], $pagesettings);
                     }
 

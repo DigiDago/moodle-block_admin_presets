@@ -34,16 +34,16 @@ M.block_admin_presets = {
 
             var settingId = ids[i];
             var nodeId = nodeids[i];
-            var label = '&nbsp;' + decodeURIComponent(labels[i]);
+            var label = decodeURIComponent(labels[i]);
             var description = decodeURIComponent(descriptions[i]);
             var parent = parents[i];
-    
+
             var newNode = new Y.YUI2.widget.HTMLNode(label, context.nodes[parent]);
-            
+
             newNode.settingId = settingId;
-            newNode.data.title = description;
+            newNode.setNodesProperty('title', description);
             newNode.highlightState = 1;
-    
+
             context.nodes[nodeId] = newNode;
         }
     },
