@@ -14,7 +14,7 @@ M.block_admin_presets = {
             
             var context = M.block_admin_presets;
             
-            context.tree = new YAHOO.widget.TreeView("settings_tree_div");
+            context.tree = new Y.YUI2.widget.TreeView("settings_tree_div");
     
             context.nodes = new Array();
             context.nodes['root'] = context.tree.getRoot();
@@ -38,10 +38,10 @@ M.block_admin_presets = {
             var description = decodeURIComponent(descriptions[i]);
             var parent = parents[i];
     
-            var newNode = new YAHOO.widget.HTMLNode(label, context.nodes[parent]);
+            var newNode = new Y.YUI2.widget.HTMLNode(label, context.nodes[parent]);
             
             newNode.settingId = settingId;
-            newNode.setNodesProperty('title', description);
+            newNode.data.title = description;
             newNode.highlightState = 1;
     
             context.nodes[nodeId] = newNode;
@@ -79,14 +79,14 @@ M.block_admin_presets = {
     
     
         // Listener to create one node for each selected setting
-        YAHOO.util.Event.on('id_admin_presets_submit', 'click', function() {
+        Y.YUI2.util.Event.on('id_admin_presets_submit', 'click', function() {
     
             // We need the moodle form to add the checked settings
             var settingsPresetsForm = document.getElementById('mform1');
     
             var hiLit = context.tree.getNodesByProperty('highlightState', 1);
-            if (YAHOO.lang.isNull(hiLit)) { 
-                YAHOO.log("Nothing selected");
+            if (Y.YUI2.lang.isNull(hiLit)) { 
+                Y.YUI2.log("Nothing selected");
     
             } else {
     
@@ -113,7 +113,7 @@ M.block_admin_presets = {
                     }
                 }
     
-                YAHOO.log("Checked settings:\n" + labels.join("\n"), "info");
+                Y.YUI2.log("Checked settings:\n" + labels.join("\n"), "info");
             }
         });
     
