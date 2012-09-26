@@ -185,7 +185,7 @@ class admin_presets_load extends admin_presets_base {
                             $presetapplied->adminpresetid = $this->id;
                             $presetapplied->userid = $USER->id;
                             $presetapplied->time = time();
-                            if (!$applieditem->adminpresetapplyid = $DB->insert_record('block_admin_presets_app', $presetapplied)) {
+                            if (!$adminpresetapplyid = $DB->insert_record('block_admin_presets_app', $presetapplied)) {
                                 print_error('errorinserting', 'block_admin_presets');
                             }
                         }
@@ -193,6 +193,8 @@ class admin_presets_load extends admin_presets_base {
                         // Implemented this way because the config_write
                         // method of admin_setting class does not
                         // return the config_log inserted id
+                        $applieditem = new StdClass();
+                        $applieditem->adminpresetapplyid = $adminpresetapplyid;
                         if ($applieditem->configlogid = $presetsetting->save_value()) {
                             $DB->insert_record('block_admin_presets_app_it', $applieditem);
                         }
