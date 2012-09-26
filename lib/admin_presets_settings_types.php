@@ -218,8 +218,6 @@ abstract class admin_preset_setting {
      */
     public function save_value($name = false, $value = NULL) {
 
-        global $DB;
-
         // Object values if no arguments
         if ($value === NULL) {
             $value = $this->value;
@@ -258,7 +256,7 @@ abstract class admin_preset_setting {
      */
     protected function to_log($plugin, $name, $value, $actualvalue) {
 
-        global $USER;
+        global $DB, $USER;
 
         // Log the change (pasted from admin_setting class)
         $log = new object();
@@ -560,6 +558,8 @@ class admin_preset_admin_setting_bloglevel extends admin_preset_admin_setting_co
      * Extended to change the block visibility
      */
     public function save_value($name = false, $value = false) {
+
+        global $DB;
 
         if (!$id = parent::save_value($name, $value)) {
             return false;
