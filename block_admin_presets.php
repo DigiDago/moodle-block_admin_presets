@@ -44,11 +44,7 @@ class block_admin_presets extends block_list {
 
 
     function applicable_formats() {
-        if (has_capability('moodle/site:config', get_context_instance(CONTEXT_SYSTEM))) {
-            return array('all' => true);
-        } else {
-            return array('site' => true);
-        }
+        return array('site' => true);
     }
 
 }

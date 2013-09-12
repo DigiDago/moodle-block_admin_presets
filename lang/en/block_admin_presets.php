@@ -1,5 +1,4 @@
 <?php
-
 $string['accessdenied'] = 'Access denied';
 $string['actionbase'] = 'Presets';
 $string['actiondelete'] = 'Delete preset';
@@ -8,6 +7,7 @@ $string['actionimport'] = 'Import settings';
 $string['actionload'] = 'Load settings';
 $string['actionrollback'] = 'Rollback';
 $string['actualvalue'] = 'Actual value';
+$string['admin_presets:addinstance'] = 'Add a new admin presets block';
 $string['adminsettings'] = 'Admin settings';
 $string['author'] = 'Author';
 $string['autohidesensiblesettings'] = 'Auto exclude sensible settings';
