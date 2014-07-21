@@ -355,12 +355,17 @@ class admin_presets_base {
                                     $attributevalue = $attrs[$varname]->value;
                                 }
 
-                                // If no value found, default value
-                                if (!isset($attributevalue)) {
+                                // If no value found, default value,
+                                // but we may not have a default value for the attribute.
+                                if (!isset($attributevalue) && !empty($values->defaultsetting[$defaultvarname])) {
                                     $attributevalue = $values->defaultsetting[$defaultvarname];
                                 }
 
-                                $setting->set_attribute_value($varname, $attributevalue);
+                                // If there is no even a default for this setting will be empty
+                                // so we do nothing in this case.
+                                if (isset($attributevalue)) {
+                                    $setting->set_attribute_value($varname, $attributevalue);
+                                }
                             }
 
                         }

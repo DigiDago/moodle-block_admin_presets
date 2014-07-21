@@ -404,6 +404,8 @@ class admin_preset_admin_setting_emoticons extends admin_preset_setting {}
 
 class admin_preset_admin_setting_confightmleditor extends admin_preset_admin_setting_configtext {}
 
+class admin_preset_admin_setting_configtext_trim_lower extends admin_preset_admin_setting_configtext {}
+
 /**
  * Adds the advanced attribute
  */
@@ -455,6 +457,11 @@ class admin_preset_admin_setting_devicedetectregex extends admin_preset_admin_se
     public function set_visiblevalue() {
 
         $values = json_decode($this->get_value());
+
+        if (!$values) {
+            parent::set_visiblevalue();
+            return;
+        }
 
         $this->visiblevalue = '';
         foreach ($values as $key => $value) {
@@ -581,6 +588,11 @@ class admin_preset_admin_setting_special_selectsetup extends admin_preset_admin_
 class admin_preset_admin_setting_sitesetselect extends admin_preset_admin_setting_configselect {}
 
 /**
+ * I'm not overwriting set_visiblevalue() as there is a lot of logic to duplicate.
+ */
+class admin_preset_admin_setting_configduration extends admin_preset_setting {}
+
+/**
  * Adds support for the "advanced" attribute
  */
 class admin_preset_admin_setting_configselect_with_advanced extends admin_preset_admin_setting_configselect {
@@ -590,9 +602,11 @@ class admin_preset_admin_setting_configselect_with_advanced extends admin_preset
     public function __construct(admin_setting $settingdata, $dbsettingvalue) {
 
         // Getting the advanced defaultsetting attribute name
-        foreach ($settingdata->defaultsetting as $key => $defaultvalue) {
-            if ($key != 'value') {
-                $this->advancedkey = $key;
+        if (is_array($settingdata->defaultsetting)) {
+            foreach ($settingdata->defaultsetting as $key => $defaultvalue) {
+                if ($key != 'value') {
+                    $this->advancedkey = $key;
+                }
             }
         }
 
@@ -626,6 +640,12 @@ class admin_preset_mod_quiz_admin_setting_grademethod extends admin_preset_admin
     }
 }
 
+class admin_preset_mod_quiz_admin_setting_overduehandling extends admin_preset_admin_setting_configselect_with_advanced {
+
+    public function set_behaviors() {
+        $this->behaviors['loadchoices'] = & $this->settingdata;
+    }
+}
 
 /**
  * A select with force and advanced options
@@ -958,6 +978,11 @@ class admin_preset_admin_setting_special_calendar_weekend extends admin_preset_s
 
     protected function set_visiblevalue() {
 
+        if (!$this->value) {
+            parent::set_visiblevalue();
+            return;
+        }
+
         $days = array('sunday', 'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday');
         for ($i=0; $i<7; $i++) {
             if ($this->value & (1 << $i)) {
@@ -1078,14 +1103,27 @@ class admin_preset_mod_quiz_admin_review_setting extends admin_preset_setting {
 }
 
 
-//class admin_preset_admin_setting_manageauths extends admin_preset_setting {}
-//class admin_preset_admin_setting_manageenrols extends admin_preset_setting {}
-//class admin_preset_admin_setting_manageeditors extends admin_preset_setting {}
-//class admin_preset_admin_setting_managelicenses extends admin_preset_setting {}
-//class admin_preset_admin_setting_manageportfolio extends admin_preset_setting {}
-//class admin_preset_admin_setting_managerepository extends admin_preset_setting {}
-//class admin_preset_admin_setting_webservicesoverview extends admin_preset_setting {}
-//class admin_preset_admin_setting_manageexternalservices extends admin_preset_setting {}
-//class admin_preset_admin_setting_managewebserviceprotocols extends admin_preset_setting {}
-//class admin_preset_admin_setting_managewebservicetokens extends admin_preset_setting {}
-//class admin_preset_admin_setting_manageplagiarism extends admin_preset_setting {}
+// These classes will not be implemented.
+
+//admin_setting_configempty
+//mod_quiz_admin_setting_user_image
+//admin_setting_manageformats
+//format_singleactivity_admin_setting_activitytype
+//enrol_flatfile_role_setting
+//admin_setting_ldap_rolemapping
+//tiynce_subplugins_settings
+//editor_tinymce_json_setting_textarea
+//admin_setting_php_extension_enabled
+//admin_setting_configstoredfile
+//admin_setting_manageauths
+//admin_setting_manageenrols
+//admin_setting_manageeditors
+//admin_setting_managelicenses
+//admin_setting_manageportfolio
+//admin_setting_managerepository
+//admin_setting_webservicesoverview
+//admin_setting_enablemobileservice
+//admin_setting_manageexternalservices
+//admin_setting_managewebserviceprotocols
+//admin_setting_managewebservicetokens
+//admin_setting_manageplagiarism
