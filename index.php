@@ -16,7 +16,7 @@ $mode = optional_param('mode', 'show', PARAM_ALPHAEXT);
 
 require_login();
 
-if (!$context = get_context_instance(CONTEXT_SYSTEM)) {
+if (!$context = context_system::instance()) {
     print_error('wrongcontext', 'error');
 }
 
