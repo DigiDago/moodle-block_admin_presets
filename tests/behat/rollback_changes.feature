@@ -5,7 +5,7 @@ Feature: I can export and import site settings
   I need to export and import settings presets
 
   @javascript
-  Scenario: Load changes and rollback them
+  Scenario: Load changes and revert them
     Given I log in as "admin"
     And I follow "Turn editing on"
     And I add the "Admin presets" block
@@ -26,8 +26,8 @@ Feature: I can export and import site settings
     And I press "Load selected settings"
     And I am on homepage
     When I follow "Presets"
-    And I click on "rollback" "link" in the "My preset" "table_row"
-    And I follow "rollback"
+    And I click on "revert" "link" in the "My preset" "table_row"
+    And I follow "revert"
     Then I should see "Settings successfully restored"
     And I should see "Enable portfolios" in the ".admin_presets_applied" "css_element"
     And I should see "Enable badges" in the ".admin_presets_applied" "css_element"
