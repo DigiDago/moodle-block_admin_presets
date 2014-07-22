@@ -17,7 +17,7 @@ before_script:
  - composer self-update
  - mv ../moodle-block_admin_presets blocks/admin_presets
  - cp config-dist.php config.php
- - sh -c "sed -i -e s/'password'/''/ -e s/example.com/localhost/ -e s%192.168.1.250%localhost% -e s%/home/example%$HOME% -e 's%\(\$CFG.*bht\)%\n\1%' -e 's%\(\$CFG.*behat_wwwroot.*http://127\)%\n\1%' config.php"
+ - sh -c "sed -i -e s/'password'/''/ -e s/example.com/localhost/ -e s%192.168.1.250%localhost% -e s%127.0.0.1/moodle%localhost:8000% -e s%/home/example%$HOME% -e 's%\(\$CFG.*bht\)%\n\1%' -e 's%\(\$CFG.*behat_wwwroot.*http://localhost:8000\)%\n\1%' config.php"
  - sh -c "if [ '$DB' = 'pgsql' ]; then psql -c 'create database moodle;' -U postgres; fi"
  - sh -c "if [ '$DB' = 'pgsql' ]; then sed -i s/\'username\'/\'postgres\'/ config.php; fi"
  - mkdir -m777 $HOME/moodledata
