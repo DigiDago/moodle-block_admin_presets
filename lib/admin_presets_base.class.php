@@ -593,7 +593,7 @@ class admin_presets_base {
     protected function _create_preset_data_table($actionstable = true) {
 
         $table = new html_table();
-        $table->attributes['class'] = 'generaltable boxaligncenter admin_presets_table';
+        $table->attributes['class'] = 'generaltable boxaligncenter';
         $table->align = array('left', 'left', 'center', 'left', 'left', 'center', 'center');
         $table->head  = array(get_string('name'), get_string('description'), get_string('presetmoodlerelease', 'block_admin_presets'),
             get_string('author', 'block_admin_presets'), get_string('site', 'block_admin_presets'),

@@ -19,10 +19,6 @@
     text-align: center;
 }
 
-.admin_presets_table {
-    font-size: 70%;
-}
-
 #settings_tree_div .catnode{margin-left:5px;display:inline;}
 
 #settings_tree_div .ygtv-checkbox .ygtv-highlight0 .ygtvcontent{padding-left:1em;background:url([[pix:block_admin_presets|check0]]) no-repeat;}
