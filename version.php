@@ -1,8 +1,10 @@
 <?php
 
-$plugin->version = 2013091100;
-$plugin->release = '1.1(Build: 2013091100)';
+defined('MOODLE_INTERNAL') || die();
 
-$plugin->requires = 2012120300;
+$plugin->version = 2014072200;
+$plugin->requires = 2013110500;
+$plugin->component = 'block_admin_presets';
+$plugin->release = '26.1 (Build: 2014072200)';
 $plugin->cron     = 0;
 $plugin->maturity = MATURITY_STABLE;
