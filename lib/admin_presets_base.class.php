@@ -565,7 +565,7 @@ class admin_presets_base {
     protected function _output_applied_changes($appliedchanges) {
 
         $appliedtable = new html_table();
-        $appliedtable->attributes['class'] = 'generaltable boxaligncenter';
+        $appliedtable->attributes['class'] = 'generaltable boxaligncenter admin_presets_applied';
         $appliedtable->head  = array(get_string('plugin'),
             get_string('settingname', 'block_admin_presets'),
             get_string('oldvalue', 'block_admin_presets'),

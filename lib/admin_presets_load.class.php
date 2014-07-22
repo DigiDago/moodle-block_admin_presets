@@ -242,7 +242,7 @@ class admin_presets_load extends admin_presets_base {
         if (!empty($unnecessarychanges)) {
 
             $skippedtable = new html_table();
-            $skippedtable->attributes['class'] = 'generaltable boxaligncenter';
+            $skippedtable->attributes['class'] = 'generaltable boxaligncenter admin_presets_skipped';
             $skippedtable->head  = array(get_string('plugin'),
                                          get_string('settingname', 'block_admin_presets'),
                                          get_string('actualvalue', 'block_admin_presets')

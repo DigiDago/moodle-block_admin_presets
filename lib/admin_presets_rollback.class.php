@@ -105,6 +105,7 @@ class admin_presets_rollback extends admin_presets_base {
                         $oldsetting->save_value();
 
                         // Output table
+                        $rollback[$varname] = new stdClass();
                         $rollback[$varname]->plugin = $oldsetting->get_settingdata()->plugin;
                         $rollback[$varname]->visiblename = $oldsetting->get_settingdata()->visiblename;
                         $rollback[$varname]->oldvisiblevalue = $actualsetting->get_visiblevalue();
@@ -117,6 +118,7 @@ class admin_presets_rollback extends admin_presets_base {
 
                     } else {
 
+                        $failures[$varname] = new stdClass();
                         $failures[$varname]->plugin = $oldsetting->get_settingdata()->plugin;
                         $failures[$varname]->visiblename = $oldsetting->get_settingdata()->visiblename;
                         $failures[$varname]->oldvisiblevalue = $actualsetting->get_visiblevalue();
@@ -161,6 +163,7 @@ class admin_presets_rollback extends admin_presets_base {
                         $oldsetting->save_attributes_values();
 
                         // Output table
+                        $rollback[$varname] = new stdClass();
                         $rollback[$varname]->plugin = $oldsetting->get_settingdata()->plugin;
                         $rollback[$varname]->visiblename = $oldsetting->get_settingdata()->visiblename;
                         $rollback[$varname]->oldvisiblevalue = $actualsetting->get_visiblevalue();
@@ -173,6 +176,7 @@ class admin_presets_rollback extends admin_presets_base {
 
                     } else {
 
+                        $failures[$varname] = new stdClass();
                         $failures[$varname]->plugin = $oldsetting->get_settingdata()->plugin;
                         $failures[$varname]->visiblename = $oldsetting->get_settingdata()->visiblename;
                         $failures[$varname]->oldvisiblevalue = $actualsetting->get_visiblevalue();
