@@ -35,10 +35,10 @@ Feature: I can export and import site settings
     And I should see "Enable outcomes" in the ".admin_presets_skipped" "css_element"
     And I should see "Show recent submissions" in the ".admin_presets_skipped" "css_element"
     And I follow "Advanced features"
-    And the "Enable portfolios" field should match "0" value
-    And the "Enable badges" field should match "1" value
+    And the field "Enable portfolios" matches value "0"
+    And the field "Enable badges" matches value "1"
     And I navigate to "Assignment settings" node in "Site administration > Plugins > Activity modules > Assignment"
-    And the "Feedback plugin" field should match "Feedback comments" value
+    And the field "Feedback plugin" matches value "Feedback comments"
 
   @javascript
   Scenario: Settings don't change if you import what you just exported

@@ -28,6 +28,16 @@ class admin_presets_base {
 
     protected $rel;
 
+    protected static $eventsactionsmap = array(
+        'base' => 'presets_listed',
+        'delete' => 'preset_deleted',
+        'export' => 'preset_exported',
+        'import' => 'preset_imported',
+        'preview' => 'preset_previewed',
+        'load' => 'preset_loaded',
+        'rollback' => 'preset_reverted',
+        'download_xml' => 'preset_downloaded'
+    );
 
     /**
      * Loads common class attributes and initializes sensible settings and DB - XML relations
@@ -158,14 +168,24 @@ class admin_presets_base {
 
         global $SITE;
 
-        if ($this->mode != 'show') {
+        // TODO please, me of the future, fix this ununderstandable code.
+
+        // The only read action we store is list presets.
+        if ($this->mode != 'show' ||
+                ($this->mode == 'show' && $this->action == 'base')) {
 
             $action = $this->action;
-            if ($this->mode != 'execute') {
+            if ($this->mode != 'execute' && $this->mode != 'show') {
                 $action = $this->mode;
             }
 
-            add_to_log($SITE->id, 'block_admin_presets', $action, '', $this->id);
+            $eventnamespace = '\\block_admin_presets\\event\\' . self::$eventsactionsmap[$action];
+            $eventdata = array(
+                'context' => context_system::instance(),
+                'objectid' => $this->id
+            );
+            $event = $eventnamespace::create($eventdata);
+            $event->trigger();
         }
     }
 

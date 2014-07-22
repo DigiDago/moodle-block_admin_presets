@@ -81,6 +81,9 @@ class admin_presets_delete extends admin_presets_base {
             }
         }
 
+        // Trigger the as it is usually triggered after execute finishes.
+        $this->log();
+
         redirect($CFG->wwwroot.'/blocks/admin_presets/index.php');
     }
 

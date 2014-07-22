@@ -69,6 +69,9 @@ class admin_presets_import extends admin_presets_base {
                 print_error('errorinserting', 'block_admin_presets');
             }
 
+            // Store it here for logging and other future id-oriented stuff.
+            $this->id = $preset->id;
+
             // Plugins settings
             $xmladminsettings = $xml->ADMIN_SETTINGS[0];
             foreach ($xmladminsettings as $plugin => $settings) {
@@ -148,6 +151,9 @@ class admin_presets_import extends admin_presets_base {
                 $DB->delete_records('block_admin_presets', array('id' => $preset->id));
                 redirect($CFG->wwwroot.'/blocks/admin_presets/index.php?action=import', get_string('novalidsettings', 'block_admin_presets'), 4);
             }
+
+            // Trigger the as it is usually triggered after execute finishes.
+            $this->log();
 
             redirect($CFG->wwwroot.'/blocks/admin_presets/index.php?action=load&id='.$preset->id);
         }

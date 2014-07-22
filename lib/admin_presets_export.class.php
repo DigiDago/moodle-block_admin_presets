@@ -75,6 +75,9 @@ class admin_presets_export extends admin_presets_base {
                 print_error('errorinserting', 'block_admin_presets');
             }
 
+            // Store it here for logging and other future id-oriented stuff.
+            $this->id = $preset->id;
+
             // We must ensure that there are settings selected
             $presetsettings = array();
             foreach ($_POST as $varname => $value) {
@@ -123,6 +126,9 @@ class admin_presets_export extends admin_presets_base {
             }
 
         }
+
+        // Trigger the as it is usually triggered after execute finishes.
+        $this->log();
 
         redirect($CFG->wwwroot.'/blocks/admin_presets/index.php');
     }
@@ -212,6 +218,9 @@ class admin_presets_export extends admin_presets_base {
         $xmlwriter->stop();
 
         $xmlstr = $xmloutput->get_allcontents();
+
+        // Trigger the as it is usually triggered after execute finishes.
+        $this->log();
 
         $filename = addcslashes($preset->name, '"').'.xml';
         send_file($xmlstr, $filename, 0, 0, true, true);

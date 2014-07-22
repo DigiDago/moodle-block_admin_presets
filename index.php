@@ -52,5 +52,5 @@ if (!method_exists($instance, $mode)) {
 
 // Executes the required method and displays output
 $instance->$mode();
-$instance->display();
 $instance->log();
+$instance->display();
