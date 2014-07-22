@@ -82,18 +82,15 @@ class admin_presets_import extends admin_presets_base {
                 $pluginsettings = $settings->SETTINGS[0];
 
                 if ($pluginsettings) {
-                    foreach ($pluginsettings as $name => $setting) {
-
-                        unset($item);
+                    foreach ($pluginsettings->children() as $name => $setting) {
 
                         $name = strtolower($name);
-                        $xmlsetting = (Array)$setting;
 
-                        // If there is no [0] key the value is ''
-                        if (!isset($xmlsetting[0])) {
+                        // Default to ''.
+                        if (!$setting->__toString()) {
                             $value = '';
                         } else {
-                            $value = $xmlsetting[0];
+                            $value = $setting->__toString();
                         }
 
                         if (empty($sitesettings[$plugin][$name])) {
@@ -109,6 +106,7 @@ class admin_presets_import extends admin_presets_base {
 
                         $settingsfound = true;
 
+                        // New item.
                         $item = new StdClass();
                         $item->adminpresetid = $preset->id;
                         $item->plugin = $plugin;
@@ -121,11 +119,9 @@ class admin_presets_import extends admin_presets_base {
                         }
 
                         // Adding settings attributes
-                        if (isset($xmlsetting['@attributes']) && ($itemattributes = $presetsetting->get_attributes())) {
+                        if ($setting->attributes() && ($itemattributes = $presetsetting->get_attributes())) {
 
-                            foreach ($xmlsetting['@attributes'] as $attrname => $attrvalue) {
-
-                                unset($attr);
+                            foreach ($setting->attributes() as $attrname => $attrvalue) {
 
                                 $itemattributenames = array_flip($itemattributes);
 
@@ -138,7 +134,7 @@ class admin_presets_import extends admin_presets_base {
                                 $attr = new StdClass();
                                 $attr->itemid = $item->id;
                                 $attr->name = $attrname;
-                                $attr->value = intval($attrvalue);
+                                $attr->value = $attrvalue->__toString();
                                 $DB->insert_record('block_admin_presets_it_a', $attr);
                             }
                         }
