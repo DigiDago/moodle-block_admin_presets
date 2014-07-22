@@ -47,4 +47,8 @@ class block_admin_presets extends block_list {
         return array('site' => true);
     }
 
+    function has_config() {
+        return true;
+    }
+
 }
