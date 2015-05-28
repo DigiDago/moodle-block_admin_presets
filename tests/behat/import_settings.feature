@@ -6,6 +6,7 @@ Feature: I can export and import site settings
 
   Background:
     Given I log in as "admin"
+    And I am on site homepage
     And I follow "Turn editing on"
     And I add the "Admin presets" block
     And I follow "Export settings"
@@ -22,7 +23,7 @@ Feature: I can export and import site settings
     And I navigate to "Assignment settings" node in "Site administration > Plugins > Activity modules > Assignment"
     And I set the field "Feedback plugin" to "File feedback"
     And I press "Save changes"
-    When I am on homepage
+    When I am on site homepage
     And I follow "Presets"
     And I click on "load" "link" in the "My preset" "table_row"
     And I press "Load selected settings"

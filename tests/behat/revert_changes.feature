@@ -7,6 +7,7 @@ Feature: I can export and import site settings
   @javascript
   Scenario: Load changes and revert them
     Given I log in as "admin"
+    And I am on site homepage
     And I follow "Turn editing on"
     And I add the "Admin presets" block
     And I follow "Export settings"
@@ -20,11 +21,11 @@ Feature: I can export and import site settings
     And I navigate to "Assignment settings" node in "Site administration > Plugins > Activity modules > Assignment"
     And I set the field "Feedback plugin" to "File feedback"
     And I press "Save changes"
-    And I am on homepage
+    And I am on site homepage
     And I follow "Presets"
     And I click on "load" "link" in the "My preset" "table_row"
     And I press "Load selected settings"
-    And I am on homepage
+    And I am on site homepage
     When I follow "Presets"
     And I click on "revert" "link" in the "My preset" "table_row"
     And I follow "revert"
