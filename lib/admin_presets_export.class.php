@@ -64,7 +64,7 @@ class admin_presets_export extends admin_presets_base {
             $preset = new StdClass();
             $preset->userid = $USER->id;
             $preset->name = $data->name;
-            $preset->comments = $data->comments;
+            $preset->comments = $data->comments['text'];
             $preset->site = $CFG->wwwroot;
             $preset->author = $data->author;
             $preset->moodleversion = $CFG->version;

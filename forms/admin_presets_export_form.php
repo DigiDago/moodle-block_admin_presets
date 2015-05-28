@@ -18,7 +18,7 @@ class admin_presets_export_form extends moodleform {
         $mform->addRule('name', null, 'required', null, 'client');
         $mform->setType('name', PARAM_TEXT);
 
-        $mform->addElement('htmleditor', 'comments', get_string('comments'));
+        $mform->addElement('editor', 'comments', get_string('comments'));
         $mform->setType('comments', PARAM_CLEANHTML);
 
         $mform->addElement('text', 'author', get_string('author', 'block_admin_presets'), 'maxlength="254" size="60"');
