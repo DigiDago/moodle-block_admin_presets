@@ -90,7 +90,7 @@ class admin_presets_import extends admin_presets_base {
                         $name = strtolower($name);
 
                         // Default to ''.
-                        if (!$setting->__toString()) {
+                        if ($setting->__toString() === false) {
                             $value = '';
                         } else {
                             $value = $setting->__toString();
