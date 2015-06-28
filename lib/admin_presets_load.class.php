@@ -153,7 +153,7 @@ class admin_presets_load extends admin_presets_base {
 
                     // Wrong setting, set_value() method has previously cleaned the value
                     if ($presetsetting->get_value() === false) {
-                        //debugging($presetsetting->get_settingdata()->plugin.'/'.$presetsetting->get_settingdata()->name.' setting has a wrong value!');
+                        debugging($presetsetting->get_settingdata()->plugin.'/'.$presetsetting->get_settingdata()->name.' setting has a wrong value!', DEBUG_DEVELOPER);
                         continue;
                     }
 

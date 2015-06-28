@@ -394,6 +394,8 @@ class admin_preset_admin_setting_configexecutable extends admin_preset_admin_set
 
 class admin_preset_admin_setting_configdirectory extends admin_preset_admin_setting_configfile {}
 
+class admin_preset_admin_setting_special_backup_auto_destination extends admin_preset_admin_setting_configdirectory {}
+
 class admin_preset_admin_setting_configpasswordunmask extends admin_preset_admin_setting_configtext {}
 
 class admin_preset_admin_setting_langlist extends admin_preset_admin_setting_configtext {}
@@ -405,6 +407,23 @@ class admin_preset_admin_setting_emoticons extends admin_preset_setting {}
 class admin_preset_admin_setting_confightmleditor extends admin_preset_admin_setting_configtext {}
 
 class admin_preset_admin_setting_configtext_trim_lower extends admin_preset_admin_setting_configtext {}
+
+class admin_preset_admin_setting_special_gradepointmax extends admin_preset_admin_setting_configtext {}
+
+class admin_preset_admin_setting_special_gradepointdefault extends admin_preset_admin_setting_configtext {}
+
+class admin_preset_admin_setting_configempty extends admin_preset_admin_setting_configtext {}
+
+class admin_preset_admin_setting_configtext_with_maxlength extends admin_preset_admin_setting_configtext {}
+
+class admin_preset_editor_tinymce_json_setting_textarea extends admin_preset_admin_setting_configtext {}
+
+/**
+ * I'm not overwriting set_visiblevalue() as there is a lot of logic to duplicate.
+ */
+class admin_preset_admin_setting_configduration extends admin_preset_admin_setting_configtext {}
+
+class admin_preset_enrol_flatfile_role_setting extends admin_preset_admin_setting_configtext {}
 
 /**
  * Adds the advanced attribute
@@ -473,6 +492,12 @@ class admin_preset_admin_setting_devicedetectregex extends admin_preset_admin_se
 
 
 /**
+ * I'm not overwriting set_visiblevalue() as there is a lot of logic to duplicate.
+ * @see admin_preset_admin_setting_configduration
+ */
+class admin_preset_admin_setting_configduration_with_advanced extends admin_preset_admin_setting_configtext_with_advanced {}
+
+/**
  * Reimplemented to store values in course table, not in config or config_plugins
  */
 class admin_preset_admin_setting_sitesettext extends admin_preset_admin_setting_configtext {
@@ -534,6 +559,11 @@ class admin_preset_admin_setting_configselect extends admin_preset_setting {
      */
     protected function set_value($value) {
 
+        // When we intantiate the class we need the choices.
+        if (empty($this->settindata->choices) && method_exists($this->settingdata, 'load_choices')) {
+            $this->settingdata->load_choices();
+        }
+
         foreach ($this->settingdata->choices as $key => $choice) {
 
             if ($key == $value) {
@@ -587,10 +617,19 @@ class admin_preset_admin_setting_special_selectsetup extends admin_preset_admin_
 
 class admin_preset_admin_setting_sitesetselect extends admin_preset_admin_setting_configselect {}
 
-/**
- * I'm not overwriting set_visiblevalue() as there is a lot of logic to duplicate.
- */
-class admin_preset_admin_setting_configduration extends admin_preset_setting {}
+class admin_preset_admin_setting_special_grademinmaxtouse extends admin_preset_admin_setting_configselect {}
+
+class admin_preset_admin_setting_my_grades_report extends admin_preset_admin_setting_configselect {}
+
+class admin_preset_admin_setting_servertimezone extends admin_preset_admin_setting_configselect {}
+
+class admin_preset_admin_setting_forcetimezone extends admin_preset_admin_setting_configselect {}
+
+class admin_preset_enrol_database_admin_setting_category extends admin_preset_admin_setting_configselect {}
+
+class admin_preset_enrol_ldap_admin_setting_category extends admin_preset_admin_setting_configselect {}
+
+class admin_preset_format_singleactivity_admin_setting_activitytype extends admin_preset_admin_setting_configselect {}
 
 /**
  * Adds support for the "advanced" attribute
@@ -641,6 +680,13 @@ class admin_preset_mod_quiz_admin_setting_grademethod extends admin_preset_admin
 }
 
 class admin_preset_mod_quiz_admin_setting_overduehandling extends admin_preset_admin_setting_configselect_with_advanced {
+
+    public function set_behaviors() {
+        $this->behaviors['loadchoices'] = & $this->settingdata;
+    }
+}
+
+class admin_preset_mod_quiz_admin_setting_user_image extends admin_preset_admin_setting_configselect_with_advanced {
 
     public function set_behaviors() {
         $this->behaviors['loadchoices'] = & $this->settingdata;
@@ -914,6 +960,7 @@ class admin_preset_admin_setting_regradingcheckbox extends admin_preset_admin_se
 
 class admin_preset_admin_setting_special_gradelimiting extends admin_preset_admin_setting_configcheckbox {}
 
+class admin_preset_admin_setting_enablemobileservice extends admin_preset_admin_setting_configcheckbox {}
 
 /**
  * Abstract class to be extended by multicheckbox settings
@@ -1104,16 +1151,8 @@ class admin_preset_mod_quiz_admin_review_setting extends admin_preset_setting {
 
 
 // These classes will not be implemented.
-
-//admin_setting_configempty
-//mod_quiz_admin_setting_user_image
 //admin_setting_manageformats
-//format_singleactivity_admin_setting_activitytype
-//enrol_flatfile_role_setting
 //admin_setting_ldap_rolemapping
-//tiynce_subplugins_settings
-//editor_tinymce_json_setting_textarea
-//admin_setting_php_extension_enabled
 //admin_setting_configstoredfile
 //admin_setting_manageauths
 //admin_setting_manageenrols
@@ -1122,7 +1161,6 @@ class admin_preset_mod_quiz_admin_review_setting extends admin_preset_setting {
 //admin_setting_manageportfolio
 //admin_setting_managerepository
 //admin_setting_webservicesoverview
-//admin_setting_enablemobileservice
 //admin_setting_manageexternalservices
 //admin_setting_managewebserviceprotocols
 //admin_setting_managewebservicetokens
