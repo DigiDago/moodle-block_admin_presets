@@ -129,7 +129,7 @@ class admin_presets_import extends admin_presets_base {
                                 $itemattributenames = array_flip($itemattributes);
 
                                 // Check the attribute existence
-                                if (empty($itemattributenames[$attrname])) {
+                                if (!isset($itemattributenames[$attrname])) {
                                     debugging('The '.$plugin.'/'.$name.' attribute '.$attrname.' is not supported by this Moodle version', DEBUG_DEVELOPER);
                                     continue;
                                 }
