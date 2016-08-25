@@ -2,28 +2,30 @@ notifications:
   email:
     on_success: change
     on_failure: change
-before_install:
-  - "export DISPLAY=:99.0"
-  - "sh -e /etc/init.d/xvfb start"
 language: php
 php:
-  - "5.4"
+  - "5.6"
 env:
  - DB=pgsql
 before_script:
+ - "export DISPLAY=:99.0"
+ - "sh -e /etc/init.d/xvfb start"
+ - sleep 5 # give xvfb some time to start
  - git clone git://github.com/moodle/moodle ../moodle && cd ../moodle
  - git checkout $TRAVIS_BRANCH
  - sudo apt-get update > /dev/null
- - composer self-update
+ - travis_retry composer install
  - mv ../moodle-block_admin_presets blocks/admin_presets
  - cp config-dist.php config.php
  - sh -c "sed -i -e s/'password'/''/ -e s/example.com/localhost/ -e s%192.168.1.250%localhost% -e s%127.0.0.1/moodle%localhost:8000% -e s%/home/example%$HOME% -e 's%\(\$CFG.*bht\)%\n\1%' -e 's%\(\$CFG.*behat_wwwroot.*http://localhost:8000\)%\n\1%' config.php"
  - sh -c "if [ '$DB' = 'pgsql' ]; then psql -c 'create database moodle;' -U postgres; fi"
  - sh -c "if [ '$DB' = 'pgsql' ]; then sed -i s/\'username\'/\'postgres\'/ config.php; fi"
+ - cat config.php
  - mkdir -m777 $HOME/moodledata
- - "(php -S localhost:8000 &) 2> /dev/null > /dev/null"
- - "wget http://selenium-release.storage.googleapis.com/2.42/selenium-server-standalone-2.42.2.jar"
- - "(java -jar selenium-server-standalone-2.42.2.jar &) 2> /dev/null > /dev/null"
+ - php -S localhost:8000 2> /dev/null > /dev/null &
+ - sleep 5
+ - "wget http://selenium-release.storage.googleapis.com/2.48/selenium-server-standalone-2.48.2.jar"
+ - xvfb-run -a java -jar selenium-server-standalone-2.48.2.jar 2> /dev/null > /dev/null &
  - php admin/tool/behat/cli/init.php
 script:
  - vendor/bin/behat --config /home/travis/bht_moodledata/behat/behat.yml --tags @block_admin_presets
