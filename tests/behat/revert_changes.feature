@@ -21,6 +21,9 @@ Feature: I can export and import site settings
     And I navigate to "Assignment settings" node in "Site administration > Plugins > Activity modules > Assignment"
     And I set the field "Feedback plugin" to "File feedback"
     And I press "Save changes"
+    And I navigate to "Course overview" node in "Site administration > Plugins > Blocks"
+    And I set the field "Default maximum courses" to "5"
+    And I press "Save changes"
     And I am on site homepage
     And I follow "Presets"
     And I click on "load" "link" in the "My preset" "table_row"
@@ -39,4 +42,6 @@ Feature: I can export and import site settings
     And the field "Enable badges" matches value "0"
     And I navigate to "Assignment settings" node in "Site administration > Plugins > Activity modules > Assignment"
     And the field "Feedback plugin" matches value "File feedback"
+    And I navigate to "Course overview" node in "Site administration > Plugins > Blocks"
+    And the field "Default maximum courses" matches value "5"
 
