@@ -302,7 +302,8 @@ class admin_presets_base {
 
                 if ($child->settings) {
 
-                    foreach ($child->settings as $settingname => $values) {
+                    foreach ($child->settings as $values) {
+                        $settingname = $values->name;
 
                         unset($settingvalue);
 
@@ -491,8 +492,8 @@ class admin_presets_base {
                     // The name of that page tree node
                     $pagenode = $child->name.'Node';
 
-                    foreach ($child->settings as $settingname => $values) {
-
+                    foreach ($child->settings as $values) {
+                        $settingname = $values->name;
 
                         // IF no plugin was specified mark as 'none'
                         if (!$plugin = $values->plugin) {

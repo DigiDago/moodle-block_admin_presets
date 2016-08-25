@@ -259,7 +259,7 @@ abstract class admin_preset_setting {
         global $DB, $USER;
 
         // Log the change (pasted from admin_setting class)
-        $log = new object();
+        $log = new stdClass();
         $log->userid       = during_initial_install() ? 0 :$USER->id; // 0 as user id during install
         $log->timemodified = time();
         $log->plugin       = $plugin;
