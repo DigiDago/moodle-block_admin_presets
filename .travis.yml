@@ -10,7 +10,7 @@ env:
 before_script:
  - "export DISPLAY=:99.0"
  - "sh -e /etc/init.d/xvfb start"
- - sleep 5 # give xvfb some time to start
+ - sleep 3 # give xvfb some time to start
  - git clone git://github.com/moodle/moodle ../moodle && cd ../moodle
  - git checkout $TRAVIS_BRANCH
  - sudo apt-get update > /dev/null
@@ -23,7 +23,7 @@ before_script:
  - cat config.php
  - mkdir -m777 $HOME/moodledata
  - php -S localhost:8000 2> /dev/null > /dev/null &
- - sleep 5
+ - sleep 3 # give the built-in server some time to start
  - "wget http://selenium-release.storage.googleapis.com/2.48/selenium-server-standalone-2.48.2.jar"
  - xvfb-run -a java -jar selenium-server-standalone-2.48.2.jar 2> /dev/null > /dev/null &
  - php admin/tool/behat/cli/init.php
