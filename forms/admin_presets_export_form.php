@@ -29,7 +29,7 @@ class admin_presets_export_form extends moodleform {
 
         // Moodle settings table
         $mform->addElement('header', 'general', get_string('adminsettings', 'block_admin_presets'));
-        $mform->addElement('html', '<div id="settings_tree_div" class="ygtv-checkbox"><img src="'.$OUTPUT->pix_url('i/loading_small', 'core').'"/></div><br/>');
+        $mform->addElement('html', '<div id="settings_tree_div" class="ygtv-checkbox"><img src="'.$OUTPUT->image_url('i/loading_small').'"/></div><br/>');
 
         // Submit
         $mform->addElement('submit', 'admin_presets_submit', get_string('savechanges'));
