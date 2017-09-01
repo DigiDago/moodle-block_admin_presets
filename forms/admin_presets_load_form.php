@@ -1,5 +1,4 @@
 <?php
-
 require_once($CFG->dirroot.'/lib/formslib.php');
 
 
@@ -27,7 +26,7 @@ class admin_presets_load_form extends moodleform {
         if (!$this->preview) {
             $class = 'ygtv-checkbox';
         }
-        $mform->addElement('html', '<div id="settings_tree_div" class="'.$class.'"><img src="'.$OUTPUT->pix_url('i/loading_small', 'core').'"/></div>');
+        $mform->addElement('html', '<div id="settings_tree_div" class="'.$class.'"><img src="'.$OUTPUT->image_url('i/loading_small', 'core').'"/></div>');
 
         $mform->addElement('hidden', 'id');
         $mform->setType('id', PARAM_INT);
