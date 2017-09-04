@@ -27,7 +27,7 @@ class admin_presets_load_form extends moodleform {
         if (!$this->preview) {
             $class = 'ygtv-checkbox';
         }
-        $mform->addElement('html', '<div id="settings_tree_div" class="'.$class.'"><img src="'.$OUTPUT->image_url('i/loading_small').'"/></div>');
+        $mform->addElement('html', '<div id="settings_tree_div" class="'.$class.'">'.$OUTPUT->pix_url('i/loading_small', get_string('loading', 'block_admin_presets')).'</div>');
 
         $mform->addElement('hidden', 'id');
         $mform->setType('id', PARAM_INT);

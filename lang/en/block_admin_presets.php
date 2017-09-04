@@ -39,6 +39,7 @@ $string['imported'] = 'Imported';
 $string['importexecute'] = 'importing';
 $string['importshow'] = 'select file';
 $string['load'] = 'load';
+$string['loading'] = 'loading';
 $string['loadexecute'] = 'applied changes';
 $string['loadpreview'] = 'preview preset';
 $string['loadselected'] = 'Load selected settings';
