@@ -17,5 +17,3 @@ Block to export and import Moodle administration settings
 
 ## See also
 * Modules and Plugins entry: https://moodle.org/plugins/view.php?plugin=block_admin_presets
-* Forum discussion: http://moodle.org/mod/forum/discuss.php?d=171536
-* Tracker component for bugs and other issues: http://tracker.moodle.org/browse/CONTRIB/component/10914

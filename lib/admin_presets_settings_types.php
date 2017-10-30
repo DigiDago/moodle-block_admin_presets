@@ -1,18 +1,29 @@
 <?php
-
+// This file is part of Moodle - http://moodle.org/
+//
+// Moodle is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Moodle is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Main admin_preset_setting class
+ * Admin presets block main controller
  *
- * Provides basic methods like set_value and
- * set_visiblevalue to extend in most cases
- *
- * @abstract
- * @since      Moodle 2.0
- * @package    block/admin_presets
- * @copyright  2010 David Monllaó <david.monllao@urv.cat>
- * @license    http://www.gnu.org/licenses/gpl-2.0.txt
+ * @package          blocks/admin_presets
+ * @copyright        2017 Digidago <contact@digidago.com><www.digidago.com>
+ * @author           Jordan Kesraoui | DigiDago
+ * @orignalauthor    David Monllaó <david.monllao@urv.cat>
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
+
 abstract class admin_preset_setting {
 
 
