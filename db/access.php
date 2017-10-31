@@ -15,10 +15,12 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Block presets capabilities.
+ * Admin presets block main controller
  *
- * @package    block_admin_presets
- * @copyright  1999 onwards Martin Dougiamas  {@link http://moodle.com}
+ * @package          blocks/admin_presets
+ * @copyright        2017 Digidago <contact@digidago.com><www.digidago.com>
+ * @author           Jordan Kesraoui | DigiDago
+ * @orignalauthor    David Monllaó <david.monllao@urv.cat>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 

@@ -1,5 +1,5 @@
 @block @block_admin_presets
-Feature: I can export and import site settings
+Feature: I can revert changes
   In order to save time
   As an admin
   I need to export and import settings presets
@@ -44,4 +44,3 @@ Feature: I can export and import site settings
     And the field "Feedback plugin" matches value "File feedback"
     And I navigate to "Course overview" node in "Site administration > Plugins > Blocks"
     And the field "Default maximum courses" matches value "5"
-
