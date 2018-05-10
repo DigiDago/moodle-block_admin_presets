@@ -112,3 +112,4 @@ $string['value'] = 'setting value';
 $string['voidvalue'] = 'that setting does not have a value';
 $string['wrongfile'] = 'Wrong file';
 $string['wrongid'] = 'Wrong id';
+$string['privacy:null_reason'] = 'The admin presets block does not effect or store any user data';
