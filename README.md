@@ -17,3 +17,15 @@ Block to export and import Moodle administration settings
 
 ## See also
 * Modules and Plugins entry: https://moodle.org/plugins/view.php?plugin=block_admin_presets
+
+
+Maintainer
+============
+AdminPreset was initialy developed by David Monllaó. It is currently maintained by DigiDago team.
+
+
+Any Problems, questions, suggestions
+===================
+If you have a problem with this block, suggestions for improvement, drop an email at :
+- Clément PRUDHOMME :  contact@digidago.com
+- Github : https://github.com/DigiDago/moodle-block_admin_presets
