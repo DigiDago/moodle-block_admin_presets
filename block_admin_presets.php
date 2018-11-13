@@ -52,15 +52,13 @@ class block_admin_presets extends block_list {
             return $this->content;
         }
 
-        $temp = $OUTPUT->pix_icon("i/backup",
+        $this->content->items[] = $OUTPUT->pix_icon("i/backup",
                 get_string('actionexport', 'block_admin_presets'),
                 "moodle", array("class" => "icon")) . '<a title="'.
             get_string('actionexport', 'block_admin_presets').
             '" href="'.$CFG->wwwroot.'/blocks/admin_presets/index.php?action=export">'.
             get_string('actionexport', 'block_admin_presets').
             '</a>';
-
-        $this->content->items[] = $temp;
 
         $this->content->items[] = $OUTPUT->pix_icon("i/restore",
                 get_string('actionimport', 'block_admin_presets'),
