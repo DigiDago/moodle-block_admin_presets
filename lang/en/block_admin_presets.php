@@ -75,6 +75,7 @@ $string['markedasnonadvanced'] = 'marked as non advanced';
 $string['markedasnonforced'] = 'marked as non forced';
 $string['markedasnonlocked'] = 'marked as non locked';
 $string['newvalue'] = 'New setting value';
+$string['loading'] = 'loading';
 $string['noparamtype'] = 'There are no param type for that setting';
 $string['nopresets'] = 'You don\'t have presets';
 $string['nothingloaded'] = 'All preset settings skipped, they are already loaded';
