@@ -47,20 +47,24 @@ class admin_presets_load_form extends moodleform
         $mform = &$this->_form;
 
         // Moodle settings table.
-        $mform->addElement('header', 'general', get_string('adminsettings', 'block_admin_presets'));
+        $mform->addElement('header', 'general',
+            get_string('adminsettings', 'block_admin_presets'));
 
         $class = '';
         if (!$this->preview) {
             $class = 'ygtv-checkbox';
         }
-        $mform->addElement('html', '<div id="settings_tree_div" class="' . $class . '"><img src="' . $OUTPUT->image_url('i/loading_small') . '"/></div>');
+        $mform->addElement('html', '<div id="settings_tree_div" class="' . $class .
+            '"><img src="' . $OUTPUT->pix_icon('i/loading_small',
+                get_string('loading', 'block_admin_presets')) . '"/></div>');
 
         $mform->addElement('hidden', 'id');
         $mform->setType('id', PARAM_INT);
 
         // Submit.
         if (!$this->preview) {
-            $mform->addElement('submit', 'admin_presets_submit', get_string('loadselected', 'block_admin_presets'));
+            $mform->addElement('submit', 'admin_presets_submit',
+                get_string('loadselected', 'block_admin_presets'));
         }
     }
 }

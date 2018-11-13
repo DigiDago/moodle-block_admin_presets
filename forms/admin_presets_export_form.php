@@ -59,7 +59,8 @@ class admin_presets_export_form extends moodleform {
         $mform->addElement('header', 'general',
             get_string('adminsettings', 'block_admin_presets'));
         $mform->addElement('html', '<div id="settings_tree_div" class="ygtv-checkbox"><img src="'.
-            $OUTPUT->image_url('i/loading_small').'"/></div><br/>');
+            $OUTPUT->pix_icon('i/loading_small', get_string('loading',
+                'block_admin_presets')).'"/></div><br/>');
 
         // Submit.
         $mform->addElement('submit', 'admin_presets_submit', get_string('savechanges'));
