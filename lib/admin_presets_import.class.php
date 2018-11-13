@@ -24,19 +24,23 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-require_once($CFG->dirroot.'/blocks/admin_presets/lib/admin_presets_base.class.php');
+defined('MOODLE_INTERNAL') || die();
 
-class admin_presets_import extends admin_presets_base {
+require_once($CFG->dirroot . '/blocks/admin_presets/lib/admin_presets_base.class.php');
+
+class admin_presets_import extends admin_presets_base
+{
 
 
     /**
      * Displays the import moodleform
      */
-    public function show() {
+    public function show()
+    {
 
         global $CFG;
 
-        $url = $CFG->wwwroot.'/blocks/admin_presets/index.php?action=import&mode=execute';
+        $url = $CFG->wwwroot . '/blocks/admin_presets/index.php?action=import&mode=execute';
         $this->moodleform = new admin_presets_import_form($url);
     }
 
@@ -44,7 +48,8 @@ class admin_presets_import extends admin_presets_base {
     /**
      * Imports the xmlfile into DB
      */
-    public function execute() {
+    public function execute()
+    {
 
         global $CFG, $USER, $DB;
 
@@ -52,21 +57,22 @@ class admin_presets_import extends admin_presets_base {
 
         $sitesettings = $this->_get_site_settings();
 
-        $url = $CFG->wwwroot.'/blocks/admin_presets/index.php?action=import&mode=execute';
+        $url = $CFG->wwwroot . '/blocks/admin_presets/index.php?action=import&mode=execute';
         $this->moodleform = new admin_presets_import_form($url);
 
         if ($data = $this->moodleform->get_data()) {
 
             $usercontext = context_user::instance($USER->id);
 
-            // Getting the file
+            // Getting the file.
             $xmlcontent = $this->moodleform->get_file_content('xmlfile');
             $xml = simplexml_load_string($xmlcontent);
             if (!$xml) {
-                redirect($CFG->wwwroot.'/blocks/admin_presets/index.php?action=import', get_string('wrongfile', 'block_admin_presets'), 4);
+                redirect($CFG->wwwroot . '/blocks/admin_presets/index.php?action=import',
+                    get_string('wrongfile', 'block_admin_presets'), 4);
             }
 
-            // Preset info
+            // Preset info.
             $preset = new StdClass();
             foreach ($this->rel as $dbname => $xmlname) {
                 $preset->$dbname = (String)$xml->$xmlname;
@@ -74,12 +80,12 @@ class admin_presets_import extends admin_presets_base {
             $preset->userid = $USER->id;
             $preset->timeimported = time();
 
-            // Overwrite preset name
+            // Overwrite preset name.
             if ($data->name != '') {
                 $preset->name = $data->name;
             }
 
-            // Inserting preset
+            // Inserting preset.
             if (!$preset->id = $DB->insert_record('block_admin_presets', $preset)) {
                 print_error('errorinserting', 'block_admin_presets');
             }
@@ -87,7 +93,7 @@ class admin_presets_import extends admin_presets_base {
             // Store it here for logging and other future id-oriented stuff.
             $this->id = $preset->id;
 
-            // Plugins settings
+            // Plugins settings.
             $xmladminsettings = $xml->ADMIN_SETTINGS[0];
             foreach ($xmladminsettings as $plugin => $settings) {
 
@@ -112,13 +118,15 @@ class admin_presets_import extends admin_presets_base {
                         }
 
                         if (empty($sitesettings[$plugin][$name])) {
-                            debugging('Setting '.$plugin.'/'.$name.' not supported by this Moodle version', DEBUG_DEVELOPER);
+                            debugging('Setting ' . $plugin . '/' . $name .
+                                ' not supported by this Moodle version', DEBUG_DEVELOPER);
                             continue;
                         }
 
-                        // Cleaning the setting value
-                        if (!$presetsetting = $this->_get_setting($sitesettings[$plugin][$name]->get_settingdata(), $value)) {
-                            debugging('Setting '.$plugin.'/'.$name.' not implemented', DEBUG_DEVELOPER);
+                        // Cleaning the setting value.
+                        if (!$presetsetting = $this->_get_setting($sitesettings[$plugin][$name]->get_settingdata(),
+                            $value)) {
+                            debugging('Setting ' . $plugin . '/' . $name . ' not implemented', DEBUG_DEVELOPER);
                             continue;
                         }
 
@@ -131,21 +139,22 @@ class admin_presets_import extends admin_presets_base {
                         $item->name = $name;
                         $item->value = $presetsetting->get_value();
 
-                        // Inserting items
+                        // Inserting items.
                         if (!$item->id = $DB->insert_record('block_admin_presets_it', $item)) {
                             print_error('errorinserting', 'block_admin_presets');
                         }
 
-                        // Adding settings attributes
+                        // Adding settings attributes.
                         if ($setting->attributes() && ($itemattributes = $presetsetting->get_attributes())) {
 
                             foreach ($setting->attributes() as $attrname => $attrvalue) {
 
                                 $itemattributenames = array_flip($itemattributes);
 
-                                // Check the attribute existence
+                                // Check the attribute existence.
                                 if (!isset($itemattributenames[$attrname])) {
-                                    debugging('The '.$plugin.'/'.$name.' attribute '.$attrname.' is not supported by this Moodle version', DEBUG_DEVELOPER);
+                                    debugging('The ' . $plugin . '/' . $name . ' attribute ' . $attrname .
+                                        ' is not supported by this Moodle version', DEBUG_DEVELOPER);
                                     continue;
                                 }
 
@@ -156,22 +165,21 @@ class admin_presets_import extends admin_presets_base {
                                 $DB->insert_record('block_admin_presets_it_a', $attr);
                             }
                         }
-
                     }
                 }
             }
 
-            // If there are no valid or selected settings we should delete the admin preset record
+            // If there are no valid or selected settings we should delete the admin preset record.
             if (empty($settingsfound)) {
                 $DB->delete_records('block_admin_presets', array('id' => $preset->id));
-                redirect($CFG->wwwroot.'/blocks/admin_presets/index.php?action=import', get_string('novalidsettings', 'block_admin_presets'), 4);
+                redirect($CFG->wwwroot . '/blocks/admin_presets/index.php?action=import',
+                    get_string('novalidsettings', 'block_admin_presets'), 4);
             }
 
             // Trigger the as it is usually triggered after execute finishes.
             $this->log();
 
-            redirect($CFG->wwwroot.'/blocks/admin_presets/index.php?action=load&id='.$preset->id);
+            redirect($CFG->wwwroot . '/blocks/admin_presets/index.php?action=load&id=' . $preset->id);
         }
     }
-
 }

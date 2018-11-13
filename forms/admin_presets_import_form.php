@@ -24,26 +24,28 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-require_once($CFG->dirroot.'/lib/formslib.php');
+defined('MOODLE_INTERNAL') || die();
 
+require_once($CFG->dirroot.'/lib/formslib.php');
 
 class admin_presets_import_form extends moodleform {
 
 
-    function definition () {
-
-        global $CFG;
+    public function definition () {
 
         $mform = & $this->_form;
 
-        $mform->addElement('header', 'general', get_string('selectfile', 'block_admin_presets'));
+        $mform->addElement('header', 'general',
+            get_string('selectfile', 'block_admin_presets'));
 
         // File upload
-        $mform->addElement('filepicker', 'xmlfile', get_string('selectfile', 'block_admin_presets'));
+        $mform->addElement('filepicker', 'xmlfile',
+            get_string('selectfile', 'block_admin_presets'));
         $mform->addRule('xmlfile', null, 'required');
 
         // Rename input
-        $mform->addElement('text', 'name', get_string('renamepreset', 'block_admin_presets'), 'maxlength="254" size="40"');
+        $mform->addElement('text', 'name',
+            get_string('renamepreset', 'block_admin_presets'), 'maxlength="254" size="40"');
         $mform->setType('name', PARAM_TEXT);
 
         $mform->addElement('submit', 'admin_presets_submit', get_string('savechanges'));

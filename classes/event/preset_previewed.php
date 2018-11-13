@@ -45,6 +45,7 @@ class preset_previewed extends \core\event\base {
     }
 
     public function get_url() {
-        return new \moodle_url('/blocks/admin_presets/index.php', array('action' => 'load', 'mode' => 'preview', 'id' => $this->objectid));
+        return new \moodle_url('/blocks/admin_presets/index.php',
+            array('action' => 'load', 'mode' => 'preview', 'id' => $this->objectid));
     }
 }

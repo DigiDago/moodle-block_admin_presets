@@ -24,13 +24,15 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-require_once($CFG->dirroot.'/blocks/admin_presets/lib/admin_presets_base.class.php');
-require_once($CFG->dirroot.'/backup/util/xml/xml_writer.class.php');
-require_once($CFG->dirroot.'/backup/util/xml/output/xml_output.class.php');
-require_once($CFG->dirroot.'/backup/util/xml/output/memory_xml_output.class.php');
+defined('MOODLE_INTERNAL') || die();
 
-class admin_presets_export extends admin_presets_base {
+require_once($CFG->dirroot . '/blocks/admin_presets/lib/admin_presets_base.class.php');
+require_once($CFG->dirroot . '/backup/util/xml/xml_writer.class.php');
+require_once($CFG->dirroot . '/backup/util/xml/output/xml_output.class.php');
+require_once($CFG->dirroot . '/backup/util/xml/output/memory_xml_output.class.php');
 
+class admin_presets_export extends admin_presets_base
+{
 
     /**
      * Shows the initial form to export/save admin settings
@@ -38,37 +40,38 @@ class admin_presets_export extends admin_presets_base {
      * Loads the database configuration and prints
      * the settings in a hierical table
      */
-    public function show() {
+    public function show()
+    {
 
-        global $CFG, $PAGE;
+        global $CFG;
 
-        // Load site settings in the common format and do the js calls to populate the tree
+        // Load site settings in the common format and do the js calls to populate the tree.
         $settings = $this->_get_site_settings();
         $this->_get_settings_branches($settings);
 
-        $url = $CFG->wwwroot.'/blocks/admin_presets/index.php?action=export&mode=execute';
+        $url = $CFG->wwwroot . '/blocks/admin_presets/index.php?action=export&mode=execute';
         $this->moodleform = new admin_presets_export_form($url);
     }
-
 
     /**
      * Stores the preset into the DB
      */
-    public function execute() {
+    public function execute()
+    {
 
         global $CFG, $USER, $DB;
 
         confirm_sesskey();
 
-        $url = $CFG->wwwroot.'/blocks/admin_presets/index.php?action=export&mode=execute';
+        $url = $CFG->wwwroot . '/blocks/admin_presets/index.php?action=export&mode=execute';
         $this->moodleform = new admin_presets_export_form($url);
 
-        // Reload site settings
+        // Reload site settings.
         $sitesettings = $this->_get_site_settings();
 
         if ($data = $this->moodleform->get_data()) {
 
-            // admin_preset record
+            // admin_preset record.
             $preset = new StdClass();
             $preset->userid = $USER->id;
             $preset->name = $data->name;
@@ -86,7 +89,7 @@ class admin_presets_export extends admin_presets_base {
             // Store it here for logging and other future id-oriented stuff.
             $this->id = $preset->id;
 
-            // We must ensure that there are settings selected
+            // We must ensure that there are settings selected.
             $presetsettings = array();
             foreach ($_POST as $varname => $value) {
 
@@ -96,7 +99,7 @@ class admin_presets_export extends admin_presets_base {
 
                     $settingsfound = true;
 
-                    // Avoid sensible data
+                    // Avoid sensible data.
                     if (!empty($data->excludesensiblesettings) && !empty($this->sensiblesettings[$varname])) {
                         continue;
                     }
@@ -112,7 +115,7 @@ class admin_presets_export extends admin_presets_base {
                         print_error('errorinserting', 'block_admin_presets');
                     }
 
-                    // Setting attributes must also be exported
+                    // Setting attributes must also be exported.
                     if ($attributes = $sitesettings[$setting->plugin][$setting->name]->get_attributes_values()) {
                         foreach ($attributes as $attributename => $value) {
 
@@ -127,27 +130,31 @@ class admin_presets_export extends admin_presets_base {
                 }
             }
 
-            // If there are no valid or selected settings we should delete the admin preset record
+            // If there are no valid or selected settings we should delete the admin preset record.
             if (empty($settingsfound)) {
                 $DB->delete_records('block_admin_presets', array('id' => $preset->id));
-                redirect($CFG->wwwroot.'/blocks/admin_presets/index.php?action=export', get_string('novalidsettingsselected', 'block_admin_presets'), 4);
+                redirect($CFG->wwwroot . '/blocks/admin_presets/index.php?action=export', get_string('novalidsettingsselected', 'block_admin_presets'), 4);
             }
-
         }
 
         // Trigger the as it is usually triggered after execute finishes.
         $this->log();
 
-        redirect($CFG->wwwroot.'/blocks/admin_presets/index.php');
+        redirect($CFG->wwwroot . '/blocks/admin_presets/index.php');
     }
 
 
     /**
      * To download system presets
      *
-     * @return  xmlfile   preset file
+     * @return void preset file
+     * @throws dml_exception
+     * @throws moodle_exception
+     * @throws xml_output_exception
+     * @throws xml_writer_exception
      */
-    public function download_xml() {
+    public function download_xml()
+    {
 
         global $DB;
 
@@ -161,46 +168,45 @@ class admin_presets_export extends admin_presets_base {
             print_error('errornopreset', 'block_admin_presets');
         }
 
-        // Start
+        // Start.
         $xmloutput = new memory_xml_output();
         $xmlwriter = new xml_writer($xmloutput);
         $xmlwriter->start();
 
-        // Preset data
+        // Preset data.
         $xmlwriter->begin_tag('PRESET');
         foreach ($this->rel as $dbname => $xmlname) {
-        	$xmlwriter->full_tag($xmlname, $preset->$dbname);
+            $xmlwriter->full_tag($xmlname, $preset->$dbname);
         }
 
-        // We ride through the settings array
+        // We ride through the settings array.
         $allsettings = $this->_get_settings_from_db($items);
         if ($allsettings) {
 
-        	$xmlwriter->begin_tag('ADMIN_SETTINGS');
+            $xmlwriter->begin_tag('ADMIN_SETTINGS');
 
             foreach ($allsettings as $plugin => $settings) {
 
                 $tagname = strtoupper($plugin);
 
-                // To aviod xml slash problems
+                // To aviod xml slash problems.
                 if (strstr($tagname, '/') != false) {
                     $tagname = str_replace('/', '__', $tagname);
                 }
 
-
                 $xmlwriter->begin_tag($tagname);
 
-                // One tag for each plugin setting
+                // One tag for each plugin setting.
                 if (!empty($settings)) {
 
                     $xmlwriter->begin_tag('SETTINGS');
 
                     foreach ($settings as $setting) {
 
-                        // Unset the tag attributes string
+                        // Unset the tag attributes string.
                         $attributes = array();
 
-                        // Getting setting attributes, if present
+                        // Getting setting attributes, if present.
                         $attrs = $DB->get_records('block_admin_presets_it_a', array('itemid' => $setting->itemid));
                         if ($attrs) {
                             foreach ($attrs as $attr) {
@@ -222,16 +228,13 @@ class admin_presets_export extends admin_presets_base {
 
         // End
         $xmlwriter->end_tag('PRESET');
-
         $xmlwriter->stop();
-
         $xmlstr = $xmloutput->get_allcontents();
 
         // Trigger the as it is usually triggered after execute finishes.
         $this->log();
 
-        $filename = addcslashes($preset->name, '"').'.xml';
+        $filename = addcslashes($preset->name, '"') . '.xml';
         send_file($xmlstr, $filename, 0, 0, true, true);
     }
-
 }

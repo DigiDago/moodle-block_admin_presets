@@ -24,10 +24,11 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+defined('MOODLE_INTERNAL') || die();
+
 require_once($CFG->dirroot.'/blocks/admin_presets/lib/admin_presets_base.class.php');
 
 class admin_presets_delete extends admin_presets_base {
-
 
     /**
      * Shows a confirm box
@@ -36,16 +37,20 @@ class admin_presets_delete extends admin_presets_base {
 
         global $DB, $CFG, $OUTPUT;
 
-        // Getting the preset name
+        // Getting the preset name.
         $presetdata = $DB->get_record('block_admin_presets', array('id' => $this->id), 'name');
 
         $deletetext = get_string("deletepreset", "block_admin_presets", $presetdata->name);
-        $confirmurl = $CFG->wwwroot.'/blocks/admin_presets/index.php?action='.$this->action.'&mode=execute&id='.$this->id.'&sesskey='.sesskey();
+        $confirmurl = $CFG->wwwroot.'/blocks/admin_presets/index.php?action='.
+            $this->action.'&mode=execute&id='.$this->id.'&sesskey='.sesskey();
         $cancelurl = $CFG->wwwroot.'/blocks/admin_presets/index.php';
 
-        // If the preset was applied add a warning text
-        if ($previouslyapplied = $DB->get_records('block_admin_presets_app', array('adminpresetid' => $this->id))) {
-            $deletetext .= '<br/><br/><strong>'.get_string("deletepreviouslyapplied", "block_admin_presets").'</strong>';
+        // If the preset was applied add a warning text.
+        if ($previouslyapplied = $DB->get_records('block_admin_presets_app',
+            array('adminpresetid' => $this->id))) {
+
+            $deletetext .= '<br/><br/><strong>'.
+                get_string("deletepreviouslyapplied", "block_admin_presets").'</strong>';
         }
 
         $this->outputs = $OUTPUT->confirm($deletetext, $confirmurl, $cancelurl);
@@ -65,7 +70,7 @@ class admin_presets_delete extends admin_presets_base {
             print_error('errordeleting', 'block_admin_presets');
         }
 
-        // Getting items ids before deleting to delete item attributes
+        // Getting items ids before deleting to delete item attributes.
         $items = $DB->get_records('block_admin_presets_it', array('adminpresetid' => $this->id), 'id');
         foreach ($items as $item) {
             $DB->delete_records('block_admin_presets_it_a', array('itemid' => $item->id));
@@ -75,23 +80,30 @@ class admin_presets_delete extends admin_presets_base {
             print_error('errordeleting', 'block_admin_presets');
         }
 
-        // Deleting the preset applications
-        if ($previouslyapplied = $DB->get_records('block_admin_presets_app', array('adminpresetid' => $this->id), 'id')) {
+        // Deleting the preset applications.
+        if ($previouslyapplied = $DB->get_records('block_admin_presets_app',
+            array('adminpresetid' => $this->id), 'id')) {
 
             foreach ($previouslyapplied as $application) {
 
-                // Deleting items
-                if (!$DB->delete_records('block_admin_presets_app_it', array('adminpresetapplyid' => $application->id))) {
+                // Deleting items.
+                if (!$DB->delete_records('block_admin_presets_app_it',
+                    array('adminpresetapplyid' => $application->id))) {
+
                     print_error('errordeleting', 'block_admin_presets');
                 }
 
-                // Deleting attributes
-                if (!$DB->delete_records('block_admin_presets_app_it_a', array('adminpresetapplyid' => $application->id))) {
+                // Deleting attributes.
+                if (!$DB->delete_records('block_admin_presets_app_it_a',
+                    array('adminpresetapplyid' => $application->id))) {
+
                     print_error('errordeleting', 'block_admin_presets');
                 }
             }
 
-            if (!$DB->delete_records('block_admin_presets_app', array('adminpresetid' => $this->id))) {
+            if (!$DB->delete_records('block_admin_presets_app',
+                array('adminpresetid' => $this->id))) {
+
                 print_error('errordeleting', 'block_admin_presets');
             }
         }
