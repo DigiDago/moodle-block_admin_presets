@@ -24,42 +24,47 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-require_once($CFG->dirroot.'/lib/formslib.php');
+defined('MOODLE_INTERNAL') || die();
 
+require_once($CFG->dirroot . '/lib/formslib.php');
 
-class admin_presets_load_form extends moodleform {
+class admin_presets_load_form extends moodleform
+{
 
     private $preview;
 
-    public function __construct($url, $preview = false) {
+    public function __construct($url, $preview = false)
+    {
         $this->preview = $preview;
         parent::__construct($url);
     }
 
+    public function definition()
+    {
 
-    function definition () {
+        global $OUTPUT;
 
-    	global $OUTPUT;
+        $mform = &$this->_form;
 
-        $mform = & $this->_form;
-
-        // Moodle settings table
-        $mform->addElement('header', 'general', get_string('adminsettings', 'block_admin_presets'));
-
+        // Moodle settings table.
+        $mform->addElement('header', 'general',
+            get_string('adminsettings', 'block_admin_presets'));
 
         $class = '';
         if (!$this->preview) {
             $class = 'ygtv-checkbox';
         }
-        $mform->addElement('html', '<div id="settings_tree_div" class="'.$class.'"><img src="'.$OUTPUT->image_url('i/loading_small').'"/></div>');
+        $mform->addElement('html', '<div id="settings_tree_div" class="' . $class .
+            '"><img src="' . $OUTPUT->pix_icon('i/loading_small',
+                get_string('loading', 'block_admin_presets')) . '"/></div>');
 
         $mform->addElement('hidden', 'id');
         $mform->setType('id', PARAM_INT);
 
-        // Submit
+        // Submit.
         if (!$this->preview) {
-            $mform->addElement('submit', 'admin_presets_submit', get_string('loadselected', 'block_admin_presets'));
+            $mform->addElement('submit', 'admin_presets_submit',
+                get_string('loadselected', 'block_admin_presets'));
         }
-
     }
 }

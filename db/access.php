@@ -27,7 +27,6 @@
 defined('MOODLE_INTERNAL') || die();
 
 $capabilities = array(
-
     'block/admin_presets:addinstance' => array(
         'captype' => 'write',
         'contextlevel' => CONTEXT_SYSTEM,
@@ -35,7 +34,6 @@ $capabilities = array(
             'manager' => CAP_ALLOW
         )
     )
-
 );
 
 

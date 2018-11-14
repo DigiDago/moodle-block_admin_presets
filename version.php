@@ -27,8 +27,8 @@
 defined('MOODLE_INTERNAL') || die();
 
 $plugin->version = 2018051201;
-$plugin->requires = 2017111300;        // Requires this Moodle version
+$plugin->requires = 2017111300;        // Requires this Moodle version.
 $plugin->component = 'block_admin_presets';
 $plugin->release = '2.1';
-$plugin->cron     = 0;
+$plugin->cron = 0;
 $plugin->maturity = MATURITY_STABLE;

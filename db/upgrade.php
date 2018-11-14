@@ -24,29 +24,40 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+defined('MOODLE_INTERNAL') || die();
+
 /**
- * @global moodle_database $DB
  * @param int $oldversion
  * @param object $block
+ * @return bool
+ * @throws coding_exception
+ * @throws ddl_exception
+ * @throws ddl_field_missing_exception
+ * @throws ddl_table_missing_exception
+ * @throws downgrade_exception
+ * @throws moodle_exception
+ * @throws upgrade_exception
+ * @global moodle_database $DB
  */
-function xmldb_block_admin_presets_upgrade($oldversion, $block) {
+function xmldb_block_admin_presets_upgrade($oldversion, $block)
+{
     global $DB;
 
     $dbman = $DB->get_manager();
 
     if ($oldversion < 2011063000) {
 
-        // Changing type of field moodleversion on table admin_preset to char
+        // Changing type of field moodleversion on table admin_preset to char.
         $table = new xmldb_table('admin_preset');
         $field = new xmldb_field('moodleversion', XMLDB_TYPE_CHAR, '20', null, XMLDB_NOTNULL, null, null, 'author');
 
-        // Launch change of type for field moodleversion
+        // Launch change of type for field moodleversion.
         $dbman->change_field_type($table, $field);
 
         upgrade_block_savepoint(true, 2011063000, 'admin_presets');
     }
 
-    // Renaming DB tables
+    // Renaming DB tables.
     if ($oldversion < 2012031401) {
 
         $tablenamechanges = array('admin_preset' => 'block_admin_presets',
@@ -56,10 +67,10 @@ function xmldb_block_admin_presets_upgrade($oldversion, $block) {
             'admin_preset_item' => 'block_admin_presets_it',
             'admin_preset_item_attr' => 'block_admin_presets_it_a');
 
-        // Just in case it gets to the max number of chars defined in the XSD
+        // Just in case it gets to the max number of chars defined in the XSD.
         try {
 
-            // Renaming the tables
+            // Renaming the tables.
             foreach ($tablenamechanges as $from => $to) {
 
                 $table = new xmldb_table($from);
@@ -68,10 +79,10 @@ function xmldb_block_admin_presets_upgrade($oldversion, $block) {
                 }
             }
 
-        // Print error and rollback changes
+            // Print error and rollback changes.
         } catch (Exception $e) {
 
-            // Rollback tablename changes
+            // Rollback tablename changes.
             foreach ($tablenamechanges as $to => $from) {
 
                 $table = new xmldb_table($from);
@@ -82,7 +93,6 @@ function xmldb_block_admin_presets_upgrade($oldversion, $block) {
 
             $debuginfo = get_string('errorupgradetablenamesdebug', 'block_admin_presets');
             throw new moodle_exception('errorupgradetablenames', 'block_admin_presets', '', null, $debuginfo);
-            return false;
         }
 
         upgrade_block_savepoint(true, 2012031401, 'admin_presets');

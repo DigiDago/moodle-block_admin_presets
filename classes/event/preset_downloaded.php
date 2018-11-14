@@ -45,6 +45,7 @@ class preset_downloaded extends \core\event\base {
     }
 
     public function get_url() {
-        return new \moodle_url('/blocks/admin_presets/index.php', array('action' => 'export', 'mode' => 'download_xml', 'id' => $this->objectid, 'sesskey' => sesskey()));
+        return new \moodle_url('/blocks/admin_presets/index.php',
+            array('action' => 'export', 'mode' => 'download_xml', 'id' => $this->objectid, 'sesskey' => sesskey()));
     }
 }
