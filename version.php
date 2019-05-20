@@ -18,7 +18,7 @@
  * Admin presets block main controller
  *
  * @package          blocks/admin_presets
- * @copyright        2017 Digidago <contact@digidago.com><www.digidago.com>
+ * @copyright        2019 Pimenko <support@pimenko.com><pimenko.com>
  * @author           Jordan Kesraoui | DigiDago
  * @orignalauthor    David Monllaó <david.monllao@urv.cat>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
@@ -26,9 +26,9 @@
 
 defined('MOODLE_INTERNAL') || die();
 
-$plugin->version = 2018051201;
-$plugin->requires = 2017111300;        // Requires this Moodle version.
+$plugin->version = 2019052000;
+$plugin->requires = 2016052300;        // Requires this Moodle version
 $plugin->component = 'block_admin_presets';
-$plugin->release = '2.1';
-$plugin->cron = 0;
+$plugin->release = '3.0';
+$plugin->cron     = 0;
 $plugin->maturity = MATURITY_STABLE;

@@ -4,7 +4,7 @@ notifications:
     on_failure: change
 language: php
 php:
-  - "7.0"
+  - "7.2"
 node_js:
     - "iojs"
     - "7"

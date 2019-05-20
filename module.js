@@ -3,6 +3,7 @@ M.block_admin_presets = {
     tree: null,
     nodes: null,
 
+
     /**
      * Initializes the TreeView object and adds the submit listener
      */
@@ -76,7 +77,7 @@ M.block_admin_presets = {
         Y.YUI2.util.Event.on('id_admin_presets_submit', 'click', function() {
 
             // We need the moodle form to add the checked settings
-            var settingsPresetsForm = document.getElementById('mform1');
+            var settingsPresetsForm = document.getElementById('id_admin_presets_submit').parentNode;
 
             var hiLit = context.tree.getNodesByProperty('highlightState', 1);
             if (Y.YUI2.lang.isNull(hiLit)) {

@@ -18,7 +18,7 @@
  * Admin presets block main controller
  *
  * @package          blocks/admin_presets
- * @copyright        2017 Digidago <contact@digidago.com><www.digidago.com>
+ * @copyright        2019 Pimenko <support@pimenko.com><pimenko.com>
  * @author           Jordan Kesraoui | DigiDago
  * @orignalauthor    David Monllaó <david.monllao@urv.cat>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
@@ -272,8 +272,6 @@ abstract class admin_preset_setting
      * @param   mixed $value
      * @param   mixed $actualvalue
      * @return  integer The stored config_log id
-     * @throws dml_exception
-     * @throws moodle_exception
      */
     protected function to_log($plugin, $name, $value, $actualvalue)
     {
@@ -301,8 +299,6 @@ abstract class admin_preset_setting
      * Saves the setting attributes values
      *
      * @return     array        Array of inserted ids (in config_log)
-     * @throws dml_exception
-     * @throws moodle_exception
      */
     public function save_attributes_values()
     {
@@ -350,7 +346,6 @@ class admin_presets_delegation
      * @param     boolean $value
      * @param     string $type Indicates the "extra" setting
      * @return    string
-     * @throws coding_exception
      */
     public function extra_set_visiblevalue($value, $type)
     {
@@ -385,7 +380,6 @@ class admin_preset_admin_setting_configtext extends admin_preset_setting
      *
      * @param    string $value
      * @return   boolean              Cleaned or not, but always true
-     * @throws coding_exception
      */
     protected function set_value($value)
     {
@@ -494,8 +488,6 @@ class admin_preset_admin_setting_sitesettext extends admin_preset_admin_setting_
      * @param bool $name
      * @param   mixed $value
      * @return  integer
-     * @throws dml_exception
-     * @throws moodle_exception
      */
     public function save_value($name = false, $value = false)
     {

@@ -18,7 +18,7 @@
  * Admin presets block main controller
  *
  * @package          blocks/admin_presets
- * @copyright        2017 Digidago <contact@digidago.com><www.digidago.com>
+ * @copyright        2019 Pimenko <support@pimenko.com><pimenko.com>
  * @author           Jordan Kesraoui | DigiDago
  * @orignalauthor    David Monllaó <david.monllao@urv.cat>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
