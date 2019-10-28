@@ -29,7 +29,6 @@ require_once('../../config.php');
 $action = optional_param('action', 'base', PARAM_ALPHA);
 $mode = optional_param('mode', 'show', PARAM_ALPHAEXT);
 
-
 require_login();
 
 if (!$context = context_system::instance()) {
@@ -38,12 +37,11 @@ if (!$context = context_system::instance()) {
 
 require_capability('moodle/site:config', $context);
 
-
 // Loads the required action class and form.
-$classname = 'admin_presets_'.$action;
-$formname = $classname.'_form';
-$formpath = $CFG->dirroot.'/blocks/admin_presets/forms/'.$formname.'.php';
-require_once($CFG->dirroot.'/blocks/admin_presets/lib/'.$classname.'.class.php');
+$classname = 'admin_presets_' . $action;
+$formname = $classname . '_form';
+$formpath = $CFG->dirroot . '/blocks/admin_presets/forms/' . $formname . '.php';
+require_once($CFG->dirroot . '/blocks/admin_presets/lib/' . $classname . '.class.php');
 if (file_exists($formpath)) {
     require_once($formpath);
 }
@@ -58,7 +56,6 @@ $url->param('mode', $mode);
 $PAGE->set_url($url);
 $PAGE->set_pagelayout('admin');
 $PAGE->set_context($context);
-
 
 // Executes the required action.
 $instance = new $classname();

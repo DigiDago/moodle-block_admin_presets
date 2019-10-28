@@ -31,8 +31,7 @@ require_once($CFG->dirroot . '/backup/util/xml/xml_writer.class.php');
 require_once($CFG->dirroot . '/backup/util/xml/output/xml_output.class.php');
 require_once($CFG->dirroot . '/backup/util/xml/output/memory_xml_output.class.php');
 
-class admin_presets_export extends admin_presets_base
-{
+class admin_presets_export extends admin_presets_base {
 
     /**
      * Shows the initial form to export/save admin settings
@@ -40,8 +39,7 @@ class admin_presets_export extends admin_presets_base
      * Loads the database configuration and prints
      * the settings in a hierical table
      */
-    public function show()
-    {
+    public function show() {
 
         global $CFG;
 
@@ -56,8 +54,7 @@ class admin_presets_export extends admin_presets_base
     /**
      * Stores the preset into the DB
      */
-    public function execute()
-    {
+    public function execute() {
 
         global $CFG, $USER, $DB;
 
@@ -133,7 +130,8 @@ class admin_presets_export extends admin_presets_base
             // If there are no valid or selected settings we should delete the admin preset record.
             if (empty($settingsfound)) {
                 $DB->delete_records('block_admin_presets', array('id' => $preset->id));
-                redirect($CFG->wwwroot . '/blocks/admin_presets/index.php?action=export', get_string('novalidsettingsselected', 'block_admin_presets'), 4);
+                redirect($CFG->wwwroot . '/blocks/admin_presets/index.php?action=export',
+                        get_string('novalidsettingsselected', 'block_admin_presets'), 4);
             }
         }
 
@@ -142,7 +140,6 @@ class admin_presets_export extends admin_presets_base
 
         redirect($CFG->wwwroot . '/blocks/admin_presets/index.php');
     }
-
 
     /**
      * To download system presets
@@ -153,8 +150,7 @@ class admin_presets_export extends admin_presets_base
      * @throws xml_output_exception
      * @throws xml_writer_exception
      */
-    public function download_xml()
-    {
+    public function download_xml() {
 
         global $DB;
 

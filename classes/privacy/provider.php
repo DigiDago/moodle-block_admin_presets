@@ -21,8 +21,8 @@ defined('MOODLE_INTERNAL') || die();
 use core_privacy\local\metadata\null_provider;
 
 class provider implements
-    // This plugin does not store any personal user data.
-    null_provider {
+        // This plugin does not store any personal user data.
+        null_provider {
 
     /**
      * Get the language string identifier with the component's language
@@ -30,7 +30,7 @@ class provider implements
      *
      * @return  string
      */
-    public static function get_reason() : string {
+    public static function get_reason(): string {
         return 'privacy:null_reason';
     }
 }

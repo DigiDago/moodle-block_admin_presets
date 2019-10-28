@@ -28,15 +28,12 @@ defined('MOODLE_INTERNAL') || die();
 
 require_once($CFG->dirroot . '/blocks/admin_presets/lib/admin_presets_base.class.php');
 
-class admin_presets_import extends admin_presets_base
-{
-
+class admin_presets_import extends admin_presets_base {
 
     /**
      * Displays the import moodleform
      */
-    public function show()
-    {
+    public function show() {
 
         global $CFG;
 
@@ -44,12 +41,10 @@ class admin_presets_import extends admin_presets_base
         $this->moodleform = new admin_presets_import_form($url);
     }
 
-
     /**
      * Imports the xmlfile into DB
      */
-    public function execute()
-    {
+    public function execute() {
 
         global $CFG, $USER, $DB;
 
@@ -69,13 +64,13 @@ class admin_presets_import extends admin_presets_base
             $xml = simplexml_load_string($xmlcontent);
             if (!$xml) {
                 redirect($CFG->wwwroot . '/blocks/admin_presets/index.php?action=import',
-                    get_string('wrongfile', 'block_admin_presets'), 4);
+                        get_string('wrongfile', 'block_admin_presets'), 4);
             }
 
             // Preset info.
             $preset = new StdClass();
             foreach ($this->rel as $dbname => $xmlname) {
-                $preset->$dbname = (String)$xml->$xmlname;
+                $preset->$dbname = (String) $xml->$xmlname;
             }
             $preset->userid = $USER->id;
             $preset->timeimported = time();
@@ -119,13 +114,13 @@ class admin_presets_import extends admin_presets_base
 
                         if (empty($sitesettings[$plugin][$name])) {
                             debugging('Setting ' . $plugin . '/' . $name .
-                                ' not supported by this Moodle version', DEBUG_DEVELOPER);
+                                    ' not supported by this Moodle version', DEBUG_DEVELOPER);
                             continue;
                         }
 
                         // Cleaning the setting value.
                         if (!$presetsetting = $this->_get_setting($sitesettings[$plugin][$name]->get_settingdata(),
-                            $value)) {
+                                $value)) {
                             debugging('Setting ' . $plugin . '/' . $name . ' not implemented', DEBUG_DEVELOPER);
                             continue;
                         }
@@ -154,7 +149,7 @@ class admin_presets_import extends admin_presets_base
                                 // Check the attribute existence.
                                 if (!isset($itemattributenames[$attrname])) {
                                     debugging('The ' . $plugin . '/' . $name . ' attribute ' . $attrname .
-                                        ' is not supported by this Moodle version', DEBUG_DEVELOPER);
+                                            ' is not supported by this Moodle version', DEBUG_DEVELOPER);
                                     continue;
                                 }
 
@@ -173,7 +168,7 @@ class admin_presets_import extends admin_presets_base
             if (empty($settingsfound)) {
                 $DB->delete_records('block_admin_presets', array('id' => $preset->id));
                 redirect($CFG->wwwroot . '/blocks/admin_presets/index.php?action=import',
-                    get_string('novalidsettings', 'block_admin_presets'), 4);
+                        get_string('novalidsettings', 'block_admin_presets'), 4);
             }
 
             // Trigger the as it is usually triggered after execute finishes.

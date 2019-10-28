@@ -34,7 +34,7 @@ if ($ADMIN->fulltree) {
     $sensiblesettingsdefault .= 'enrolpassword@@moodlecourse, allowedip@@none, blockedip@@none';
 
     $settings->add(new admin_setting_configtextarea('admin_presets/sensiblesettings',
-        get_string('sensiblesettings', 'block_admin_presets'),
-        get_string('sensiblesettingstext', 'block_admin_presets'),
-        $sensiblesettingsdefault, PARAM_TEXT));
+            get_string('sensiblesettings', 'block_admin_presets'),
+            get_string('sensiblesettingstext', 'block_admin_presets'),
+            $sensiblesettingsdefault, PARAM_TEXT));
 }
