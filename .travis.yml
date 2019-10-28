@@ -1,32 +1,45 @@
-notifications:
-  email:
-    on_success: change
-    on_failure: change
+sudo: required
+
 language: php
+
+dist: xenial
+
+services:
+  - mysql
+
 php:
-  - "7.2"
-node_js:
-    - "iojs"
-    - "7"
-addons:
-  postgresql: "9.3"
-before_script:
- - "export DISPLAY=:99.0"
- - "sh -e /etc/init.d/xvfb start"
- - sleep 3 # give xvfb some time to start
- - git clone git://github.com/moodle/moodle ../moodle && cd ../moodle
- - sudo apt-get update > /dev/null
- - travis_retry composer install
- - mv ../moodle-block_admin_presets blocks/admin_presets
- - cp config-dist.php config.php
- - sh -c "sed -i -e s/'password'/''/ -e s/example.com/localhost/ -e s%192.168.1.250%localhost% -e s%127.0.0.1/moodle%localhost:8000% -e s%/home/example%$HOME% -e 's%\(\$CFG.*bht\)%\n\1%' -e 's%\(\$CFG.*behat_wwwroot.*http://localhost:8000\)%\n\1%' config.php"
- - psql -c 'create database moodle;' -U postgres
- - sed -i s/\'username\'/\'postgres\'/ config.php
- - cat config.php
- - mkdir -m777 $HOME/moodledata
- - php -S localhost:8000 2> /dev/null > /dev/null &
- - npm install -g grunt
- - npm install -g grunt-cli
- - npm install
+  - 7.2
+
+env:
+  global:
+    - MOODLE_BRANCH=master
+    - IGNORE_PATHS=amd/build,amd/src/bootstrap.js
+    - IGNORE_NAMES=*.txt,moodle.css,moodle-rtl.css,moodle_min.css,editor.css,editor_min.css,Gruntfile.js
+    - DB=mysqli
+
+matrix:
+  - php: 7.2
+    env: DB=mysqli   TASK=PHPUNIT
+
+cache:
+  directories:
+    - $HOME/.composer/cache
+    - $HOME/.npm
+
+before_install:
+  - cd ../..
+  - composer selfupdate
+  - composer create-project -n --no-dev moodlerooms/moodle-plugin-ci ci ^1
+  - export PATH="$(cd ci/bin; pwd):$(cd ci/vendor/bin; pwd):$PATH"
+
+install:
+  - moodle-plugin-ci install
+
 script:
- - grunt gherkinlint
+  - moodle-plugin-ci phplint
+  - moodle-plugin-ci phpcpd
+  - moodle-plugin-ci phpmd
+  - moodle-plugin-ci codechecker
+  - moodle-plugin-ci csslint
+  - moodle-plugin-ci jshint
+  #- moodle-plugin-ci phpunit
