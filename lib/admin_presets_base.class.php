@@ -369,8 +369,7 @@ class admin_presets_base {
 
                                 if (isset($values->defaultsetting['value'])) {
                                     $settingvalue = $values->defaultsetting['value'];
-
-                                    //  Configtime case, does not have a 'value' default setting.
+                                    // Configtime case, does not have a 'value' default setting.
                                 } else {
                                     $settingvalue = 0;
                                 }
@@ -386,15 +385,10 @@ class admin_presets_base {
 
                         // If there is no setting class defined continue.
                         if (!$setting = $this->_get_setting($values, $settingvalue)) {
-
-                            if (get_class($values) != 'admin_setting_heading') {
-                                /* debugging(get_class($values).' class is not going to export/import settings',
-                                    DEBUG_DEVELOPER);*/
-                            }
                             continue;
                         }
 
-                        // admin_preset_setting childs with.
+                        // Admin_preset_setting childs with.
                         // attributes provides an attributes array.
                         if ($attributes = $setting->get_attributes()) {
 

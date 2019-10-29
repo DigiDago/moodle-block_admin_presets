@@ -942,8 +942,8 @@ class admin_preset_admin_setting_quiz_reviewoptions extends admin_preset_setting
 
         $marked = array();
 
-        foreach (admin_preset_admin_setting_quiz_reviewoptions::$times as $timemask => $time) {
-            foreach (admin_preset_admin_setting_quiz_reviewoptions::$things as $typemask => $type) {
+        foreach (self::$times as $timemask => $time) {
+            foreach (self::$things as $typemask => $type) {
                 if ($this->value & $timemask & $typemask) {
                     $marked[$time][] = get_string($type, "quiz");
                 }

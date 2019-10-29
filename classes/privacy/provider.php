@@ -30,7 +30,7 @@ class provider implements
      *
      * @return  string
      */
-    public static function get_reason(): string {
+    public static function get_reason() : string {
         return 'privacy:null_reason';
     }
 }
