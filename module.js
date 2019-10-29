@@ -7,15 +7,15 @@ M.block_admin_presets = {
     /**
      * Initializes the TreeView object and adds the submit listener
      */
-    init: function(Y) {
+    init: function (Y) {
 
-        Y.use('yui2-treeview', function(Y) {
+        Y.use('yui2-treeview', function (Y) {
 
             var context = M.block_admin_presets;
 
             context.tree = new Y.YUI2.widget.TreeView("settings_tree_div");
 
-            context.nodes = new Array();
+            context.nodes = [];
             context.nodes.root = context.tree.getRoot();
         });
     },
@@ -23,7 +23,7 @@ M.block_admin_presets = {
     /**
      * Creates a tree branch
      */
-    addNodes: function(Y, ids, nodeids, labels, descriptions, parents) {
+    addNodes: function (Y, ids, nodeids, labels, descriptions, parents) {
 
         var context = M.block_admin_presets;
 
@@ -46,37 +46,37 @@ M.block_admin_presets = {
         }
     },
 
-    render: function(Y) {
+    render: function (Y) {
 
         var context = M.block_admin_presets;
-
-        // Cleaning categories without children
-        if (categories = context.tree.getNodesByProperty('settingId', 'category')) {
+        var categories = context.tree.getNodesByProperty('settingId', 'category');
+        // Cleaning categories without children.
+        if (categories) {
             for (var i = 0; i < categories.length; i++) {
                 if (!categories[i].hasChildren()) {
                     context.tree.popNode(categories[i]);
                 }
             }
         }
-
-        if (categories = context.tree.getRoot().children) {
-            for (var i = 0; i < categories.length; i++) {
-                if (!categories[i].hasChildren()) {
-                    context.tree.popNode(categories[i]);
+        categories = context.tree.getRoot().children;
+        if (categories) {
+            for (var j = 0; j < categories.length; j++) {
+                if (!categories[j].hasChildren()) {
+                    context.tree.popNode(categories[j]);
                 }
             }
         }
 
-        // Context.tree.expandAll();
+        // Context.tree.expandAll();.
         context.tree.setNodesProperty('propagateHighlightUp', true);
         context.tree.setNodesProperty('propagateHighlightDown', true);
         context.tree.subscribe('clickEvent', context.tree.onEventToggleHighlight);
         context.tree.render();
 
-        // Listener to create one node for each selected setting
-        Y.YUI2.util.Event.on('id_admin_presets_submit', 'click', function() {
+        // Listener to create one node for each selected setting.
+        Y.YUI2.util.Event.on('id_admin_presets_submit', 'click', function () {
 
-            // We need the moodle form to add the checked settings
+            // We need the moodle form to add the checked settings.
             var settingsPresetsForm = document.getElementById('id_admin_presets_submit').parentNode;
 
             var hiLit = context.tree.getNodesByProperty('highlightState', 1);
@@ -85,18 +85,18 @@ M.block_admin_presets = {
 
             } else {
 
-                // Only for debugging
+                // Only for debugging.
                 var labels = [];
 
                 for (var i = 0; i < hiLit.length; i++) {
 
-                    treeNode = hiLit[i];
+                    var treeNode = hiLit[i];
 
-                    // Only settings not setting categories nor settings pages
-                    if (treeNode.settingId != 'category' && treeNode.settingId != 'page') {
+                    // Only settings not setting categories nor settings pages.
+                    if (treeNode.settingId !== 'category' && treeNode.settingId !== 'page') {
                         labels.push(treeNode.settingId);
 
-                        // If the node does not exists we add it
+                        // If the node does not exists we add it.
                         if (!document.getElementById(treeNode.settingId)) {
 
                             var settingInput = document.createElement('input');
