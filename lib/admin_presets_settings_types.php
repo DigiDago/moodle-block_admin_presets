@@ -26,8 +26,7 @@
 
 defined('MOODLE_INTERNAL') || die();
 
-abstract class admin_preset_setting
-{
+abstract class admin_preset_setting {
 
     /**
      * @var admin_setting
@@ -80,8 +79,7 @@ abstract class admin_preset_setting
      * @param admin_setting $settingdata admin_setting subclass
      * @param mixed $dbsettingvalue Actual value
      */
-    public function __construct(admin_setting $settingdata, $dbsettingvalue)
-    {
+    public function __construct(admin_setting $settingdata, $dbsettingvalue) {
 
         $this->settingdata = $settingdata;
         $this->delegation = new admin_presets_delegation();
@@ -99,63 +97,17 @@ abstract class admin_preset_setting
     }
 
     /**
-     * Returns the TreeView node identifier
-     */
-    public function get_id()
-    {
-        return $this->settingdata->name . '@@' . $this->settingdata->plugin;
-    }
-
-    public function get_value()
-    {
-        return $this->value;
-    }
-
-    public function get_visiblevalue()
-    {
-        return $this->visiblevalue;
-    }
-
-    public function get_description()
-    {
-
-        // PARAM_TEXT clean because the alt attribute does not support html.
-        $description = clean_param($this->settingdata->description, PARAM_TEXT);
-        return $this->encode_string($description);
-    }
-
-    public function get_text()
-    {
-        return $this->encode_string($this->text);
-    }
-
-    public function get_attributes()
-    {
-        return $this->attributes;
-    }
-
-    public function get_attributes_values()
-    {
-        return $this->attributesvalues;
-    }
-
-    public function get_settingdata()
-    {
-        return $this->settingdata;
-    }
-
-    /**
      * Each class can overwrite this method to specify extra processes
      */
-    protected function set_behaviors() {}
+    protected function set_behaviors() {
+    }
 
     /**
      * Applies the children class specific behaviors
      *
      * See admin_presets_delegation() for the available extra behaviors
      */
-    protected function apply_behaviors()
-    {
+    protected function apply_behaviors() {
 
         if (!empty($this->behaviors)) {
 
@@ -169,12 +121,70 @@ abstract class admin_preset_setting
     }
 
     /**
+     * Returns the TreeView node identifier
+     */
+    public function get_id() {
+        return $this->settingdata->name . '@@' . $this->settingdata->plugin;
+    }
+
+    public function get_value() {
+        return $this->value;
+    }
+
+    /**
+     * Sets the setting value cleaning it
+     *
+     * Child classes should overwrite method to clean more acurately
+     *
+     * @param mixed $value Setting value
+     * @return   mixed                 Returns false if wrong param value
+     */
+    protected function set_value($value) {
+        $this->value = $value;
+    }
+
+    public function get_visiblevalue() {
+        return $this->visiblevalue;
+    }
+
+    /**
+     * Sets the visible name for the setting selected value
+     *
+     * In most cases the child classes will overwrite
+     */
+    protected function set_visiblevalue() {
+        $this->visiblevalue = $this->value;
+    }
+
+    public function get_description() {
+
+        // PARAM_TEXT clean because the alt attribute does not support html.
+        $description = clean_param($this->settingdata->description, PARAM_TEXT);
+        return $this->encode_string($description);
+    }
+
+    /**
+     * Encodes a string to send it to js
+     *
+     * @param string $string
+     * @return string
+     */
+    protected function encode_string($string) {
+
+        $encoded = rawurlencode($string);
+        return $encoded;
+    }
+
+    public function get_text() {
+        return $this->encode_string($this->text);
+    }
+
+    /**
      * Sets the text to display on the settings tree
      *
      * Default format: I'm a setting visible name (setting value: "VALUE")
      */
-    public function set_text()
-    {
+    public function set_text() {
 
         $this->set_visiblevalue();
 
@@ -184,45 +194,57 @@ abstract class admin_preset_setting
         $this->text = $namediv . $valuediv . '<br/>';
     }
 
-    /**
-     * Encodes a string to send it to js
-     *
-     * @param string $string
-     * @return string
-     */
-    protected function encode_string($string)
-    {
-
-        $encoded = rawurlencode($string);
-        return $encoded;
+    public function get_attributes() {
+        return $this->attributes;
     }
 
-    /**
-     * Sets the setting value cleaning it
-     *
-     * Child classes should overwrite method to clean more acurately
-     *
-     * @param    mixed $value Setting value
-     * @return   mixed                 Returns false if wrong param value
-     */
-    protected function set_value($value)
-    {
-        $this->value = $value;
+    public function get_attributes_values() {
+        return $this->attributesvalues;
     }
 
-    /**
-     * Sets the visible name for the setting selected value
-     *
-     * In most cases the child classes will overwrite
-     */
-    protected function set_visiblevalue()
-    {
-        $this->visiblevalue = $this->value;
+    public function get_settingdata() {
+        return $this->settingdata;
     }
 
-    public function set_attribute_value($name, $value)
-    {
+    public function set_attribute_value($name, $value) {
         $this->attributesvalues[$name] = $value;
+    }
+
+    /**
+     * Saves the setting attributes values
+     *
+     * @return     array        Array of inserted ids (in config_log)
+     */
+    public function save_attributes_values() {
+
+        // Plugin name or null.
+        $plugin = $this->settingdata->plugin;
+        if ($plugin == 'none' || $plugin == '') {
+            $plugin = null;
+        }
+
+        if (!$this->attributesvalues) {
+            return false;
+        }
+
+        // To store inserted ids.
+        $ids = array();
+        foreach ($this->attributesvalues as $name => $value) {
+
+            // Getting actual setting.
+            $actualsetting = get_config($plugin, $name);
+
+            // If it's the actual setting get off.
+            if ($value == $actualsetting) {
+                return false;
+            }
+
+            if ($id = $this->save_value($name, $value)) {
+                $ids[] = $id;
+            }
+        }
+
+        return $ids;
     }
 
     /**
@@ -234,8 +256,7 @@ abstract class admin_preset_setting
      * @throws dml_exception
      * @throws moodle_exception
      */
-    public function save_value($name = false, $value = null)
-    {
+    public function save_value($name = false, $value = null) {
 
         // Object values if no arguments.
         if ($value === null) {
@@ -267,14 +288,13 @@ abstract class admin_preset_setting
     /**
      * Copy of config_write method of the admin_setting class
      *
-     * @param   string $plugin
-     * @param   string $name
-     * @param   mixed $value
-     * @param   mixed $actualvalue
+     * @param string $plugin
+     * @param string $name
+     * @param mixed $value
+     * @param mixed $actualvalue
      * @return  integer The stored config_log id
      */
-    protected function to_log($plugin, $name, $value, $actualvalue)
-    {
+    protected function to_log($plugin, $name, $value, $actualvalue) {
 
         global $DB, $USER;
 
@@ -294,61 +314,21 @@ abstract class admin_preset_setting
 
         return $id;
     }
-
-    /**
-     * Saves the setting attributes values
-     *
-     * @return     array        Array of inserted ids (in config_log)
-     */
-    public function save_attributes_values()
-    {
-
-        // Plugin name or null.
-        $plugin = $this->settingdata->plugin;
-        if ($plugin == 'none' || $plugin == '') {
-            $plugin = null;
-        }
-
-        if (!$this->attributesvalues) {
-            return false;
-        }
-
-        // To store inserted ids.
-        $ids = array();
-        foreach ($this->attributesvalues as $name => $value) {
-
-            // Getting actual setting.
-            $actualsetting = get_config($plugin, $name);
-
-            // If it's the actual setting get off.
-            if ($value == $actualsetting) {
-                return false;
-            }
-
-            if ($id = $this->save_value($name, $value)) {
-                $ids[] = $id;
-            }
-        }
-
-        return $ids;
-    }
 }
 
 /**
  * Cross-class methods
  */
-class admin_presets_delegation
-{
+class admin_presets_delegation {
 
     /**
      * Adds a piece of string to the $type setting
      *
-     * @param     boolean $value
-     * @param     string $type Indicates the "extra" setting
+     * @param boolean $value
+     * @param string $type Indicates the "extra" setting
      * @return    string
      */
-    public function extra_set_visiblevalue($value, $type)
-    {
+    public function extra_set_visiblevalue($value, $type) {
 
         // Adding the advanced value to the text string if present.
         if ($value) {
@@ -361,8 +341,7 @@ class admin_presets_delegation
         return ', ' . $string;
     }
 
-    public function extra_loadchoices(admin_setting &$adminsetting)
-    {
+    public function extra_loadchoices(admin_setting &$adminsetting) {
         $adminsetting->load_choices();
     }
 }
@@ -372,17 +351,15 @@ class admin_presets_delegation
 /**
  * Basic text setting, cleans the param using the admin_setting paramtext attribute
  */
-class admin_preset_admin_setting_configtext extends admin_preset_setting
-{
+class admin_preset_admin_setting_configtext extends admin_preset_setting {
 
     /**
      * Validates the value using paramtype attribute
      *
-     * @param    string $value
+     * @param string $value
      * @return   boolean              Cleaned or not, but always true
      */
-    protected function set_value($value)
-    {
+    protected function set_value($value) {
 
         $this->value = $value;
 
@@ -410,11 +387,9 @@ class admin_preset_admin_setting_configtext extends admin_preset_setting
 /**
  * Adds the advanced attribute
  */
-class admin_preset_admin_setting_configtext_with_advanced extends admin_preset_admin_setting_configtext
-{
+class admin_preset_admin_setting_configtext_with_advanced extends admin_preset_admin_setting_configtext {
 
-    public function __construct(admin_setting $settingdata, $dbsettingvalue)
-    {
+    public function __construct(admin_setting $settingdata, $dbsettingvalue) {
 
         // To look for other values.
         $this->attributes = array('fix' => $settingdata->name . '_adv');
@@ -424,19 +399,16 @@ class admin_preset_admin_setting_configtext_with_advanced extends admin_preset_a
     /**
      * Delegates
      */
-    protected function set_visiblevalue()
-    {
+    protected function set_visiblevalue() {
         parent::set_visiblevalue();
         $this->visiblevalue .= $this->delegation->extra_set_visiblevalue(
-            $this->attributesvalues[$this->attributes['fix']], 'advanced');
+                $this->attributesvalues[$this->attributes['fix']], 'advanced');
     }
 }
 
-class admin_preset_admin_setting_configiplist extends admin_preset_admin_setting_configtext
-{
+class admin_preset_admin_setting_configiplist extends admin_preset_admin_setting_configtext {
 
-    protected function set_value($value)
-    {
+    protected function set_value($value) {
 
         // Just in wrong format case.
         $this->value = '';
@@ -455,11 +427,9 @@ class admin_preset_admin_setting_configiplist extends admin_preset_admin_setting
 /**
  * Reimplementation to allow human friendly view of the selected regexps
  */
-class admin_preset_admin_setting_devicedetectregex extends admin_preset_admin_setting_configtext
-{
+class admin_preset_admin_setting_devicedetectregex extends admin_preset_admin_setting_configtext {
 
-    public function set_visiblevalue()
-    {
+    public function set_visiblevalue() {
 
         $values = json_decode($this->get_value());
 
@@ -479,18 +449,16 @@ class admin_preset_admin_setting_devicedetectregex extends admin_preset_admin_se
 /**
  * Reimplemented to store values in course table, not in config or config_plugins
  */
-class admin_preset_admin_setting_sitesettext extends admin_preset_admin_setting_configtext
-{
+class admin_preset_admin_setting_sitesettext extends admin_preset_admin_setting_configtext {
 
     /**
      * Overwritten to store the value in the course table
      *
      * @param bool $name
-     * @param   mixed $value
+     * @param mixed $value
      * @return  integer
      */
-    public function save_value($name = false, $value = false)
-    {
+    public function save_value($name = false, $value = false) {
 
         global $DB;
 
@@ -524,16 +492,14 @@ class admin_preset_admin_setting_sitesettext extends admin_preset_admin_setting_
     }
 }
 
-class admin_preset_admin_setting_configselect extends admin_preset_setting
-{
+class admin_preset_admin_setting_configselect extends admin_preset_setting {
 
     /**
      * $value must be one of the setting choices
      *
      * @return     boolean          true if the value one of the setting choices
      */
-    protected function set_value($value)
-    {
+    protected function set_value($value) {
 
         // When we intantiate the class we need the choices.
         if (empty($this->settindata->choices) && method_exists($this->settingdata, 'load_choices')) {
@@ -552,8 +518,7 @@ class admin_preset_admin_setting_configselect extends admin_preset_setting
         return false;
     }
 
-    protected function set_visiblevalue()
-    {
+    protected function set_visiblevalue() {
 
         // Just to avoid heritage problems.
         if (empty($this->settingdata->choices[$this->value])) {
@@ -565,14 +530,12 @@ class admin_preset_admin_setting_configselect extends admin_preset_setting
     }
 }
 
-class admin_preset_admin_setting_bloglevel extends admin_preset_admin_setting_configselect
-{
+class admin_preset_admin_setting_bloglevel extends admin_preset_admin_setting_configselect {
 
     /**
      * Extended to change the block visibility
      */
-    public function save_value($name = false, $value = false)
-    {
+    public function save_value($name = false, $value = false) {
 
         global $DB;
 
@@ -594,13 +557,11 @@ class admin_preset_admin_setting_bloglevel extends admin_preset_admin_setting_co
 /**
  * Adds support for the "advanced" attribute
  */
-class admin_preset_admin_setting_configselect_with_advanced extends admin_preset_admin_setting_configselect
-{
+class admin_preset_admin_setting_configselect_with_advanced extends admin_preset_admin_setting_configselect {
 
     protected $advancedkey;
 
-    public function __construct(admin_setting $settingdata, $dbsettingvalue)
-    {
+    public function __construct(admin_setting $settingdata, $dbsettingvalue) {
 
         // Getting the advanced defaultsetting attribute name.
         if (is_array($settingdata->defaultsetting)) {
@@ -619,46 +580,37 @@ class admin_preset_admin_setting_configselect_with_advanced extends admin_preset
     /**
      * Funcionality used by other _with_advanced settings
      */
-    protected function set_visiblevalue()
-    {
+    protected function set_visiblevalue() {
         parent::set_visiblevalue();
         $this->visiblevalue .= $this->delegation->extra_set_visiblevalue(
-            $this->attributesvalues[$this->attributes[$this->advancedkey]], 'advanced');
+                $this->attributesvalues[$this->attributes[$this->advancedkey]], 'advanced');
     }
 }
 
-class admin_preset_mod_quiz_admin_setting_browsersecurity extends admin_preset_admin_setting_configselect_with_advanced
-{
+class admin_preset_mod_quiz_admin_setting_browsersecurity extends admin_preset_admin_setting_configselect_with_advanced {
 
-    public function set_behaviors()
-    {
+    public function set_behaviors() {
         $this->behaviors['loadchoices'] = &$this->settingdata;
     }
 }
 
-class admin_preset_mod_quiz_admin_setting_grademethod extends admin_preset_admin_setting_configselect_with_advanced
-{
+class admin_preset_mod_quiz_admin_setting_grademethod extends admin_preset_admin_setting_configselect_with_advanced {
 
-    public function set_behaviors()
-    {
+    public function set_behaviors() {
         $this->behaviors['loadchoices'] = &$this->settingdata;
     }
 }
 
-class admin_preset_mod_quiz_admin_setting_overduehandling extends admin_preset_admin_setting_configselect_with_advanced
-{
+class admin_preset_mod_quiz_admin_setting_overduehandling extends admin_preset_admin_setting_configselect_with_advanced {
 
-    public function set_behaviors()
-    {
+    public function set_behaviors() {
         $this->behaviors['loadchoices'] = &$this->settingdata;
     }
 }
 
-class admin_preset_mod_quiz_admin_setting_user_image extends admin_preset_admin_setting_configselect_with_advanced
-{
+class admin_preset_mod_quiz_admin_setting_user_image extends admin_preset_admin_setting_configselect_with_advanced {
 
-    public function set_behaviors()
-    {
+    public function set_behaviors() {
         $this->behaviors['loadchoices'] = &$this->settingdata;
     }
 }
@@ -666,8 +618,7 @@ class admin_preset_mod_quiz_admin_setting_user_image extends admin_preset_admin_
 /**
  * A select with force and advanced options
  */
-class admin_preset_admin_setting_gradecat_combo extends admin_preset_admin_setting_configselect
-{
+class admin_preset_admin_setting_gradecat_combo extends admin_preset_admin_setting_configselect {
 
     /**
      * One db value for two setting attributes
@@ -675,20 +626,18 @@ class admin_preset_admin_setting_gradecat_combo extends admin_preset_admin_setti
      * @param admin_setting $settingdata
      * @param unknown_type $dbsettingvalue
      */
-    public function __construct(admin_setting $settingdata, $dbsettingvalue)
-    {
+    public function __construct(admin_setting $settingdata, $dbsettingvalue) {
 
         // set_attribute_value() will mod the VARNAME_flag value.
         $this->attributes = array('forced' => $settingdata->name . '_flag',
-            'adv' => $settingdata->name . '_flag');
+                'adv' => $settingdata->name . '_flag');
         parent::__construct($settingdata, $dbsettingvalue);
     }
 
     /**
      * Special treatment! the value be extracted from the $value argument
      */
-    protected function set_visiblevalue()
-    {
+    protected function set_visiblevalue() {
         parent::set_visiblevalue();
 
         $flagvalue = $this->attributesvalues[$this->settingdata->name . '_flag'];
@@ -715,14 +664,12 @@ class admin_preset_admin_setting_gradecat_combo extends admin_preset_admin_setti
 /**
  * Extends the base class and lists the selected values separated by comma
  */
-class admin_preset_admin_setting_configmultiselect extends admin_preset_setting
-{
+class admin_preset_admin_setting_configmultiselect extends admin_preset_setting {
 
     /**
      * Ensure that the $value values are setting choices
      */
-    protected function set_value($value)
-    {
+    protected function set_value($value) {
 
         if ($value) {
             $options = explode(',', $value);
@@ -743,8 +690,7 @@ class admin_preset_admin_setting_configmultiselect extends admin_preset_setting
         $this->value = $value;
     }
 
-    protected function set_visiblevalue()
-    {
+    protected function set_visiblevalue() {
 
         $values = explode(',', $this->value);
         $visiblevalues = array();
@@ -768,16 +714,13 @@ class admin_preset_admin_setting_configmultiselect extends admin_preset_setting
 /**
  * Extends configselect to reuse set_valuevisible
  */
-class admin_preset_admin_setting_users_with_capability extends admin_preset_admin_setting_configmultiselect
-{
+class admin_preset_admin_setting_users_with_capability extends admin_preset_admin_setting_configmultiselect {
 
-    protected function set_behaviors()
-    {
+    protected function set_behaviors() {
         $this->behaviors['loadchoices'] = &$this->settingdata;
     }
 
-    protected function set_value($value)
-    {
+    protected function set_value($value) {
 
         // Dirty hack (the value stored in the DB is '').
         $this->settingdata->choices[''] = $this->settingdata->choices['$@NONE@$'];
@@ -788,22 +731,38 @@ class admin_preset_admin_setting_users_with_capability extends admin_preset_admi
 
 /**
  * Generalizes a configmultipleselect with load_choices()
+ *
  * @abstract
  */
-abstract class admin_preset_admin_setting_configmultiselect_with_loader extends admin_preset_admin_setting_configmultiselect
-{
+abstract class admin_preset_admin_setting_configmultiselect_with_loader extends admin_preset_admin_setting_configmultiselect {
 
-    public function set_behaviors()
-    {
+    public function set_behaviors() {
         $this->behaviors['loadchoices'] = &$this->settingdata;
     }
 }
 
-class admin_preset_admin_setting_configtime extends admin_preset_setting
-{
+class admin_preset_admin_setting_configtime extends admin_preset_setting {
 
-    protected function set_value($value)
-    {
+    /**
+     * To check that the value is one of the options
+     *
+     * @param string $name
+     * @param mixed $value
+     */
+    public function set_attribute_value($name, $value) {
+
+        for ($i = 0; $i < 60; $i = $i + 5) {
+            $minutes[$i] = $i;
+        }
+
+        if (!empty($minutes[$value])) {
+            $this->attributesvalues[$name] = $value;
+        } else {
+            $this->attributesvalues[$name] = $this->settingdata->defaultsetting['m'];
+        }
+    }
+
+    protected function set_value($value) {
 
         $this->attributes = array('m' => $this->settingdata->name2);
 
@@ -818,44 +777,20 @@ class admin_preset_admin_setting_configtime extends admin_preset_setting
         $this->value = $value;
     }
 
-    protected function set_visiblevalue()
-    {
+    protected function set_visiblevalue() {
         $this->visiblevalue = $this->value . ':' . $this->attributesvalues[$this->settingdata->name2];
-    }
-
-    /**
-     * To check that the value is one of the options
-     *
-     * @param  string $name
-     * @param  mixed $value
-     */
-    public function set_attribute_value($name, $value)
-    {
-
-        for ($i = 0; $i < 60; $i = $i + 5) {
-            $minutes[$i] = $i;
-        }
-
-        if (!empty($minutes[$value])) {
-            $this->attributesvalues[$name] = $value;
-        } else {
-            $this->attributesvalues[$name] = $this->settingdata->defaultsetting['m'];
-        }
     }
 }
 
 /** CHECKBOXES **/
-class admin_preset_admin_setting_configcheckbox extends admin_preset_setting
-{
+class admin_preset_admin_setting_configcheckbox extends admin_preset_setting {
 
-    protected function set_value($value)
-    {
+    protected function set_value($value) {
         $this->value = clean_param($value, PARAM_BOOL);
         return true;
     }
 
-    protected function set_visiblevalue()
-    {
+    protected function set_visiblevalue() {
 
         if ($this->value) {
             $str = get_string('yes');
@@ -867,11 +802,9 @@ class admin_preset_admin_setting_configcheckbox extends admin_preset_setting
     }
 }
 
-class admin_preset_admin_setting_configcheckbox_with_advanced extends admin_preset_admin_setting_configcheckbox
-{
+class admin_preset_admin_setting_configcheckbox_with_advanced extends admin_preset_admin_setting_configcheckbox {
 
-    public function __construct(admin_setting $settingdata, $dbsettingvalue)
-    {
+    public function __construct(admin_setting $settingdata, $dbsettingvalue) {
 
         // To look for other values.
         $this->attributes = array('adv' => $settingdata->name . '_adv');
@@ -881,19 +814,16 @@ class admin_preset_admin_setting_configcheckbox_with_advanced extends admin_pres
     /**
      * Uses delegation
      */
-    protected function set_visiblevalue()
-    {
+    protected function set_visiblevalue() {
         parent::set_visiblevalue();
         $this->visiblevalue .= $this->delegation->extra_set_visiblevalue(
-            $this->attributesvalues[$this->attributes['adv']], 'advanced');
+                $this->attributesvalues[$this->attributes['adv']], 'advanced');
     }
 }
 
-class admin_preset_admin_setting_configcheckbox_with_lock extends admin_preset_admin_setting_configcheckbox
-{
+class admin_preset_admin_setting_configcheckbox_with_lock extends admin_preset_admin_setting_configcheckbox {
 
-    public function __construct(admin_setting $settingdata, $dbsettingvalue)
-    {
+    public function __construct(admin_setting $settingdata, $dbsettingvalue) {
 
         // To look for other values.
         $this->attributes = array('locked' => $settingdata->name . '_locked');
@@ -903,11 +833,10 @@ class admin_preset_admin_setting_configcheckbox_with_lock extends admin_preset_a
     /**
      * Uses delegation
      */
-    protected function set_visiblevalue()
-    {
+    protected function set_visiblevalue() {
         parent::set_visiblevalue();
         $this->visiblevalue .= $this->delegation->extra_set_visiblevalue(
-            $this->attributesvalues[$this->attributes['locked']], 'locked');
+                $this->attributesvalues[$this->attributes['locked']], 'locked');
     }
 }
 
@@ -918,11 +847,9 @@ class admin_preset_admin_setting_configcheckbox_with_lock extends admin_preset_a
  *
  * @abstract
  */
-class admin_preset_admin_setting_configmulticheckbox extends admin_preset_admin_setting_configmultiselect
-{
+class admin_preset_admin_setting_configmulticheckbox extends admin_preset_admin_setting_configmultiselect {
 
-    public function set_behaviors()
-    {
+    public function set_behaviors() {
         $this->behaviors['loadchoices'] = &$this->settingdata;
     }
 }
@@ -930,16 +857,13 @@ class admin_preset_admin_setting_configmulticheckbox extends admin_preset_admin_
 /**
  * It doesn't specify loadchoices behavior because is set_visiblevalue who needs it
  */
-class admin_preset_admin_setting_special_backupdays extends admin_preset_setting
-{
+class admin_preset_admin_setting_special_backupdays extends admin_preset_setting {
 
-    protected function set_value($value)
-    {
+    protected function set_value($value) {
         $this->value = clean_param($value, PARAM_SEQUENCE);
     }
 
-    protected function set_visiblevalue()
-    {
+    protected function set_visiblevalue() {
 
         // TODO Try to use $this->behaviors.
         $this->settingdata->load_choices();
@@ -961,11 +885,9 @@ class admin_preset_admin_setting_special_backupdays extends admin_preset_setting
 }
 
 /** OTHERS **/
-class admin_preset_admin_setting_special_calendar_weekend extends admin_preset_setting
-{
+class admin_preset_admin_setting_special_calendar_weekend extends admin_preset_setting {
 
-    protected function set_visiblevalue()
-    {
+    protected function set_visiblevalue() {
 
         if (!$this->value) {
             parent::set_visiblevalue();
@@ -986,31 +908,29 @@ class admin_preset_admin_setting_special_calendar_weekend extends admin_preset_s
 /**
  * Backward compatibility for Moodle 2.0
  */
-class admin_preset_admin_setting_quiz_reviewoptions extends admin_preset_setting
-{
+class admin_preset_admin_setting_quiz_reviewoptions extends admin_preset_setting {
 
     // Caution VENOM! admin_setting_quiz_reviewoptions vars can't be accessed.
     private static $times = array(
-        QUIZ_REVIEW_IMMEDIATELY => 'reviewimmediately',
-        QUIZ_REVIEW_OPEN => 'reviewopen',
-        QUIZ_REVIEW_CLOSED => 'reviewclosed');
+            QUIZ_REVIEW_IMMEDIATELY => 'reviewimmediately',
+            QUIZ_REVIEW_OPEN => 'reviewopen',
+            QUIZ_REVIEW_CLOSED => 'reviewclosed');
 
     private static $things = array(
-        QUIZ_REVIEW_RESPONSES => 'responses',
-        QUIZ_REVIEW_ANSWERS => 'answers',
-        QUIZ_REVIEW_FEEDBACK => 'feedback',
-        QUIZ_REVIEW_GENERALFEEDBACK => 'generalfeedback',
-        QUIZ_REVIEW_SCORES => 'scores',
-        QUIZ_REVIEW_OVERALLFEEDBACK => 'overallfeedback');
+            QUIZ_REVIEW_RESPONSES => 'responses',
+            QUIZ_REVIEW_ANSWERS => 'answers',
+            QUIZ_REVIEW_FEEDBACK => 'feedback',
+            QUIZ_REVIEW_GENERALFEEDBACK => 'generalfeedback',
+            QUIZ_REVIEW_SCORES => 'scores',
+            QUIZ_REVIEW_OVERALLFEEDBACK => 'overallfeedback');
 
     /**
      * Stores the setting data and the selected value
      *
      * @param admin_setting $settingdata admin_setting subclass
-     * @param       mixed $dbsettingvalue Actual value
+     * @param mixed $dbsettingvalue Actual value
      */
-    public function __construct(admin_setting $settingdata, $dbsettingvalue)
-    {
+    public function __construct(admin_setting $settingdata, $dbsettingvalue) {
         $this->attributes = array('fix' => $settingdata->name . '_adv');
         parent::__construct($settingdata, $dbsettingvalue);
     }
@@ -1018,13 +938,12 @@ class admin_preset_admin_setting_quiz_reviewoptions extends admin_preset_setting
     /**
      * Delegates
      */
-    protected function set_visiblevalue()
-    {
+    protected function set_visiblevalue() {
 
         $marked = array();
 
-        foreach (admin_preset_admin_setting_quiz_reviewoptions::$times as $timemask => $time) {
-            foreach (admin_preset_admin_setting_quiz_reviewoptions::$things as $typemask => $type) {
+        foreach (self::$times as $timemask => $time) {
+            foreach (self::$things as $typemask => $type) {
                 if ($this->value & $timemask & $typemask) {
                     $marked[$time][] = get_string($type, "quiz");
                 }
@@ -1033,7 +952,7 @@ class admin_preset_admin_setting_quiz_reviewoptions extends admin_preset_setting
 
         foreach ($marked as $time => $types) {
             $visiblevalues[] = '<strong>' . get_string($time, "quiz") .
-                ':</strong> ' . implode(', ', $types);
+                    ':</strong> ' . implode(', ', $types);
         }
         $this->visiblevalue = implode('<br/>', $visiblevalues);
 
@@ -1050,14 +969,27 @@ class admin_preset_admin_setting_quiz_reviewoptions extends admin_preset_setting
 /**
  * Compatible with moodle 2.1 onwards (20120314)
  */
-class admin_preset_mod_quiz_admin_review_setting extends admin_preset_setting
-{
+class admin_preset_mod_quiz_admin_review_setting extends admin_preset_setting {
+
+    /**
+     * Overwrite to add the reviewoptions text
+     */
+    public function set_text() {
+
+        $this->set_visiblevalue();
+
+        $name = get_string('reviewoptionsheading', 'quiz') .
+                ': ' . $this->settingdata->visiblename;
+        $namediv = '<div class="admin_presets_tree_name">' . $name . '</div>';
+        $valuediv = '<div class="admin_presets_tree_value">' . $this->visiblevalue . '</div>';
+
+        $this->text = $namediv . $valuediv . '<br/>';
+    }
 
     /**
      * The setting value is a sum of 'mod_quiz_admin_review_setting::times'
      */
-    protected function set_visiblevalue()
-    {
+    protected function set_visiblevalue() {
 
         // Getting the masks descriptions (mod_quiz_admin_review_setting protected method).
         $reflectiontimes = new ReflectionMethod('mod_quiz_admin_review_setting', 'times');
@@ -1076,78 +1008,158 @@ class admin_preset_mod_quiz_admin_review_setting extends admin_preset_setting
 
         $this->visiblevalue = $visiblevalue;
     }
-
-    /**
-     * Overwrite to add the reviewoptions text
-     */
-    public function set_text()
-    {
-
-        $this->set_visiblevalue();
-
-        $name = get_string('reviewoptionsheading', 'quiz') .
-            ': ' . $this->settingdata->visiblename;
-        $namediv = '<div class="admin_presets_tree_name">' . $name . '</div>';
-        $valuediv = '<div class="admin_presets_tree_value">' . $this->visiblevalue . '</div>';
-
-        $this->text = $namediv . $valuediv . '<br/>';
-    }
 }
 
 /* We need to extend all those class */
 
-class admin_preset_admin_setting_configtextarea extends admin_preset_admin_setting_configtext {}
-class admin_preset_admin_setting_configfile extends admin_preset_admin_setting_configtext {}
-class admin_preset_admin_setting_configexecutable extends admin_preset_admin_setting_configfile {}
-class admin_preset_admin_setting_configdirectory extends admin_preset_admin_setting_configfile {}
-class admin_preset_admin_setting_special_backup_auto_destination extends admin_preset_admin_setting_configdirectory {}
-class admin_preset_admin_setting_configpasswordunmask extends admin_preset_admin_setting_configtext {}
-class admin_preset_admin_setting_langlist extends admin_preset_admin_setting_configtext {}
-class admin_preset_admin_setting_configcolourpicker extends admin_preset_admin_setting_configtext {}
-class admin_preset_admin_setting_emoticons extends admin_preset_setting {}
-class admin_preset_admin_setting_confightmleditor extends admin_preset_admin_setting_configtext {}
-class admin_preset_admin_setting_configtext_trim_lower extends admin_preset_admin_setting_configtext {}
-class admin_preset_admin_setting_special_gradepointmax extends admin_preset_admin_setting_configtext {}
-class admin_preset_admin_setting_special_gradepointdefault extends admin_preset_admin_setting_configtext {}
-class admin_preset_admin_setting_configempty extends admin_preset_admin_setting_configtext {}
-class admin_preset_admin_setting_configtext_with_maxlength extends admin_preset_admin_setting_configtext {}
-class admin_preset_editor_tinymce_json_setting_textarea extends admin_preset_admin_setting_configtext {}
+class admin_preset_admin_setting_configtextarea extends admin_preset_admin_setting_configtext {
+}
+
+class admin_preset_admin_setting_configfile extends admin_preset_admin_setting_configtext {
+}
+
+class admin_preset_admin_setting_configexecutable extends admin_preset_admin_setting_configfile {
+}
+
+class admin_preset_admin_setting_configdirectory extends admin_preset_admin_setting_configfile {
+}
+
+class admin_preset_admin_setting_special_backup_auto_destination extends admin_preset_admin_setting_configdirectory {
+}
+
+class admin_preset_admin_setting_configpasswordunmask extends admin_preset_admin_setting_configtext {
+}
+
+class admin_preset_admin_setting_langlist extends admin_preset_admin_setting_configtext {
+}
+
+class admin_preset_admin_setting_configcolourpicker extends admin_preset_admin_setting_configtext {
+}
+
+class admin_preset_admin_setting_emoticons extends admin_preset_setting {
+}
+
+class admin_preset_admin_setting_confightmleditor extends admin_preset_admin_setting_configtext {
+}
+
+class admin_preset_admin_setting_configtext_trim_lower extends admin_preset_admin_setting_configtext {
+}
+
+class admin_preset_admin_setting_special_gradepointmax extends admin_preset_admin_setting_configtext {
+}
+
+class admin_preset_admin_setting_special_gradepointdefault extends admin_preset_admin_setting_configtext {
+}
+
+class admin_preset_admin_setting_configempty extends admin_preset_admin_setting_configtext {
+}
+
+class admin_preset_admin_setting_configtext_with_maxlength extends admin_preset_admin_setting_configtext {
+}
+
+class admin_preset_editor_tinymce_json_setting_textarea extends admin_preset_admin_setting_configtext {
+}
+
 /**
  * I'm not overwriting set_visiblevalue() as there is a lot of logic to duplicate.
  */
-class admin_preset_admin_setting_configduration extends admin_preset_admin_setting_configtext {}
-class admin_preset_enrol_flatfile_role_setting extends admin_preset_admin_setting_configtext {}
+class admin_preset_admin_setting_configduration extends admin_preset_admin_setting_configtext {
+}
+
+class admin_preset_enrol_flatfile_role_setting extends admin_preset_admin_setting_configtext {
+}
+
 /**
  * I'm not overwriting set_visiblevalue() as there is a lot of logic to duplicate.
+ *
  * @see admin_preset_admin_setting_configduration
  */
-class admin_preset_admin_setting_configduration_with_advanced extends admin_preset_admin_setting_configtext_with_advanced {}
-class admin_preset_admin_setting_special_frontpagedesc extends admin_preset_admin_setting_sitesettext {}
-class admin_preset_admin_setting_special_selectsetup extends admin_preset_admin_setting_configselect{}
-class admin_preset_admin_setting_sitesetselect extends admin_preset_admin_setting_configselect {}
-class admin_preset_admin_setting_special_grademinmaxtouse extends admin_preset_admin_setting_configselect {}
-class admin_preset_admin_setting_my_grades_report extends admin_preset_admin_setting_configselect {}
-class admin_preset_admin_setting_servertimezone extends admin_preset_admin_setting_configselect {}
-class admin_preset_admin_setting_forcetimezone extends admin_preset_admin_setting_configselect {}
-class admin_preset_enrol_database_admin_setting_category extends admin_preset_admin_setting_configselect {}
-class admin_preset_enrol_ldap_admin_setting_category extends admin_preset_admin_setting_configselect {}
-class admin_preset_format_singleactivity_admin_setting_activitytype extends admin_preset_admin_setting_configselect {}
-class admin_preset_admin_setting_courselist_frontpage extends admin_preset_admin_setting_configmultiselect_with_loader {}
-class admin_preset_admin_setting_configmultiselect_modules extends admin_preset_admin_setting_configmultiselect_with_loader {}
-class admin_preset_admin_settings_country_select extends admin_preset_admin_setting_configmultiselect_with_loader {}
-class admin_preset_admin_setting_special_registerauth extends admin_preset_admin_setting_configmultiselect_with_loader {}
-class admin_preset_admin_setting_special_debug extends admin_preset_admin_setting_configmultiselect_with_loader {}
-class admin_preset_admin_settings_coursecat_select extends admin_preset_admin_setting_configmultiselect_with_loader {}
-class admin_preset_admin_setting_grade_profilereport extends admin_preset_admin_setting_configmultiselect_with_loader {}
-class admin_preset_admin_settings_num_course_sections extends admin_preset_admin_setting_configmultiselect_with_loader {}
-class admin_preset_admin_setting_question_behaviour extends admin_preset_admin_setting_configmultiselect_with_loader {}
-class admin_preset_admin_setting_sitesetcheckbox extends admin_preset_admin_setting_configcheckbox {}
-class admin_preset_admin_setting_special_adminseesall extends admin_preset_admin_setting_configcheckbox {}
-class admin_preset_admin_setting_regradingcheckbox extends admin_preset_admin_setting_configcheckbox {}
-class admin_preset_admin_setting_special_gradelimiting extends admin_preset_admin_setting_configcheckbox {}
-class admin_preset_admin_setting_enablemobileservice extends admin_preset_admin_setting_configcheckbox {}
-class admin_preset_admin_setting_pickroles extends admin_preset_admin_setting_configmulticheckbox {}
-class admin_preset_admin_setting_special_coursemanager extends admin_preset_admin_setting_configmulticheckbox {}
-class admin_preset_admin_setting_special_coursecontact extends admin_preset_admin_setting_configmulticheckbox {}
-class admin_preset_admin_setting_special_gradebookroles extends admin_preset_admin_setting_configmulticheckbox {}
-class admin_preset_admin_setting_special_gradeexport extends admin_preset_admin_setting_configmulticheckbox {}
+class admin_preset_admin_setting_configduration_with_advanced extends admin_preset_admin_setting_configtext_with_advanced {
+}
+
+class admin_preset_admin_setting_special_frontpagedesc extends admin_preset_admin_setting_sitesettext {
+}
+
+class admin_preset_admin_setting_special_selectsetup extends admin_preset_admin_setting_configselect {
+}
+
+class admin_preset_admin_setting_sitesetselect extends admin_preset_admin_setting_configselect {
+}
+
+class admin_preset_admin_setting_special_grademinmaxtouse extends admin_preset_admin_setting_configselect {
+}
+
+class admin_preset_admin_setting_my_grades_report extends admin_preset_admin_setting_configselect {
+}
+
+class admin_preset_admin_setting_servertimezone extends admin_preset_admin_setting_configselect {
+}
+
+class admin_preset_admin_setting_forcetimezone extends admin_preset_admin_setting_configselect {
+}
+
+class admin_preset_enrol_database_admin_setting_category extends admin_preset_admin_setting_configselect {
+}
+
+class admin_preset_enrol_ldap_admin_setting_category extends admin_preset_admin_setting_configselect {
+}
+
+class admin_preset_format_singleactivity_admin_setting_activitytype extends admin_preset_admin_setting_configselect {
+}
+
+class admin_preset_admin_setting_courselist_frontpage extends admin_preset_admin_setting_configmultiselect_with_loader {
+}
+
+class admin_preset_admin_setting_configmultiselect_modules extends admin_preset_admin_setting_configmultiselect_with_loader {
+}
+
+class admin_preset_admin_settings_country_select extends admin_preset_admin_setting_configmultiselect_with_loader {
+}
+
+class admin_preset_admin_setting_special_registerauth extends admin_preset_admin_setting_configmultiselect_with_loader {
+}
+
+class admin_preset_admin_setting_special_debug extends admin_preset_admin_setting_configmultiselect_with_loader {
+}
+
+class admin_preset_admin_settings_coursecat_select extends admin_preset_admin_setting_configmultiselect_with_loader {
+}
+
+class admin_preset_admin_setting_grade_profilereport extends admin_preset_admin_setting_configmultiselect_with_loader {
+}
+
+class admin_preset_admin_settings_num_course_sections extends admin_preset_admin_setting_configmultiselect_with_loader {
+}
+
+class admin_preset_admin_setting_question_behaviour extends admin_preset_admin_setting_configmultiselect_with_loader {
+}
+
+class admin_preset_admin_setting_sitesetcheckbox extends admin_preset_admin_setting_configcheckbox {
+}
+
+class admin_preset_admin_setting_special_adminseesall extends admin_preset_admin_setting_configcheckbox {
+}
+
+class admin_preset_admin_setting_regradingcheckbox extends admin_preset_admin_setting_configcheckbox {
+}
+
+class admin_preset_admin_setting_special_gradelimiting extends admin_preset_admin_setting_configcheckbox {
+}
+
+class admin_preset_admin_setting_enablemobileservice extends admin_preset_admin_setting_configcheckbox {
+}
+
+class admin_preset_admin_setting_pickroles extends admin_preset_admin_setting_configmulticheckbox {
+}
+
+class admin_preset_admin_setting_special_coursemanager extends admin_preset_admin_setting_configmulticheckbox {
+}
+
+class admin_preset_admin_setting_special_coursecontact extends admin_preset_admin_setting_configmulticheckbox {
+}
+
+class admin_preset_admin_setting_special_gradebookroles extends admin_preset_admin_setting_configmulticheckbox {
+}
+
+class admin_preset_admin_setting_special_gradeexport extends admin_preset_admin_setting_configmulticheckbox {
+}

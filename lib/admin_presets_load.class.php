@@ -28,104 +28,12 @@ defined('MOODLE_INTERNAL') || die();
 
 require_once($CFG->dirroot . '/blocks/admin_presets/lib/admin_presets_base.class.php');
 
-class admin_presets_load extends admin_presets_base
-{
-
-    /**
-     * Displays the select preset settings to select what to import
-     *
-     * Loads the preset data and displays a settings tree
-     *
-     * It checks the Moodle version, it only allows users
-     * to import the preset available settings
-     *
-     * @param  boolean $preview If it's a preview it only lists the preset applicable settings
-     * @throws coding_exception
-     * @throws dml_exception
-     * @throws moodle_exception
-     */
-    public function show($preview = false)
-    {
-
-        global $CFG, $DB, $OUTPUT;
-
-        $data = new StdClass();
-        $data->id = $this->id;
-
-        // Preset data.
-        if (!$preset = $DB->get_record('block_admin_presets', array('id' => $data->id))) {
-            print_error('errornopreset', 'block_admin_presets');
-        }
-
-        if (!$items = $DB->get_records('block_admin_presets_it', array('adminpresetid' => $data->id))) {
-            print_error('errornopreset', 'block_admin_presets');
-        }
-
-        // Standarized format $array['pluginname']['settingname'].
-        // object('name' => 'settingname', 'value' => 'settingvalue').
-        $presetdbsettings = $this->_get_settings_from_db($items);
-
-
-        // Load site avaible settings to ensure that the settings exists on this release.
-        $siteavailablesettings = $this->_get_site_settings();
-
-        $notapplicable = array();
-        if ($presetdbsettings) {
-            foreach ($presetdbsettings as $plugin => $elements) {
-                foreach ($elements as $settingname => $element) {
-
-                    // If the setting doesn't exists in that release skip it.
-                    if (empty($siteavailablesettings[$plugin][$settingname])) {
-
-                        // Adding setting plugin.
-                        $presetdbsettings[$plugin][$settingname]->plugin = $plugin;
-
-                        $notapplicable[] = $presetdbsettings[$plugin][$settingname];
-                    }
-                }
-            }
-        }
-        // Standarized format $array['plugin']['settingname'] =  child class.
-        $presetsettings = $this->_get_settings($presetdbsettings, false, $presetsettings = array());
-
-        $this->_get_settings_branches($presetsettings);
-
-        // Print preset basic data.
-        $this->outputs .= $this->_html_writer_preset_info_table($preset);
-
-        // Display not applicable settings.
-        if (!empty($notapplicable)) {
-
-            $this->outputs .= '<br/>' . $OUTPUT->heading(get_string('settingsnotapplicable',
-                    'block_admin_presets'), 3, 'admin_presets_error');
-
-            $table = new html_table();
-            $table->attributes['class'] = 'generaltable boxaligncenter';
-            $table->head = array(get_string('plugin'),
-                get_string('settingname', 'block_admin_presets'),
-                get_string('value', 'block_admin_presets'));
-
-            $table->align = array('center', 'center');
-
-            foreach ($notapplicable as $setting) {
-                $table->data[] = array($setting->plugin, $setting->name, $setting->value);
-            }
-
-            $this->outputs .= html_writer::table($table);
-
-        }
-
-        $url = $CFG->wwwroot . '/blocks/admin_presets/index.php?action=load&mode=execute';
-        $this->moodleform = new admin_presets_load_form($url, $preview);
-        $this->moodleform->set_data($data);
-
-    }
+class admin_presets_load extends admin_presets_base {
 
     /**
      * Executes the settings load into the system
      */
-    public function execute()
-    {
+    public function execute() {
 
         global $CFG, $DB, $OUTPUT, $USER;
 
@@ -175,8 +83,8 @@ class admin_presets_load extends admin_presets_base
                     // Wrong setting, set_value() method has previously cleaned the value.
                     if ($presetsetting->get_value() === false) {
                         debugging($presetsetting->get_settingdata()->plugin . '/' .
-                            $presetsetting->get_settingdata()->name .
-                            ' setting has a wrong value!', DEBUG_DEVELOPER);
+                                $presetsetting->get_settingdata()->name .
+                                ' setting has a wrong value!', DEBUG_DEVELOPER);
                         continue;
                     }
 
@@ -208,7 +116,7 @@ class admin_presets_load extends admin_presets_base
                             $presetapplied->userid = $USER->id;
                             $presetapplied->time = time();
                             if (!$adminpresetapplyid = $DB->insert_record('block_admin_presets_app',
-                                $presetapplied)) {
+                                    $presetapplied)) {
                                 print_error('errorinserting', 'block_admin_presets');
                             }
                         }
@@ -240,7 +148,6 @@ class admin_presets_load extends admin_presets_base
                         $appliedchanges[$varname]->oldvisiblevalue = $sitesetting->get_visiblevalue();
                         $appliedchanges[$varname]->visiblevalue = $presetsetting->get_visiblevalue();
 
-
                         // Unnecessary changes (actual setting value).
                     } else {
                         $unnecessarychanges[$varname] = $presetsetting;
@@ -252,11 +159,11 @@ class admin_presets_load extends admin_presets_base
         // Output applied changes.
         if (!empty($appliedchanges)) {
             $this->outputs .= '<br/>' . $OUTPUT->heading(get_string('settingsapplied',
-                    'block_admin_presets'), 3, 'admin_presets_success');
+                            'block_admin_presets'), 3, 'admin_presets_success');
             $this->_output_applied_changes($appliedchanges);
         } else {
             $this->outputs .= '<br/>' . $OUTPUT->heading(get_string('nothingloaded',
-                    'block_admin_presets'), 3, 'admin_presets_error');
+                            'block_admin_presets'), 3, 'admin_presets_error');
         }
 
         // Show skipped changes.
@@ -265,19 +172,19 @@ class admin_presets_load extends admin_presets_base
             $skippedtable = new html_table();
             $skippedtable->attributes['class'] = 'generaltable boxaligncenter admin_presets_skipped';
             $skippedtable->head = array(get_string('plugin'),
-                get_string('settingname', 'block_admin_presets'),
-                get_string('actualvalue', 'block_admin_presets')
+                    get_string('settingname', 'block_admin_presets'),
+                    get_string('actualvalue', 'block_admin_presets')
             );
 
             $skippedtable->align = array('center', 'center');
 
             $this->outputs .= '<br/>' . $OUTPUT->heading(get_string('settingsnotapplied',
-                    'block_admin_presets'), 3);
+                            'block_admin_presets'), 3);
 
             foreach ($unnecessarychanges as $setting) {
                 $skippedtable->data[] = array($setting->get_settingdata()->plugin,
-                    $setting->get_settingdata()->visiblename,
-                    $setting->get_visiblevalue()
+                        $setting->get_settingdata()->visiblename,
+                        $setting->get_visiblevalue()
                 );
             }
 
@@ -291,8 +198,95 @@ class admin_presets_load extends admin_presets_base
     /**
      * Lists the preset available settings
      */
-    public function preview()
-    {
+    public function preview() {
         $this->show(1);
+    }
+
+    /**
+     * Displays the select preset settings to select what to import
+     *
+     * Loads the preset data and displays a settings tree
+     *
+     * It checks the Moodle version, it only allows users
+     * to import the preset available settings
+     *
+     * @param boolean $preview If it's a preview it only lists the preset applicable settings
+     * @throws coding_exception
+     * @throws dml_exception
+     * @throws moodle_exception
+     */
+    public function show($preview = false) {
+
+        global $CFG, $DB, $OUTPUT;
+
+        $data = new StdClass();
+        $data->id = $this->id;
+
+        // Preset data.
+        if (!$preset = $DB->get_record('block_admin_presets', array('id' => $data->id))) {
+            print_error('errornopreset', 'block_admin_presets');
+        }
+
+        if (!$items = $DB->get_records('block_admin_presets_it', array('adminpresetid' => $data->id))) {
+            print_error('errornopreset', 'block_admin_presets');
+        }
+
+        // Standarized format $array['pluginname']['settingname'].
+        // object('name' => 'settingname', 'value' => 'settingvalue').
+        $presetdbsettings = $this->_get_settings_from_db($items);
+
+        // Load site avaible settings to ensure that the settings exists on this release.
+        $siteavailablesettings = $this->_get_site_settings();
+
+        $notapplicable = array();
+        if ($presetdbsettings) {
+            foreach ($presetdbsettings as $plugin => $elements) {
+                foreach ($elements as $settingname => $element) {
+
+                    // If the setting doesn't exists in that release skip it.
+                    if (empty($siteavailablesettings[$plugin][$settingname])) {
+
+                        // Adding setting plugin.
+                        $presetdbsettings[$plugin][$settingname]->plugin = $plugin;
+
+                        $notapplicable[] = $presetdbsettings[$plugin][$settingname];
+                    }
+                }
+            }
+        }
+        // Standarized format $array['plugin']['settingname'] =  child class.
+        $presetsettings = $this->_get_settings($presetdbsettings, false, $presetsettings = array());
+
+        $this->_get_settings_branches($presetsettings);
+
+        // Print preset basic data.
+        $this->outputs .= $this->_html_writer_preset_info_table($preset);
+
+        // Display not applicable settings.
+        if (!empty($notapplicable)) {
+
+            $this->outputs .= '<br/>' . $OUTPUT->heading(get_string('settingsnotapplicable',
+                            'block_admin_presets'), 3, 'admin_presets_error');
+
+            $table = new html_table();
+            $table->attributes['class'] = 'generaltable boxaligncenter';
+            $table->head = array(get_string('plugin'),
+                    get_string('settingname', 'block_admin_presets'),
+                    get_string('value', 'block_admin_presets'));
+
+            $table->align = array('center', 'center');
+
+            foreach ($notapplicable as $setting) {
+                $table->data[] = array($setting->plugin, $setting->name, $setting->value);
+            }
+
+            $this->outputs .= html_writer::table($table);
+
+        }
+
+        $url = $CFG->wwwroot . '/blocks/admin_presets/index.php?action=load&mode=execute';
+        $this->moodleform = new admin_presets_load_form($url, $preview);
+        $this->moodleform->set_data($data);
+
     }
 }

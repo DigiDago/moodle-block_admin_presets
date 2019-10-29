@@ -24,6 +24,8 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+defined('MOODLE_INTERNAL') || die();
+
 class block_admin_presets extends block_list {
 
     /**
@@ -53,31 +55,31 @@ class block_admin_presets extends block_list {
         }
 
         $this->content->items[] = $OUTPUT->pix_icon("i/backup",
-                get_string('actionexport', 'block_admin_presets'),
-                "moodle", array("class" => "icon")) . '<a title="'.
-            get_string('actionexport', 'block_admin_presets').
-            '" href="'.$CFG->wwwroot.'/blocks/admin_presets/index.php?action=export">'.
-            get_string('actionexport', 'block_admin_presets').
-            '</a>';
+                        get_string('actionexport', 'block_admin_presets'),
+                        "moodle", array("class" => "icon")) . '<a title="' .
+                get_string('actionexport', 'block_admin_presets') .
+                '" href="' . $CFG->wwwroot . '/blocks/admin_presets/index.php?action=export">' .
+                get_string('actionexport', 'block_admin_presets') .
+                '</a>';
 
         $this->content->items[] = $OUTPUT->pix_icon("i/restore",
-                get_string('actionimport', 'block_admin_presets'),
-                "moodle", array("class" => "icon")).
-            '<a title="'.get_string('actionimport', 'block_admin_presets').
-            '" href="'.$CFG->wwwroot.
-            '/blocks/admin_presets/index.php?action=import">'.
-            get_string('actionimport', 'block_admin_presets').
-            '</a>';
+                        get_string('actionimport', 'block_admin_presets'),
+                        "moodle", array("class" => "icon")) .
+                '<a title="' . get_string('actionimport', 'block_admin_presets') .
+                '" href="' . $CFG->wwwroot .
+                '/blocks/admin_presets/index.php?action=import">' .
+                get_string('actionimport', 'block_admin_presets') .
+                '</a>';
 
         $this->content->items[] = $OUTPUT->pix_icon("i/repository",
-                get_string('actionbase', 'block_admin_presets'),
-                "moodle", array("class" => "icon")).
-            '<a title="'.
-            get_string('actionbase', 'block_admin_presets').
-            '" href="'.
-            $CFG->wwwroot.
-            '/blocks/admin_presets/index.php">'
-            .get_string('actionbase', 'block_admin_presets').'</a>';
+                        get_string('actionbase', 'block_admin_presets'),
+                        "moodle", array("class" => "icon")) .
+                '<a title="' .
+                get_string('actionbase', 'block_admin_presets') .
+                '" href="' .
+                $CFG->wwwroot .
+                '/blocks/admin_presets/index.php">'
+                . get_string('actionbase', 'block_admin_presets') . '</a>';
 
         return $this->content;
     }

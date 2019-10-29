@@ -39,11 +39,14 @@ $string['autohidesensiblesettings'] = 'Auto exclude sensitive settings';
 $string['baseshow'] = 'list presets';
 $string['created'] = 'Created';
 $string['deletepreset'] = 'Preset {$a} will be deleted, are you sure?';
-$string['deletepreviouslyapplied'] = 'This preset has been previously applied, if you delete it you can not return to the previous state';
+$string['deletepreviouslyapplied'] = 'This preset has been previously applied,
+ if you delete it you can not return to the previous state';
 $string['deleteexecute'] = 'execution';
 $string['deleteshow'] = 'confirm';
-$string['errorupgradetablenames'] = 'admin_presets upgrade failed, upgrade Moodle in order to upgrade admin_presets. You can restore the previous blocks/admin_presets code until then';
-$string['errorupgradetablenamesdebug'] = 'The table names exceeds the limit of allowed characters, this is solved using the latest Moodle 2.0, Moodle 2.1 and Moodle 2.2 releases';
+$string['errorupgradetablenames'] = 'admin_presets upgrade failed,
+ upgrade Moodle in order to upgrade admin_presets. You can restore the previous blocks/admin_presets code until then';
+$string['errorupgradetablenamesdebug'] = 'The table names exceeds the limit of allowed characters,
+ this is solved using the latest Moodle 2.0, Moodle 2.1 and Moodle 2.2 releases';
 $string['errordeleting'] = 'Error deleting from DB';
 $string['errorinserting'] = 'Error inserting into DB';
 $string['errornopreset'] = 'It doesn\'t exists a preset with that name';
@@ -92,7 +95,8 @@ $string['previewpreset'] = 'Preview preset';
 $string['renamepreset'] = 'Rename preset';
 $string['rollback'] = 'revert';
 $string['rollbackexecute'] = 'return to previous state';
-$string['rollbackfailures'] = 'The following settings can not be restored, the actual values differs from the values applied by the preset';
+$string['rollbackfailures'] = 'The following settings can not be restored,
+ the actual values differs from the values applied by the preset';
 $string['rollbackresults'] = 'Settings successfully restored';
 $string['rollbackshow'] = 'preset applications list';
 $string['selectedvalues'] = 'setting selected values';

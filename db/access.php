@@ -27,13 +27,13 @@
 defined('MOODLE_INTERNAL') || die();
 
 $capabilities = array(
-    'block/admin_presets:addinstance' => array(
-        'captype' => 'write',
-        'contextlevel' => CONTEXT_SYSTEM,
-        'archetypes' => array(
-            'manager' => CAP_ALLOW
+        'block/admin_presets:addinstance' => array(
+                'captype' => 'write',
+                'contextlevel' => CONTEXT_SYSTEM,
+                'archetypes' => array(
+                        'manager' => CAP_ALLOW
+                )
         )
-    )
 );
 
 

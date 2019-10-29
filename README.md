@@ -4,7 +4,7 @@ Block to export and import Moodle administration settings
 
 ## Build status
 
-[![Build Status](https://travis-ci.org/DigiDago/moodle-block_admin_presets.png)](https://travis-ci.org/DigiDago/moodle-block_admin_presets)
+[![Build Status](https://travis-ci.org/DigiDago/moodle-block_admin_presets.svg?branch=master)](https://travis-ci.org/DigiDago/moodle-block_admin_presets)
 
 ## Features
 

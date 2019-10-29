@@ -18,13 +18,13 @@
 }
 
 #settings_tree_div .catnode {
-    margin-left: 5px;
     display: inline;
+    margin-left: 5px;
 }
 
 #settings_tree_div .ygtv-checkbox .ygtv-highlight0 .ygtvcontent {
-    padding-left: 1em;
     background: url([[pix:block_admin_presets|check0]]) no-repeat;
+    padding-left: 1em;
 }
 
 #settings_tree_div .ygtv-checkbox .ygtv-highlight0 .ygtvfocus.ygtvcontent,
@@ -34,11 +34,11 @@
 }
 
 #settings_tree_div .ygtv-checkbox .ygtv-highlight1 .ygtvcontent {
-    padding-left: 1em;
     background: url([[pix:block_admin_presets|check1]]) no-repeat;
+    padding-left: 1em;
 }
 
 #settings_tree_div .ygtv-checkbox .ygtv-highlight2 .ygtvcontent {
-    padding-left: 1em;
     background: url([[pix:block_admin_presets|check2]]) no-repeat;
+    padding-left: 1em;
 }

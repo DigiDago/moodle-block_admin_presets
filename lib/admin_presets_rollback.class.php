@@ -28,21 +28,19 @@ defined('MOODLE_INTERNAL') || die();
 
 require_once($CFG->dirroot . '/blocks/admin_presets/lib/admin_presets_base.class.php');
 
-class admin_presets_rollback extends admin_presets_base
-{
+class admin_presets_rollback extends admin_presets_base {
 
     /**
      * Displays the different previous applications of the preset
      */
-    public function show()
-    {
+    public function show() {
 
         global $CFG, $DB, $OUTPUT;
 
         $table = new html_table();
         $table->attributes['class'] = 'generaltable boxaligncenter';
         $table->head = array(get_string('timeapplied',
-            'block_admin_presets'), get_string('user'), get_string('actions'));
+                'block_admin_presets'), get_string('user'), get_string('actions'));
         $table->align = array('left', 'center', 'left');
 
         // Preset data.
@@ -61,19 +59,19 @@ class admin_presets_rollback extends admin_presets_base
             $user = $DB->get_record('user', array('id' => $application->userid));
 
             $rollbacklink = $CFG->wwwroot .
-                '/blocks/admin_presets/index.php?action=rollback&mode=execute&id=' .
-                $application->id . '&sesskey=' . sesskey();
+                    '/blocks/admin_presets/index.php?action=rollback&mode=execute&id=' .
+                    $application->id . '&sesskey=' . sesskey();
             $action = html_writer::link($rollbacklink,
-                get_string("rollback", "block_admin_presets"));
+                    get_string("rollback", "block_admin_presets"));
 
             $table->data[] = array(strftime($format, $application->time),
-                $user->firstname . ' ' . $user->lastname,
-                '<div>' . $action . '</div>'
+                    $user->firstname . ' ' . $user->lastname,
+                    '<div>' . $action . '</div>'
             );
         }
 
         $this->outputs .= '<br/>' . $OUTPUT->heading(get_string("presetname",
-                    "block_admin_presets") . ': ' . $preset->name, 3);
+                                "block_admin_presets") . ': ' . $preset->name, 3);
         $this->outputs .= html_writer::table($table);
     }
 
@@ -82,8 +80,7 @@ class admin_presets_rollback extends admin_presets_base
      *
      * Each setting value is checked against the config_log->value
      */
-    public function execute()
-    {
+    public function execute() {
 
         global $DB, $OUTPUT;
 
@@ -136,7 +133,7 @@ class admin_presets_rollback extends admin_presets_base
 
                         // Deleting the admin_preset_apply_item instance.
                         $deletewhere = array('adminpresetapplyid' => $change->adminpresetapplyid,
-                            'configlogid' => $change->id);
+                                'configlogid' => $change->id);
                         $DB->delete_records('block_admin_presets_app_it', $deletewhere);
 
                     } else {
@@ -192,7 +189,7 @@ class admin_presets_rollback extends admin_presets_base
 
                         // Deleting the admin_preset_apply_item_attr instance.
                         $deletewhere = array('adminpresetapplyid' => $change->adminpresetapplyid,
-                            'configlogid' => $change->id);
+                                'configlogid' => $change->id);
                         $DB->delete_records('block_admin_presets_app_it_a', $deletewhere);
 
                     } else {
@@ -209,7 +206,7 @@ class admin_presets_rollback extends admin_presets_base
 
         // Delete application if no items nor attributes of the application remains.
         if (!$DB->get_record('block_admin_presets_app_it', array('adminpresetapplyid' => $this->id)) &&
-            !$DB->get_records('block_admin_presets_app_it_a', array('adminpresetapplyid' => $this->id))) {
+                !$DB->get_records('block_admin_presets_app_it_a', array('adminpresetapplyid' => $this->id))) {
 
             $DB->delete_records('block_admin_presets_app', array('id' => $this->id));
         }
@@ -217,7 +214,7 @@ class admin_presets_rollback extends admin_presets_base
         // Display the rollback changes.
         if (!empty($rollback)) {
             $this->outputs .= '<br/>' . $OUTPUT->heading(get_string('rollbackresults',
-                    "block_admin_presets"), 3, 'admin_presets_success');
+                            "block_admin_presets"), 3, 'admin_presets_success');
             $this->outputs .= '<br/>';
             $this->_output_applied_changes($rollback);
         }
@@ -225,7 +222,7 @@ class admin_presets_rollback extends admin_presets_base
         // Display the rollback failures.
         if (!empty($failures)) {
             $this->outputs .= '<br/>' . $OUTPUT->heading(get_string('rollbackfailures',
-                    'block_admin_presets'), 3, 'admin_presets_error');
+                            'block_admin_presets'), 3, 'admin_presets_error');
             $this->outputs .= '<br/>';
             $this->_output_applied_changes($failures);
         }

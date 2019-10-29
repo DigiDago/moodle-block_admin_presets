@@ -39,8 +39,7 @@ defined('MOODLE_INTERNAL') || die();
  * @throws upgrade_exception
  * @global moodle_database $DB
  */
-function xmldb_block_admin_presets_upgrade($oldversion, $block)
-{
+function xmldb_block_admin_presets_upgrade($oldversion, $block) {
     global $DB;
 
     $dbman = $DB->get_manager();
@@ -61,11 +60,11 @@ function xmldb_block_admin_presets_upgrade($oldversion, $block)
     if ($oldversion < 2012031401) {
 
         $tablenamechanges = array('admin_preset' => 'block_admin_presets',
-            'admin_preset_apply' => 'block_admin_presets_app',
-            'admin_preset_apply_item' => 'block_admin_presets_app_it',
-            'admin_preset_apply_item_attr' => 'block_admin_presets_app_it_a',
-            'admin_preset_item' => 'block_admin_presets_it',
-            'admin_preset_item_attr' => 'block_admin_presets_it_a');
+                'admin_preset_apply' => 'block_admin_presets_app',
+                'admin_preset_apply_item' => 'block_admin_presets_app_it',
+                'admin_preset_apply_item_attr' => 'block_admin_presets_app_it_a',
+                'admin_preset_item' => 'block_admin_presets_it',
+                'admin_preset_item_attr' => 'block_admin_presets_it_a');
 
         // Just in case it gets to the max number of chars defined in the XSD.
         try {
