@@ -95,8 +95,8 @@ $string['previewpreset'] = 'Preview preset';
 $string['renamepreset'] = 'Rename preset';
 $string['rollback'] = 'revert';
 $string['rollbackexecute'] = 'return to previous state';
-$string['rollbackfailures'] =
-        'The following settings can not be restored, the actual values differs from the values applied by the preset';
+$string['rollbackfailures'] = 'The following settings can not be restored,
+ the actual values differs from the values applied by the preset';
 $string['rollbackresults'] = 'Settings successfully restored';
 $string['rollbackshow'] = 'preset applications list';
 $string['selectedvalues'] = 'setting selected values';
