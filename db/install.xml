@@ -1,9 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<XMLDB PATH="blocks/admin_presets/db" VERSION="20120314"
-       COMMENT="Admin presets block tables, to store exported/imported presets"
-       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-       xsi:noNamespaceSchemaLocation="../../../lib/xmldb/xmldb.xsd"
->
+<XMLDB PATH="blocks/admin_presets/db" VERSION="20120314" COMMENT="Admin presets block tables, to store exported/imported presets" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../../lib/xmldb/xmldb.xsd">
     <TABLES>
         <TABLE NAME="block_admin_presets" COMMENT="Table to store presets data" NEXT="block_admin_presets_it">
             <FIELDS>
