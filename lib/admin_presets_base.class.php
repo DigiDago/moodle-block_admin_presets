@@ -346,7 +346,6 @@ class admin_presets_base {
                     foreach ($child->settings as $values) {
                         $settingname = $values->name;
 
-
                         unset($settingvalue);
 
                         // Look for his config value.
@@ -378,13 +377,13 @@ class admin_presets_base {
                         if (!isset($settingvalue)) {
                             continue;
                         }
-                        //If there is no setting class defined continue.
+                        // If there is no setting class defined continue.
                         if (!$setting = $this->_get_setting($values, $settingvalue)) {
                             continue;
                         }
 
-                         //Admin_preset_setting childs with.
-                         //attributes provides an attributes array.
+                         // Admin_preset_setting childs with.
+                         // attributes provides an attributes array.
                         if ($attributes = $setting->get_attributes()) {
 
                             // Look for settings attributes if it is a presets.
