@@ -87,8 +87,7 @@ class admin_presets_export extends admin_presets_base {
             $this->id = $preset->id;
 
             // We must ensure that there are settings selected.
-            $presetsettings = array();
-            foreach ($_POST as $varname => $value) {
+            foreach (filter_input_array(INPUT_POST) as $varname => $value) {
 
                 unset($setting);
 
