@@ -17,28 +17,28 @@
     text-align: center;
 }
 
-#settings_tree_div .catnode {
+#page-blocks-admin_presets-index #settings_tree_div .catnode {
     display: inline;
     margin-left: 5px;
 }
 
-#settings_tree_div .ygtv-checkbox .ygtv-highlight0 .ygtvcontent {
+#page-blocks-admin_presets-index #settings_tree_div .ygtv-checkbox .ygtv-highlight0 .ygtvcontent {
     background: url([[pix:block_admin_presets|check0]]) no-repeat;
     padding-left: 1em;
 }
 
-#settings_tree_div .ygtv-checkbox .ygtv-highlight0 .ygtvfocus.ygtvcontent,
+#page-blocks-admin_presets-index #settings_tree_div .ygtv-checkbox .ygtv-highlight0 .ygtvfocus.ygtvcontent,
 .ygtv-checkbox .ygtv-highlight1 .ygtvfocus.ygtvcontent,
 .ygtv-checkbox .ygtv-highlight2 .ygtvfocus.ygtvcontent {
     background-color: #c0e0e0;
 }
 
-#settings_tree_div .ygtv-checkbox .ygtv-highlight1 .ygtvcontent {
+#page-blocks-admin_presets-index #settings_tree_div .ygtv-checkbox .ygtv-highlight1 .ygtvcontent {
     background: url([[pix:block_admin_presets|check1]]) no-repeat;
     padding-left: 1em;
 }
 
-#settings_tree_div .ygtv-checkbox .ygtv-highlight2 .ygtvcontent {
+#page-blocks-admin_presets-index #settings_tree_div .ygtv-checkbox .ygtv-highlight2 .ygtvcontent {
     background: url([[pix:block_admin_presets|check2]]) no-repeat;
     padding-left: 1em;
 }
