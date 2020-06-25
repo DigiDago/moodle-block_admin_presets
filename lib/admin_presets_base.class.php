@@ -296,11 +296,8 @@ class admin_presets_base {
             $sitedbsettings[$configplugin->plugin][$configplugin->name]->name = $configplugin->name;
             $sitedbsettings[$configplugin->plugin][$configplugin->name]->value = $configplugin->value;
         }
-
         // Get an array with the common format.
-        $settings = $this->_get_settings($sitedbsettings, true, $settings = array());
-
-        return $settings;
+        return $this->_get_settings($sitedbsettings, true, $settings = array());
     }
 
     /**
@@ -325,7 +322,6 @@ class admin_presets_base {
     protected function _get_settings($dbsettings, $sitedbvalues = false, $settings, $children = false) {
 
         global $DB;
-
         // If there are no children, load admin tree and iterate through.
         if (!$children) {
             $this->adminroot = admin_get_root(false, true);
@@ -363,7 +359,6 @@ class admin_presets_base {
 
                         // If no db value found default value.
                         if ($sitedbvalues && !isset($settingvalue)) {
-
                             // For settings with multiple values.
                             if (is_array($values->defaultsetting)) {
 
@@ -382,14 +377,13 @@ class admin_presets_base {
                         if (!isset($settingvalue)) {
                             continue;
                         }
-
                         // If there is no setting class defined continue.
                         if (!$setting = $this->_get_setting($values, $settingvalue)) {
                             continue;
                         }
 
-                        // Admin_preset_setting childs with.
-                        // attributes provides an attributes array.
+                         // Admin_preset_setting childs with.
+                         // attributes provides an attributes array.
                         if ($attributes = $setting->get_attributes()) {
 
                             // Look for settings attributes if it is a presets.
@@ -449,7 +443,7 @@ class admin_presets_base {
      */
     protected function _get_setting($settingdata, $currentvalue) {
 
-        // Getting the appropiate class to get the correct setting value value.
+        // Getting the appropiate class to get the correct setting value.
         $settingtype = get_class($settingdata);
 
         // Skipping admin_*.
@@ -523,14 +517,11 @@ class admin_presets_base {
 
         // Iterates through children.
         foreach ($admintree as $key => $child) {
-
             $pagesettings = array();
 
             // We must search category children.
             if (is_a($child, 'admin_category')) {
-
                 if ($child->children) {
-
                     $categorynode = $child->name . 'Node';
                     $nodehtml = '<div class="catnode">' . $child->visiblename . '</div>';
                     $nodes['categories'][$categorynode] = array("category",
@@ -542,7 +533,6 @@ class admin_presets_base {
 
                 // Settings page.
             } else if (is_a($child, 'admin_settingpage')) {
-
                 // Only if there are settings.
                 if ($child->settings) {
 

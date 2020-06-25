@@ -59,7 +59,7 @@ class admin_presets_load extends admin_presets_base {
             // Only for selected items.
             $appliedchanges = array();
             $unnecessarychanges = array();
-            foreach ($_POST as $varname => $value) {
+            foreach (filter_input_array(INPUT_POST) as $varname => $value) {
 
                 unset($updatesetting);
 

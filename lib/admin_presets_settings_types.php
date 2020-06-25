@@ -351,6 +351,42 @@ class admin_presets_delegation {
 /**
  * Basic text setting, cleans the param using the admin_setting paramtext attribute
  */
+class admin_preset_auth_ldap_admin_setting_special_contexts_configtext extends admin_preset_setting {
+
+    /**
+     * Validates the value using paramtype attribute
+     *
+     * @param string $value
+     * @return   boolean              Cleaned or not, but always true
+     */
+    protected function set_value($value) {
+
+        $this->value = $value;
+
+        if (empty($this->settingdata->paramtype)) {
+
+            // For configfile, configpasswordunmask...
+            $this->settingdata->paramtype = 'RAW';
+        }
+
+        $paramtype = 'PARAM_' . strtoupper($this->settingdata->paramtype);
+
+        // Regexp.
+        if (!defined($paramtype)) {
+            $this->value = preg_replace($this->settingdata->paramtype, '', $this->value);
+
+            // Standard moodle param type.
+        } else {
+            $this->value = clean_param($this->value, constant($paramtype));
+        }
+
+        return true;
+    }
+}
+
+/**
+ * Basic text setting, cleans the param using the admin_setting paramtext attribute
+ */
 class admin_preset_admin_setting_configtext extends admin_preset_setting {
 
     /**
