@@ -24,6 +24,17 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+//CBLUE EDIT :
+//list of function that went from protected > public
+//_get_site_settings
+//_get_settings
+//_get_setting
+//_get_settings_branches
+//_get_settings_elements
+//_get_settings_from_db
+//This was necessary in order to make the classes/task/automatic_export class to work as it calls _get_setting() which will use all the other functions. That class is used by a CRON job to automatically make an export every 24hours.
+//END CBLUE EDIT
+
 defined('MOODLE_INTERNAL') || die();
 
 require_once($CFG->libdir . '/adminlib.php');
@@ -272,7 +283,7 @@ class admin_presets_base {
      * @return    array        $settings        Array format $array['plugin']['settingname'] = admin_preset_setting child class
      * @throws dml_exception
      */
-    protected function _get_site_settings() {
+    public function _get_site_settings() {
 
         global $DB;
 
@@ -319,7 +330,7 @@ class admin_presets_base {
      * @return    array Array format $array['plugin']['settingname'] = admin_preset_setting child class
      * @throws dml_exception
      */
-    protected function _get_settings($dbsettings, $sitedbvalues = false, $settings, $children = false) {
+    public function _get_settings($dbsettings, $sitedbvalues = false, $settings, $children = false) {
 
         global $DB;
         // If there are no children, load admin tree and iterate through.
@@ -441,7 +452,7 @@ class admin_presets_base {
      * @param mixed $currentvalue
      * @return bool
      */
-    protected function _get_setting($settingdata, $currentvalue) {
+    public function _get_setting($settingdata, $currentvalue) {
 
         // Getting the appropiate class to get the correct setting value.
         $settingtype = get_class($settingdata);
@@ -464,7 +475,7 @@ class admin_presets_base {
      *
      * @param array $settings Array format $array['plugin']['settingname'] = admin_preset_setting child class
      */
-    protected function _get_settings_branches($settings) {
+    public function _get_settings_branches($settings) {
 
         global $PAGE;
 
@@ -498,7 +509,7 @@ class admin_presets_base {
      * @param array $nodes Tree nodes
      * @return array Code to output
      */
-    protected function _get_settings_elements($allsettings, $admintree = false, $jsparentnode = false, &$nodes) {
+    public function _get_settings_elements($allsettings, $admintree = false, $jsparentnode = false, &$nodes) {
 
         if (empty($this->adminroot)) {
             $this->adminroot = admin_get_root(false, true);
@@ -580,7 +591,7 @@ class admin_presets_base {
      * @return   array Standarized array,
      * format $array['plugin']['name'] = obj('name'=>'settingname', 'value'=>'settingvalue')
      */
-    protected function _get_settings_from_db($dbsettings) {
+    public function _get_settings_from_db($dbsettings) {
 
         if (!$dbsettings) {
             return false;

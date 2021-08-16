@@ -15,20 +15,22 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Admin presets block main controller
- *
- * @package          blocks/admin_presets
- * @copyright        2019 Pimenko <support@pimenko.com><pimenko.com>
- * @author           Jordan Kesraoui | DigiDago
- * @orignalauthor    David Monllaó <david.monllao@urv.cat>
- * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ * @author    amayard@cblue.be
+ * @date      16/08/2021
+ * @copyright 2021, CBlue SPRL, support@cblue.be
+ * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ * @package   block_admin_presets
  */
 
 defined('MOODLE_INTERNAL') || die();
 
-$plugin->version = 2021052702;
-$plugin->requires = 2016052300;        // Requires this Moodle version
-$plugin->component = 'block_admin_presets';
-$plugin->release = '3.4';
-$plugin->cron = 0;
-$plugin->maturity = MATURITY_STABLE;
+$tasks = [
+    [
+        'classname' => 'block_admin_presets\task\automatic_export',
+        'blocking' => false,
+        'minute' => 0,
+        'hour' => 23,
+        'day' => '*',
+        'month' => '*',
+    ],
+];
