@@ -57,6 +57,11 @@ class automatic_export extends scheduled_task {
     public function execute() {
         global $CFG, $DB;
 
+        $config = get_config('block_admin_presets', 'automaticexport');
+        if (empty($config)) {
+            return;
+        }
+
         require_once $CFG->dirroot . "/blocks/admin_presets/lib/admin_presets_export.class.php";
 
         $export = new admin_presets_export();

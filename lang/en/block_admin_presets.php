@@ -120,4 +120,5 @@ $string['wrongid'] = 'Wrong id';
 $string['privacy:null_reason'] = 'The admin presets block does not effect or store any user data';
 //CBLUE START #367565
 $string['automaticexport'] = 'This is an automatic export of this moodle config';
+$string['automaticexportconfig'] = 'Enable daily automatic backup exports';
 //CBLUE END #367565
