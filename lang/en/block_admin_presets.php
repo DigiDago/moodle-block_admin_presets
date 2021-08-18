@@ -122,5 +122,6 @@ $string['privacy:null_reason'] = 'The admin presets block does not effect or sto
 $string['automaticexport'] = 'This is an automatic export of this moodle config';
 $string['automaticexportconfig'] = 'Enable daily automatic backup exports';
 $string['automaticexportcleanupconfig'] = 'Enable automatic export cleanup';
+$string['automaticexportcleanupconfigtext'] = 'If enabled, automatic exports younger than a week will be kept, then up to 14 days 1/2 will be saved, up to a month 1/4 will be saved, then up to 3 months 1/8 will be saved. After 3 months all automatic exports will be deleted. Manual exports and imports won\'t be affected by this functionnality.';
 $string['automaticexportcleanup'] = 'Enable automatic export cleanup';
 //CBLUE END #367565

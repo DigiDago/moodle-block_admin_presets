@@ -51,7 +51,7 @@ if ($ADMIN->fulltree) {
     $settings->add(new admin_setting_configcheckbox(
         'block_admin_presets/automaticexportcleanup',
         get_string('automaticexportcleanupconfig', 'block_admin_presets'),
-        get_string('automaticexportcleanupconfig', 'block_admin_presets'),
+        get_string('automaticexportcleanupconfigtext', 'block_admin_presets'),
         $automaticexportcleanupdefault, true, false));
     //END CBLUE MODIFICATION
 }
