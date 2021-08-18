@@ -36,8 +36,8 @@ $tasks = [
     [
         'classname' => 'block_admin_presets\task\automatic_export_cleanup',
         'blocking' => false,
-        'minute' => 0,
-        'hour' => 22,
+        'minute' => 30,
+        'hour' => 23,
         'day' => '*',
         'month' => '*',
     ]
