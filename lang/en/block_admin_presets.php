@@ -121,4 +121,6 @@ $string['privacy:null_reason'] = 'The admin presets block does not effect or sto
 //CBLUE START #367565
 $string['automaticexport'] = 'This is an automatic export of this moodle config';
 $string['automaticexportconfig'] = 'Enable daily automatic backup exports';
+$string['automaticexportcleanupconfig'] = 'Enable automatic export cleanup';
+$string['automaticexportcleanup'] = 'Enable automatic export cleanup';
 //CBLUE END #367565

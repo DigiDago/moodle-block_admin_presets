@@ -33,7 +33,7 @@ If you have a problem with this block, suggestions for improvement, drop an emai
 Usage
 ===================
 - **Check if plugin is installed :** 
-go to *Admin > Plugins > Plugins overview > Additional Plugins > Admin presets*
+go to *Admin > Plugins > Plugins overview > Additional Plugins > Admin presets*. It's installed if it appears.
 - **Set-up the block :**  Make the block appear in your 'Site Home' page by adding it to the page, go to *Site Home > Turn Editing On*. Then go to *Add Block > Admin presets*
 - **Usage :** In the 'Site Home' page, an admin_preset block should now appear. from there you can
 
@@ -47,7 +47,19 @@ go to *Admin > Plugins > Plugins overview > Additional Plugins > Admin presets*
 > Carefull : settings related to the Moodle Theme are exported/imported but the used theme still needs to be set manually.
 
 
-Cblue Automatic Export
+Automatic Export
 ===================
-Cblue added a feature allowing the plugin to perform an automatic export which will provide a daily back-up if enabled. You can enable this setting the same way you're configuring the plugin following : Admin > Plugins > Plugins overview > Additional Plugins > Admin presets > Settings.
+A feature was added allowing the plugin to perform an automatic export which will provide a daily back-up if enabled. You can enable this setting the same way you're configuring the plugin following : *Admin > Plugins > Plugins overview > Additional Plugins > Admin presets > Settings*.
 These backups are named with a timestamp looking like '20210816160918'  and will be found with any other record of admin_presets : in the "presets" list that regroups exports, imports and automatic backups.
+
+###How it works
+- Automatic export daily at 23:00, creates an export with full config named wit ha time stamp **default : Enabled**
+- Automatic export cleanup runs daily at 23:30, will delete automatic exports as follows
+  - Last 7 weeks : keeps all
+  - Last 14 days : keeps one export out of 2
+  - Last month : keeps one export out of 4
+  - Last 3 months : keeps one export out of 8
+  - Older than 3 months : deletes all
+> This feature only targets automatic exports, if you perform a manual export or import they'll stay untouched.
+> 
+> If you import an automatic export in this project or another, it won't be targeted by this cleanup feature

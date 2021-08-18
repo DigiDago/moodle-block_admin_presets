@@ -33,16 +33,25 @@ if ($ADMIN->fulltree) {
     $sensiblesettingsdefault .= 'smtppass@none, proxypassword@@none, password@@quiz, ';
     $sensiblesettingsdefault .= 'enrolpassword@@moodlecourse, allowedip@@none, blockedip@@none';
 
-    $automaticexportdefault = false ;
-
     $settings->add(new admin_setting_configtextarea('block_admin_presets/sensiblesettings',
             get_string('sensiblesettings', 'block_admin_presets'),
             get_string('sensiblesettingstext', 'block_admin_presets'),
             $sensiblesettingsdefault, PARAM_TEXT));
 
+    //START CBLUE MODIFICATION
+    $automaticexportdefault = false ;
+    $automaticexportcleanupdefault = true ;
+
     $settings->add(new admin_setting_configcheckbox(
         'block_admin_presets/automaticexport',
         get_string('automaticexportconfig', 'block_admin_presets'),
         get_string('automaticexportconfig', 'block_admin_presets'),
-        $automaticexportdefault, PARAM_BOOL));
+        $automaticexportdefault, true, false));
+
+    $settings->add(new admin_setting_configcheckbox(
+        'block_admin_presets/automaticexportcleanup',
+        get_string('automaticexportcleanupconfig', 'block_admin_presets'),
+        get_string('automaticexportcleanupconfig', 'block_admin_presets'),
+        $automaticexportcleanupdefault, true, false));
+    //END CBLUE MODIFICATION
 }
