@@ -67,7 +67,7 @@ class automatic_export extends scheduled_task {
         $export = new admin_presets_export();
 
         // Reload site settings.
-        $sitesettings = $export->_get_site_settings();
+        $sitesettings = $export->load_site_settings();
 
         // Set up $preset that should be in execute() $_POST header
         $_POST['sesskey'] = 'yms935m3dl';
