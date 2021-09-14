@@ -52,7 +52,7 @@ Automatic Export
 A feature was added allowing the plugin to perform an automatic export which will provide a daily back-up if enabled. You can enable this setting the same way you're configuring the plugin following : *Admin > Plugins > Plugins overview > Additional Plugins > Admin presets > Settings*.
 These backups are named with a timestamp looking like '20210816160918'  and will be found with any other record of admin_presets : in the "presets" list that regroups exports, imports and automatic backups.
 
-###How it works
+### How it works
 - Automatic export daily at 23:00, creates an export with full config named wit ha time stamp **default : Enabled**
 - Automatic export cleanup runs daily at 23:30, will delete automatic exports as follows
   - Last 7 weeks : keeps all
