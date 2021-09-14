@@ -53,7 +53,7 @@ A feature was added allowing the plugin to perform an automatic export which wil
 These backups are named with a timestamp looking like '20210816160918'  and will be found with any other record of admin_presets : in the "presets" list that regroups exports, imports and automatic backups.
 
 ### How it works
-- Automatic export daily at 23:00, creates an export with full config named wit ha time stamp **default : Enabled**
+- Automatic export daily at 23:00, creates an export with full config named with a time stamp **default : Enabled**
 - Automatic export cleanup runs daily at 23:30, will delete automatic exports as follows
   - Last 7 weeks : keeps all
   - Last 14 days : keeps one export out of 2
