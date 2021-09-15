@@ -49,6 +49,16 @@ class admin_presets_base {
     protected $rel;
 
     /**
+     * This function will be used to call _get_site_settings with public privileges
+     *
+     * @return array
+     * @throws dml_exception
+     */
+    public function load_site_settings() {
+        return $this->_get_site_settings();
+    }
+
+    /**
      * Loads common class attributes and initializes sensible settings and DB - XML relations
      */
     public function __construct() {
