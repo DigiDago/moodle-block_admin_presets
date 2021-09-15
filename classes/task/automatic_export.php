@@ -69,33 +69,20 @@ class automatic_export extends scheduled_task {
         // Reload site settings.
         $sitesettings = $export->load_site_settings();
 
-        // Set up $preset that should be in execute() $_POST header
-        $_POST['sesskey'] = 'yms935m3dl';
-        $_POST['_qf__admin_presets_export_form'] = '1';
-        $_POST['mform_isexpanded_id_general'] = '1';
-        $_POST['name'] = 'YYYYMMDDmmss';
-        $_POST['comments'] = [
-            'text' => 'This is an automatic export for backup.',
-            'format' => '1'
-        ];
-        $_POST['author'] = 'Automatic Export';
-        $_POST['admin_presets_submit'] = 'Save Changes';
-
-        //Construct $_POST for each site setting
+        //Construct $presets for each site setting
         foreach ($sitesettings as $sitesetting => $settingvalue) {
             foreach ($settingvalue as $key => $value) {
-                $_POST[$key . '@@' . $sitesetting] = '1';
+                $presets[$key . '@@' . $sitesetting] = '1';
             }
         }
-
 
         // admin_preset record.
         $preset = new stdClass();
         $preset->userid = '1';
         $preset->name = date('YmdGis');
-        $preset->comments = $_POST['comments']['text'];
+        $preset->comments = $presets['comments']['text'];
         $preset->site = $CFG->wwwroot;
-        $preset->author = $_POST['author'];
+        $preset->author = $presets['author'];
         $preset->moodleversion = $CFG->version;
         $preset->moodlerelease = $CFG->release;
         $preset->timecreated = time();
@@ -108,7 +95,7 @@ class automatic_export extends scheduled_task {
         $this->id = $preset->id;
 
         // We must ensure that there are settings selected.
-        foreach ($_POST as $varname => $value) {
+        foreach ($presets as $varname => $value) {
 
             unset($setting);
 
@@ -144,7 +131,7 @@ class automatic_export extends scheduled_task {
 
         // If there are no valid or selected settings we should delete the admin preset record.
         if (empty($settingsfound)) {
-            $DB->delete_records('block_admin_presets', array('id' => $preset->id));
+            $DB->delete_records('block_admin_presets', ['id' => $preset->id]);
             redirect($CFG->wwwroot . '/blocks/admin_presets/index.php?action=export',
                 get_string('novalidsettingsselected', 'block_admin_presets'), 4);
         }

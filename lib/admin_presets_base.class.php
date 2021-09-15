@@ -24,7 +24,6 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-
 defined('MOODLE_INTERNAL') || die();
 
 require_once($CFG->libdir . '/adminlib.php');
@@ -55,8 +54,7 @@ class admin_presets_base {
      * @return array
      * @throws dml_exception
      */
-    public function load_site_settings()
-    {
+    public function load_site_settings() {
         return $this->_get_site_settings();
     }
 

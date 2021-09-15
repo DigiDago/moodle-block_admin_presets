@@ -38,7 +38,7 @@ if ($ADMIN->fulltree) {
             get_string('sensiblesettingstext', 'block_admin_presets'),
             $sensiblesettingsdefault, PARAM_TEXT));
 
-    //START CBLUE MODIFICATION
+    //CBLUE START
     $automaticexportdefault = false ;
     $automaticexportcleanupdefault = true ;
 
@@ -53,5 +53,5 @@ if ($ADMIN->fulltree) {
         get_string('automaticexportcleanupconfig', 'block_admin_presets'),
         get_string('automaticexportcleanupconfigtext', 'block_admin_presets'),
         $automaticexportcleanupdefault, true, false));
-    //END CBLUE MODIFICATION
+    //CBLUE END
 }
