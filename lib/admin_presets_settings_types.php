@@ -838,6 +838,270 @@ class admin_preset_admin_setting_configcheckbox extends admin_preset_setting {
     }
 }
 
+class admin_preset_admin_setting_configstoredfile extends admin_preset_setting {
+
+    private $base64;
+    private $extensions = [];
+    private $filenames = [];
+    private $separator = '_separator_';
+    private $multiseparator = '_multis_';
+
+    public function __construct(admin_setting $settingdata, $dbsettingvalue) {
+
+        // Check if preview context (multiseparator present or pathinfo extension not set)
+        $pathinfo = pathinfo($dbsettingvalue);
+        if (!isset($pathinfo['extension']) || strpos($dbsettingvalue, $this->multiseparator) !== false) {
+            // Manage multiple files
+            $multisplits = explode($this->multiseparator, $dbsettingvalue);
+            foreach ($multisplits as $multisplit) {
+                $split = explode($this->separator, $multisplit);
+                if (!empty($split[2])) {
+                    $this->filenames[$split[2]] = $split[2];
+                    $this->extensions[$split[2]] = $split[1];
+                    if (base64_encode(base64_decode($split[0], true)) === $split[0]) {
+                        $this->base64 .= $split[0] . $this->separator . $split[1] . $this->separator . $split[2] . $this->multiseparator; // We store the base64 with his extension and filename.
+                    }
+                }
+            }
+        } else {
+            $this->base64 = $this->get_current_files($settingdata->plugin, $settingdata->name);
+        }
+
+        parent::__construct($settingdata, $dbsettingvalue);
+
+    }
+
+    /**
+     * Defines the value as equal to the base64 of the image followed by its extension
+     * (to be able to retrieve the extension more easily)
+     *
+     * @param string $value
+     * @return   boolean              Cleaned or not, but always true
+     */
+    protected function set_value($value) {
+        if ($this->base64) {
+            $this->value = $this->base64;
+        } else {
+            $this->value = $value;
+        }
+        return true;
+    }
+
+    /**
+     * Defines the visible value as an html image built from the base64 of the image
+     * (Because it is stored as a base64 in the xml and in the database)
+     */
+    protected function set_visiblevalue() {
+        $this->visiblevalue = '';
+
+        if ($this->base64) {
+            $multisplits = explode($this->multiseparator, $this->base64);
+            foreach ($multisplits as $multisplit) {
+                if (!empty($multisplit)) {
+                    $split = explode($this->separator, $multisplit);
+                    if ($this->checkImageExtension($this->extensions[$split[2]])) {
+                        // Remove the extension.
+                        $base64 = str_replace($this->separator . $this->extensions[$split[2]], '', $split[0]);
+                        $base64 = str_replace($this->separator . $this->filenames[$split[2]], '', $base64);
+                        // Render a preview of the image instead of the base64 value.
+                        $this->visiblevalue .= '<img style="display:block; width:200px" src="data:' .
+                            $this->extensions[$split[2]] . ';base64, ' . $base64 . '" />';
+                    } else {
+                        $this->visiblevalue .= '<span style="display:block; width: 250px; overflow: hidden; text-overflow: ellipsis;"><b>' .
+                            $this->filenames[$split[2]] . '</b> ' . substr(base64_decode($split[0]), 0, 250) . '...</span>';
+                    }
+                }
+            }
+        }
+    }
+
+    /**
+     * Stores the setting into database, logs the change and returns the config_log inserted id
+     *
+     * @param bool $name
+     * @param mixed $value
+     * @return integer config_log inserted id
+     * @throws dml_exception
+     * @throws moodle_exception
+     */
+    public function save_value($name = false, $value = null) {
+
+        // Object values if no arguments.
+        if ($value === null) {
+            $value = $this->value;
+        }
+        if (!$name) {
+            $name = $this->settingdata->name;
+        }
+
+        // Plugin name or null.
+        $plugin = $this->settingdata->plugin;
+        if ($plugin == 'none' || $plugin == '') {
+            $plugin = null;
+        }
+
+        // Manage multiple files
+        $i = 0;
+        $filename = '';
+        $configlogid = '';
+        $fs = get_file_storage();
+        $multisplits = explode($this->multiseparator, $value);
+        foreach ($multisplits as $multisplit) {
+            $split = explode($this->separator, $multisplit);
+            // Manage filename for config
+            if ($i == 0) {
+                $filename = $split[2];
+            }
+            $i++;
+            if (!empty($split[2])) {
+                $currentfile = $this->get_file_from_fs($plugin, $name, $split[2]);
+                if ($currentfile) {
+                    $oldvalue = base64_encode($currentfile->get_content());
+                    // skip same value
+                    if ($oldvalue == $split[0]) {
+                        continue;
+                    }
+                    // Delete the old file.
+                    $currentfile->delete();
+                }
+                // Prepare new file record object.
+                $fileinfo = [
+                    'contextid' => 1,
+                    'component' => $plugin,
+                    'filearea' => $this->fileareaMapping($plugin, $name),
+                    'itemid' => 0,
+                    'filepath' => '/',
+                    'filename' => $split[2]
+                ];
+                $fs->create_file_from_string($fileinfo, base64_decode($split[0]));
+            }
+        }
+        // update config & log
+        if ($filename) {
+            unset_config($name, $plugin);
+            set_config($name, '/' . $filename, $plugin);
+            $configlogid = $this->to_log($plugin, $name, $filename, get_config($plugin, $name) ?? '');
+        }
+
+        return $configlogid;
+    }
+
+    /**
+     * Get the file actually stored in the configuration
+     *
+     * @param $plugin
+     * @param $name
+     * @return mixed
+     * @throws dml_exception
+     */
+    private function get_current_files($plugin, $name) {
+        global $DB;
+
+        $content = '';
+        $datas = [
+                'component' => $plugin,
+                'filearea' => $this->fileareaMapping($plugin, $name),
+                'itemid' => 0,
+                'contextid' => 1,
+        ];
+        // Retrieve the file. So we can convert it to base64 (to add it in the xml or compare with new value in "load" context).
+        $dbfiles = $DB->get_records_sql(
+                'SELECT * FROM {files} 
+                     WHERE component = :component 
+                        AND filearea = :filearea 
+                        AND itemid = :itemid 
+                        AND contextid = :contextid 
+                     ',
+                $datas
+        );
+
+        if ($dbfiles) {
+            $fs = get_file_storage();
+            foreach ($dbfiles as $dbfile) {
+                $pathinfo = pathinfo($dbfile->filename);
+                if (!empty($pathinfo['extension']) && !empty($pathinfo['basename'])) {
+                    $this->filenames[$pathinfo['basename']] = $pathinfo['basename'];
+                    $this->extensions[$pathinfo['basename']] = $pathinfo['extension'];
+                    $content .= base64_encode($fs->get_file_by_hash($dbfile->pathnamehash)->get_content()) . $this->separator . $pathinfo['extension'] . $this->separator . $pathinfo['basename'] . $this->multiseparator;
+                }
+            }
+        }
+        return $content;
+    }
+
+    /**
+     * @param $plugin
+     * @param $name
+     * @param $filename
+     * @return bool|stored_file|null
+     * @throws dml_exception
+     */
+    private function get_file_from_fs($plugin, $name, $filename) {
+        global $DB;
+
+        $datas = [
+            'component' => $plugin,
+            'filearea' => $this->fileareaMapping($plugin, $name),
+            'itemid' => 0,
+            'contextid' => 1,
+        ];
+        if ($filename) {
+            $wherefilename = 'filename = "' . $filename . '"';
+        } else {
+            // Must be set.
+            $wherefilename = 'filename NOT IN ("", ".")';
+        }
+        // Retrieve the file. So we can convert it to base64 (to add it in the xml or compare with new value in "load" context).
+        $dbfile = $DB->get_record_sql(
+            'SELECT * FROM {files} 
+                     WHERE component = :component 
+                        AND filearea = :filearea 
+                        AND itemid = :itemid 
+                        AND contextid = :contextid 
+                        AND ' . $wherefilename,
+            $datas
+        );
+        if ($dbfile) {
+            $fs = get_file_storage();
+            return $fs->get_file_by_hash($dbfile->pathnamehash);
+        }
+        return null;
+    }
+
+    /**
+     * @param $extension
+     * @return bool
+     */
+    private function checkImageExtension($extension)
+    {
+        $img = ['gif' , 'jpeg' , 'jpg' , 'jif' , 'jfif' , 'png' , 'bmp', 'svg', 'tiff'];
+
+        if (in_array($extension, $img)) {
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * Because some plugins (like Theme fordson use another filearea name than param name for associated files
+     *
+     * @param $plugin
+     * @param $name
+     * @return string
+     */
+    private function fileareaMapping($plugin, $name)
+    {
+        $filearea = $name;
+        if ($plugin == 'theme_fordson') {
+            if ($name == 'presetfiles') {
+                $filearea = 'preset';
+            }
+        }
+        return $filearea;
+    }
+
+}
+
 class admin_preset_admin_setting_configcheckbox_with_advanced extends admin_preset_admin_setting_configcheckbox {
 
     public function __construct(admin_setting $settingdata, $dbsettingvalue) {
