@@ -59,7 +59,7 @@ class admin_presets_load extends admin_presets_base {
             // Only for selected items.
             $appliedchanges = array();
             $unnecessarychanges = array();
-            foreach (filter_input_array(INPUT_POST) as $varname => $value) {
+            foreach ($_POST as $varname => $value) {
 
                 unset($updatesetting);
 
@@ -147,6 +147,8 @@ class admin_presets_load extends admin_presets_base {
                         $appliedchanges[$varname]->visiblename = $presetsetting->get_settingdata()->visiblename;
                         $appliedchanges[$varname]->oldvisiblevalue = $sitesetting->get_visiblevalue();
                         $appliedchanges[$varname]->visiblevalue = $presetsetting->get_visiblevalue();
+
+                        purge_caches();
 
                         // Unnecessary changes (actual setting value).
                     } else {

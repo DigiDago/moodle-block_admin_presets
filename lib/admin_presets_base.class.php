@@ -430,7 +430,6 @@ class admin_presets_base {
                 }
             }
         }
-
         return $settings;
     }
 

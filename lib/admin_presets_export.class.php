@@ -184,7 +184,7 @@ class admin_presets_export extends admin_presets_base {
 
                 $tagname = strtoupper($plugin);
 
-                // To aviod xml slash problems.
+                // To avoid xml slash problems.
                 if (strstr($tagname, '/') != false) {
                     $tagname = str_replace('/', '__', $tagname);
                 }
@@ -209,7 +209,7 @@ class admin_presets_export extends admin_presets_base {
                             }
                         }
 
-                        $xmlwriter->full_tag(strtoupper($setting->name), $setting->value, $attributes);
+                        $xmlwriter->full_tag(strtoupper(trim($setting->name)), trim($setting->value), $attributes);
                     }
 
                     $xmlwriter->end_tag('SETTINGS');
