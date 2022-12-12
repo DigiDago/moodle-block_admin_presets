@@ -151,8 +151,10 @@ abstract class admin_preset_setting {
      * Sets the visible name for the setting selected value
      *
      * In most cases the child classes will overwrite
+     *
+     * @return void
      */
-    protected function set_visiblevalue() {
+    public function set_visiblevalue(): void {
         $this->visiblevalue = $this->value;
     }
 
@@ -433,9 +435,11 @@ class admin_preset_admin_setting_configtext_with_advanced extends admin_preset_a
     }
 
     /**
-     * Delegates
+     * Sets the visible name for the setting selected value
+     *
+     * @return void
      */
-    protected function set_visiblevalue() {
+    public function set_visiblevalue(): void {
         parent::set_visiblevalue();
         $this->visiblevalue .= $this->delegation->extra_set_visiblevalue(
                 $this->attributesvalues[$this->attributes['fix']], 'advanced');
@@ -465,13 +469,19 @@ class admin_preset_admin_setting_configiplist extends admin_preset_admin_setting
  */
 class admin_preset_admin_setting_devicedetectregex extends admin_preset_admin_setting_configtext {
 
-    public function set_visiblevalue() {
+    /**
+     * Sets the visible name for the setting selected value
+     *
+     * In most cases the child classes will overwrite
+     *
+     * @return void
+     */
+    public function set_visiblevalue(): void {
 
         $values = json_decode($this->get_value());
 
         if (!$values) {
             parent::set_visiblevalue();
-            return;
         }
 
         $this->visiblevalue = '';
@@ -554,7 +564,14 @@ class admin_preset_admin_setting_configselect extends admin_preset_setting {
         return false;
     }
 
-    protected function set_visiblevalue() {
+    /**
+     * Sets the visible name for the setting selected value
+     *
+     * In most cases the child classes will overwrite
+     *
+     * @return void
+     */
+    public function set_visiblevalue(): void {
 
         // Just to avoid heritage problems.
         if (empty($this->settingdata->choices[$this->value])) {
@@ -614,9 +631,13 @@ class admin_preset_admin_setting_configselect_with_advanced extends admin_preset
     }
 
     /**
-     * Funcionality used by other _with_advanced settings
+     * Sets the visible name for the setting selected value
+     *
+     * In most cases the child classes will overwrite
+     *
+     * @return void
      */
-    protected function set_visiblevalue() {
+    public function set_visiblevalue(): void {
         parent::set_visiblevalue();
         $this->visiblevalue .= $this->delegation->extra_set_visiblevalue(
                 $this->attributesvalues[$this->attributes[$this->advancedkey]], 'advanced');
@@ -671,9 +692,13 @@ class admin_preset_admin_setting_gradecat_combo extends admin_preset_admin_setti
     }
 
     /**
-     * Special treatment! the value be extracted from the $value argument
+     * Sets the visible name for the setting selected value
+     *
+     * In most cases the child classes will overwrite
+     *
+     * @return void
      */
-    protected function set_visiblevalue() {
+    public function set_visiblevalue(): void {
         parent::set_visiblevalue();
 
         $flagvalue = $this->attributesvalues[$this->settingdata->name . '_flag'];
@@ -726,7 +751,14 @@ class admin_preset_admin_setting_configmultiselect extends admin_preset_setting 
         $this->value = $value;
     }
 
-    protected function set_visiblevalue() {
+    /**
+     * Sets the visible name for the setting selected value
+     *
+     * In most cases the child classes will overwrite
+     *
+     * @return void
+     */
+    public function set_visiblevalue(): void {
 
         $values = explode(',', $this->value);
         $visiblevalues = array();
@@ -740,7 +772,6 @@ class admin_preset_admin_setting_configmultiselect extends admin_preset_setting 
 
         if (empty($visiblevalues)) {
             $this->visiblevalue = '';
-            return false;
         }
 
         $this->visiblevalue = implode(', ', $visiblevalues);
@@ -813,7 +844,7 @@ class admin_preset_admin_setting_configtime extends admin_preset_setting {
         $this->value = $value;
     }
 
-    protected function set_visiblevalue() {
+    public function set_visiblevalue(): void {
         $this->visiblevalue = $this->value . ':' . $this->attributesvalues[$this->settingdata->name2];
     }
 }
@@ -826,7 +857,7 @@ class admin_preset_admin_setting_configcheckbox extends admin_preset_setting {
         return true;
     }
 
-    protected function set_visiblevalue() {
+    public function set_visiblevalue(): void {
 
         if ($this->value) {
             $str = get_string('yes');
@@ -850,7 +881,7 @@ class admin_preset_admin_setting_configcheckbox_with_advanced extends admin_pres
     /**
      * Uses delegation
      */
-    protected function set_visiblevalue() {
+    public function set_visiblevalue(): void {
         parent::set_visiblevalue();
         $this->visiblevalue .= $this->delegation->extra_set_visiblevalue(
                 $this->attributesvalues[$this->attributes['adv']], 'advanced');
@@ -869,7 +900,7 @@ class admin_preset_admin_setting_configcheckbox_with_lock extends admin_preset_a
     /**
      * Uses delegation
      */
-    protected function set_visiblevalue() {
+    public function set_visiblevalue(): void {
         parent::set_visiblevalue();
         $this->visiblevalue .= $this->delegation->extra_set_visiblevalue(
                 $this->attributesvalues[$this->attributes['locked']], 'locked');
@@ -899,7 +930,7 @@ class admin_preset_admin_setting_special_backupdays extends admin_preset_setting
         $this->value = clean_param($value, PARAM_SEQUENCE);
     }
 
-    protected function set_visiblevalue() {
+    public function set_visiblevalue(): void {
 
         // TODO Try to use $this->behaviors.
         $this->settingdata->load_choices();
@@ -923,7 +954,7 @@ class admin_preset_admin_setting_special_backupdays extends admin_preset_setting
 /** OTHERS **/
 class admin_preset_admin_setting_special_calendar_weekend extends admin_preset_setting {
 
-    protected function set_visiblevalue() {
+    public function set_visiblevalue(): void {
 
         if (!$this->value) {
             parent::set_visiblevalue();
@@ -974,7 +1005,7 @@ class admin_preset_admin_setting_quiz_reviewoptions extends admin_preset_setting
     /**
      * Delegates
      */
-    protected function set_visiblevalue() {
+    public function set_visiblevalue(): void {
 
         $marked = array();
 
@@ -1025,8 +1056,7 @@ class admin_preset_mod_quiz_admin_review_setting extends admin_preset_setting {
     /**
      * The setting value is a sum of 'mod_quiz_admin_review_setting::times'
      */
-    protected function set_visiblevalue() {
-
+    public function set_visiblevalue(): void {
         // Getting the masks descriptions (mod_quiz_admin_review_setting protected method).
         $reflectiontimes = new ReflectionMethod('mod_quiz_admin_review_setting', 'times');
         $reflectiontimes->setAccessible(true);
