@@ -84,7 +84,7 @@ class admin_presets_rollback extends admin_presets_base {
 
         global $DB, $OUTPUT;
 
-        confirm_sesskey();
+        require_sesskey();
 
         // Actual settings.
         $sitesettings = $this->_get_site_settings();

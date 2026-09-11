@@ -609,10 +609,12 @@ class admin_presets_base {
         $appliedtable->align = array('center', 'center');
 
         foreach ($appliedchanges as $setting) {
-            $appliedtable->data[] = array($setting->plugin,
-                    $setting->visiblename,
-                    $setting->oldvisiblevalue,
-                    $setting->visiblevalue);
+            $appliedtable->data[] = [
+                $setting->plugin,
+                $setting->visiblename,
+                s($setting->oldvisiblevalue),
+                s($setting->visiblevalue),
+            ];
         }
 
         $this->outputs .= html_writer::table($appliedtable);

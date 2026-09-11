@@ -277,7 +277,7 @@ class admin_presets_load extends admin_presets_base {
             $table->align = array('center', 'center');
 
             foreach ($notapplicable as $setting) {
-                $table->data[] = array($setting->plugin, $setting->name, $setting->value);
+                $table->data[] = [s($setting->plugin), s($setting->name), s($setting->value)];
             }
 
             $this->outputs .= html_writer::table($table);
