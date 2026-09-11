@@ -190,8 +190,8 @@ abstract class admin_preset_setting {
 
         $this->set_visiblevalue();
 
-        $namediv = '<div class="admin_presets_tree_name">' . $this->settingdata->visiblename . '</div>';
-        $valuediv = '<div class="admin_presets_tree_value">' . $this->visiblevalue . '</div>';
+        $namediv = '<div class="admin_presets_tree_name">' . s($this->settingdata->visiblename) . '</div>';
+        $valuediv = '<div class="admin_presets_tree_value">' . s($this->visiblevalue) . '</div>';
 
         $this->text = $namediv . $valuediv . '<br/>';
     }

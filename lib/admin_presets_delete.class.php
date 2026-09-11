@@ -63,7 +63,7 @@ class admin_presets_delete extends admin_presets_base {
 
         global $DB, $CFG;
 
-        confirm_sesskey();
+        require_sesskey();
 
         if (!$DB->delete_records('block_admin_presets', array('id' => $this->id))) {
             print_error('errordeleting', 'block_admin_presets');
